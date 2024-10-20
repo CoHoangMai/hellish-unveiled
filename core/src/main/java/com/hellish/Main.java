@@ -40,7 +40,7 @@ import java.util.EnumMap;
 
 public class Main extends Game {
 	private static final String TAG = Main.class.getSimpleName();
-	public static final String vietnameseCharacters = "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ";
+	public static final String VIETNAMESE_CHARS = "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ";
 	
 	
 	private SpriteBatch spriteBatch;
@@ -53,6 +53,7 @@ public class Main extends Game {
 	public static final float UNIT_SCALE = 1 / 32f;
 	public static final short BIT_PLAYER = 1 << 0; 
 	public static final short BIT_GROUND = 1 << 1;	
+	public static final short BIT_GAME_OBJECT = 1 << 2;
 	
 	private World world;
 	private WorldContactListener worldContactListener;
@@ -107,11 +108,11 @@ public class Main extends Game {
 		gameCamera = new OrthographicCamera();
 		screenViewport = new FitViewport(16, 9, gameCamera);
 		
-		//mapManager
-		mapManager = new MapManager(this);
-		
 		//ECS
 		ecsEngine = new ECSEngine(this);
+		
+		//mapManager
+		mapManager = new MapManager(this);
 		
 		//Game renderer
 		gameRenderer = new GameRenderer(this);
@@ -121,7 +122,7 @@ public class Main extends Game {
 		setScreen(ScreenType.LOADING);	
 	}
 	
-	public static void resetBodiesAndFixtureDefinition() {
+	public static void resetBodyAndFixtureDefinition() {
 		BODY_DEF.position.set(0, 0);
 		BODY_DEF.gravityScale = 1;
 		BODY_DEF.type = BodyDef.BodyType.StaticBody;
@@ -147,7 +148,7 @@ public class Main extends Game {
 		final FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 		fontParameter.minFilter = Texture.TextureFilter.Linear;
 		fontParameter.magFilter = Texture.TextureFilter.Linear;
-		fontParameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS + vietnameseCharacters;
+		fontParameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS + VIETNAMESE_CHARS;
 		final int[] sizesToCreate = {16, 20, 26, 32};
 		for(int size: sizesToCreate) {
 			fontParameter.size = size;

@@ -1,7 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="6">
  <tileset firstgid="1" name="Doomland" tilewidth="16" tileheight="16" tilecount="32" columns="8">
   <image source="Tiles-16x16.png" width="128" height="64"/>
+ </tileset>
+ <tileset firstgid="33" name="gem" tilewidth="32" tileheight="32" tilecount="60" columns="4">
+  <image source="gem.png" width="128" height="480"/>
+  <tile id="0">
+   <properties>
+    <property name="type" value="GEM"/>
+   </properties>
+   <animation>
+    <frame tileid="0" duration="50"/>
+    <frame tileid="1" duration="50"/>
+    <frame tileid="2" duration="50"/>
+    <frame tileid="3" duration="50"/>
+    <frame tileid="4" duration="50"/>
+    <frame tileid="5" duration="50"/>
+    <frame tileid="6" duration="50"/>
+    <frame tileid="7" duration="50"/>
+    <frame tileid="8" duration="50"/>
+    <frame tileid="9" duration="50"/>
+    <frame tileid="10" duration="50"/>
+    <frame tileid="11" duration="50"/>
+    <frame tileid="12" duration="50"/>
+    <frame tileid="13" duration="50"/>
+    <frame tileid="14" duration="50"/>
+    <frame tileid="15" duration="50"/>
+    <frame tileid="16" duration="50"/>
+    <frame tileid="17" duration="50"/>
+    <frame tileid="18" duration="50"/>
+    <frame tileid="19" duration="50"/>
+    <frame tileid="20" duration="50"/>
+    <frame tileid="21" duration="50"/>
+    <frame tileid="22" duration="50"/>
+    <frame tileid="23" duration="50"/>
+    <frame tileid="24" duration="50"/>
+    <frame tileid="25" duration="50"/>
+    <frame tileid="26" duration="50"/>
+    <frame tileid="27" duration="50"/>
+    <frame tileid="28" duration="50"/>
+    <frame tileid="29" duration="50"/>
+    <frame tileid="30" duration="50"/>
+    <frame tileid="31" duration="50"/>
+    <frame tileid="32" duration="50"/>
+    <frame tileid="33" duration="50"/>
+    <frame tileid="34" duration="50"/>
+    <frame tileid="35" duration="50"/>
+    <frame tileid="36" duration="50"/>
+    <frame tileid="37" duration="50"/>
+    <frame tileid="38" duration="50"/>
+    <frame tileid="39" duration="50"/>
+    <frame tileid="40" duration="50"/>
+    <frame tileid="41" duration="50"/>
+    <frame tileid="42" duration="50"/>
+    <frame tileid="43" duration="50"/>
+    <frame tileid="44" duration="50"/>
+    <frame tileid="45" duration="50"/>
+    <frame tileid="46" duration="50"/>
+    <frame tileid="47" duration="50"/>
+    <frame tileid="48" duration="50"/>
+    <frame tileid="49" duration="50"/>
+    <frame tileid="50" duration="50"/>
+    <frame tileid="51" duration="50"/>
+    <frame tileid="52" duration="50"/>
+    <frame tileid="53" duration="50"/>
+    <frame tileid="54" duration="50"/>
+    <frame tileid="55" duration="50"/>
+    <frame tileid="56" duration="50"/>
+    <frame tileid="57" duration="50"/>
+    <frame tileid="58" duration="50"/>
+    <frame tileid="59" duration="50"/>
+   </animation>
+  </tile>
  </tileset>
  <layer id="1" name="Base" width="60" height="40">
   <data encoding="csv">
@@ -47,4 +117,13 @@
 32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32
 </data>
  </layer>
+ <objectgroup id="4" name="gameObjects">
+  <properties>
+   <property name="GEM" value="Gem"/>
+  </properties>
+  <object id="1" gid="33" x="486.144" y="165.708" width="32" height="32"/>
+  <object id="2" gid="33" x="595.306" y="248.359" width="32" height="32"/>
+  <object id="3" gid="33" x="359.828" y="455.766" width="32" height="32"/>
+  <object id="4" gid="33" x="168.016" y="306.058" width="32" height="32"/>
+ </objectgroup>
 </map>

@@ -4,6 +4,7 @@ import static com.hellish.Main.BIT_GROUND;
 
 import java.util.EnumMap;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
+import com.hellish.ecs.ECSEngine;
 
 public class MapManager {
 	public static final String TAG = MapManager.class.getSimpleName();
@@ -20,6 +22,8 @@ public class MapManager {
 	private final Array<Body> bodies;
 	
 	private final AssetManager assetManager;
+	private final ECSEngine ecsEngine;
+	private final Array<Entity> gameObjectsToRemove;
 	
 	private MapType currentMapType;
 	private Map currentMap;
@@ -30,7 +34,9 @@ public class MapManager {
 		currentMapType = null;
 		currentMap = null;
 		world = context.getWorld();
+		ecsEngine = context.getECSEngine();
 		assetManager = context.getAssetManager();
+		gameObjectsToRemove = new Array<Entity>();
 		bodies = new Array<Body>();
 		mapCache = new EnumMap<MapType, Map>(MapType.class);
 		listeners = new Array<MapListener>();
@@ -47,6 +53,7 @@ public class MapManager {
 		if(currentMap != null) {
 			world.getBodies(bodies);
 			destroyCollisionAreas();
+			destroyGameObjects();
 		}
 		
 		currentMap = mapCache.get(type);
@@ -59,12 +66,31 @@ public class MapManager {
 		Gdx.app.debug(TAG, "Map hiện tại: " + type);
 		
 		spawnCollisionAreas();
+		spawnGameObjects();
 		
 		for (final MapListener listener : listeners) {
 			listener.mapChange(currentMap);
 		}
 	}
 	
+	private void spawnGameObjects() {
+		for (final GameObject gameObj : currentMap.getGameObjects()) {
+			ecsEngine.createGameObject(gameObj);
+		}
+	}
+
+	private void destroyGameObjects() {
+		for (final Entity entity : ecsEngine.getEntities()) {
+			if(ECSEngine.gameObjCmpMapper.get(entity) != null) {
+				gameObjectsToRemove.add(entity);
+			}
+		}
+		for (final Entity entity : gameObjectsToRemove) {
+			ecsEngine.removeEntity(entity);
+		}
+		gameObjectsToRemove.clear();
+	}
+
 	private void destroyCollisionAreas() {
 		for(final Body body: bodies) {
 			if(body.getUserData().equals("GROUND")) {
@@ -74,7 +100,7 @@ public class MapManager {
 	}
 	
 	private void spawnCollisionAreas() {
-		Main.resetBodiesAndFixtureDefinition();
+		Main.resetBodyAndFixtureDefinition();
 		for(final CollisionArea collisionArea : currentMap.getCollisionAreas()) {
 			Main.BODY_DEF.position.set(collisionArea.getX(), collisionArea.getY());
 			Main.BODY_DEF.fixedRotation = true;

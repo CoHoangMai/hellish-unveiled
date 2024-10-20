@@ -24,14 +24,14 @@ public class PlayerAnimationSystem extends IteratingSystem{
 		
 		if(b2dComponent.body.getLinearVelocity().equals(Vector2.Zero)) {
 			animationComponent.aniType = AnimationType.HERO_DOWN_IDLE;
-		} else if (b2dComponent.body.getLinearVelocity().y > 0) {
-			animationComponent.aniType = AnimationType.HERO_UP_WALK;
-		} else if (b2dComponent.body.getLinearVelocity().y < 0) {
-			animationComponent.aniType = AnimationType.HERO_DOWN_WALK;
 		} else if (b2dComponent.body.getLinearVelocity().x > 0) {
 			animationComponent.aniType = AnimationType.HERO_RIGHT_WALK;
 		} else if (b2dComponent.body.getLinearVelocity().x < 0) {
 			animationComponent.aniType = AnimationType.HERO_LEFT_WALK;
+		} else if (b2dComponent.body.getLinearVelocity().y > 0) {
+			animationComponent.aniType = AnimationType.HERO_UP_WALK;
+		} else if (b2dComponent.body.getLinearVelocity().y < 0) {
+			animationComponent.aniType = AnimationType.HERO_DOWN_WALK;
 		} 
 	}	
 }
