@@ -211,6 +211,10 @@ public class Main extends Game {
 		return box2DDebugRenderer;
 	}
 	
+	public WorldContactListener getWorldContactListener() {
+		return worldContactListener;
+	}
+	
 	public void setScreen(final ScreenType screenType) {
 		final Screen screen = screenCache.get(screenType);
 		if (screen == null) {

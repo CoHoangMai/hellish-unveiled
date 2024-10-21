@@ -21,6 +21,7 @@ import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.system.AnimationSystem;
 import com.hellish.ecs.system.PlayerAnimationSystem;
 import com.hellish.ecs.system.PlayerCameraSystem;
+import com.hellish.ecs.system.PlayerCollisionSystem;
 import com.hellish.ecs.system.PlayerMovementSystem;
 import com.hellish.map.GameObject;
 import com.hellish.view.AnimationType;
@@ -50,6 +51,7 @@ public class ECSEngine extends PooledEngine{
 		this.addSystem(new PlayerCameraSystem(context));
 		this.addSystem(new AnimationSystem(context));
 		this.addSystem(new PlayerAnimationSystem(context));
+		this.addSystem(new PlayerCollisionSystem(context));
 	}
 	
 	public void createPlayer(final Vector2 playerSpawnLocation, final float width, final float height) {
@@ -67,13 +69,13 @@ public class ECSEngine extends PooledEngine{
 		Main.BODY_DEF.fixedRotation = true;
 		Main.BODY_DEF.type = BodyDef.BodyType.DynamicBody;
 		b2dComponent.body = world.createBody(Main.BODY_DEF);
-		b2dComponent.body.setUserData("PLAYER");
+		b2dComponent.body.setUserData(player);
 		b2dComponent.width = width;
 		b2dComponent.height = height;
 		b2dComponent.renderPosition.set(b2dComponent.body.getPosition());
 				
 		Main.FIXTURE_DEF.filter.categoryBits = BIT_PLAYER;
-		Main.FIXTURE_DEF.filter.maskBits = BIT_GROUND;
+		Main.FIXTURE_DEF.filter.maskBits = BIT_GROUND | BIT_GAME_OBJECT;
 		final PolygonShape pShape = new PolygonShape();
 		pShape.setAsBox(0.5f, 0.5f);
 		Main.FIXTURE_DEF.shape = pShape;
@@ -117,7 +119,7 @@ public class ECSEngine extends PooledEngine{
 		Main.BODY_DEF.type = BodyDef.BodyType.StaticBody;
 		Main.BODY_DEF.position.set(gameObj.getPosition().x + halfWidth, gameObj.getPosition().y + halfHeight);
 		b2dComponent.body = world.createBody(Main.BODY_DEF);
-		b2dComponent.body.setUserData("GAMEOBJECT");
+		b2dComponent.body.setUserData(gameObjEntity);
 		b2dComponent.width = gameObj.getWidth();
 		b2dComponent.height = gameObj.getHeight();
 		
