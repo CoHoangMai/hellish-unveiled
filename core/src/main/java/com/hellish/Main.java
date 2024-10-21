@@ -36,6 +36,9 @@ import com.hellish.map.MapManager;
 import com.hellish.screen.ScreenType;
 import com.hellish.view.GameRenderer;
 
+import box2dLight.Light;
+import box2dLight.RayHandler;
+
 import java.util.EnumMap;
 
 public class Main extends Game {
@@ -58,6 +61,7 @@ public class Main extends Game {
 	private World world;
 	private WorldContactListener worldContactListener;
 	private Box2DDebugRenderer box2DDebugRenderer;
+	private RayHandler rayHandler;
 	
 	private static final float FIXED_TIME_STEP = 1/60f;
 	private float accumulator;
@@ -90,6 +94,9 @@ public class Main extends Game {
 		worldContactListener = new WorldContactListener();
 		world.setContactListener(worldContactListener);
 		box2DDebugRenderer = new Box2DDebugRenderer();
+		rayHandler = new RayHandler(world);
+		rayHandler.setAmbientLight(0.05f, 0.05f, 0.4f, 0.2f);
+		Light.setGlobalContactFilter(BIT_PLAYER, (short) 1, BIT_GROUND);
 		
 		//assetManager
 		assetManager = new AssetManager();
@@ -163,6 +170,10 @@ public class Main extends Game {
 		assetManager.load("ui/hud.json", Skin.class, skinParameter);
 		assetManager.finishLoading();
 		skin = assetManager.get("ui/hud.json", Skin.class);
+	}
+	
+	public RayHandler getRayHandler() {
+		return rayHandler;
 	}
 	
 	public MapManager getMapManager() {
@@ -258,6 +269,7 @@ public class Main extends Game {
 	public void dispose() {
 		super.dispose();
 		gameRenderer.dispose();
+		rayHandler.dispose();
 		world.dispose();
 		assetManager.dispose();
 		spriteBatch.dispose();	

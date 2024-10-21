@@ -34,6 +34,8 @@ import com.hellish.ecs.component.GameObjectComponent;
 import com.hellish.map.Map;
 import com.hellish.map.MapListener;
 
+import box2dLight.RayHandler;
+
 public class GameRenderer implements Disposable, MapListener{
 	public static final String TAG = GameRenderer.class.getSimpleName();
 	
@@ -52,6 +54,7 @@ public class GameRenderer implements Disposable, MapListener{
 	private final GLProfiler profiler;
 	protected final Box2DDebugRenderer box2DDebugRenderer;
 	private final World world;
+	private final RayHandler rayHandler;
 	
 	public GameRenderer(final Main context) {
 		assetManager = context.getAssetManager();
@@ -68,6 +71,8 @@ public class GameRenderer implements Disposable, MapListener{
 		context.getMapManager().addMapListener(this);
 		tiledMapLayers = new Array<TiledMapTileLayer>();
 		
+		
+		
 		profiler = new GLProfiler(Gdx.graphics);
 		profiler.enable();
 		if (profiler.isEnabled()) {
@@ -77,6 +82,7 @@ public class GameRenderer implements Disposable, MapListener{
 			box2DDebugRenderer = null;
 			world = null;
 		}
+		rayHandler = context.getRayHandler();
 	}
 	
 	public void render(final float alpha) {
@@ -100,6 +106,9 @@ public class GameRenderer implements Disposable, MapListener{
 			renderEntity(entity, alpha);
 		}
 		spriteBatch.end();
+		
+		rayHandler.setCombinedMatrix(gameCamera);
+		rayHandler.updateAndRender();
 		
 		if (profiler.isEnabled()) {
 		//	Gdx.app.debug(TAG, "Bindings: " + profiler.getTextureBindings());

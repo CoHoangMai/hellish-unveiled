@@ -8,6 +8,7 @@ import static com.hellish.Main.BIT_GAME_OBJECT;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -19,6 +20,7 @@ import com.hellish.ecs.component.Box2DComponent;
 import com.hellish.ecs.component.GameObjectComponent;
 import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.system.AnimationSystem;
+import com.hellish.ecs.system.LightSystem;
 import com.hellish.ecs.system.PlayerAnimationSystem;
 import com.hellish.ecs.system.PlayerCameraSystem;
 import com.hellish.ecs.system.PlayerCollisionSystem;
@@ -26,14 +28,17 @@ import com.hellish.ecs.system.PlayerMovementSystem;
 import com.hellish.map.GameObject;
 import com.hellish.view.AnimationType;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
+
 public class ECSEngine extends PooledEngine{
 	public static final ComponentMapper<PlayerComponent> playerCmpMapper = ComponentMapper.getFor(PlayerComponent.class);
 	public static final ComponentMapper<Box2DComponent> b2dCmpMapper = ComponentMapper.getFor(Box2DComponent.class);
 	public static final ComponentMapper<AnimationComponent> aniCmpMapper = ComponentMapper.getFor(AnimationComponent.class);
 	public static final ComponentMapper<GameObjectComponent> gameObjCmpMapper = ComponentMapper.getFor(GameObjectComponent.class);
 	
+	private final RayHandler rayHandler;
 	private final World world;
-	
 	private final Vector2 localPosition;
 	private final Vector2 posBeforeRotation;
 	private final Vector2 posAfterRotation;
@@ -42,7 +47,7 @@ public class ECSEngine extends PooledEngine{
 		super();
 		
 		world = context.getWorld();	
-		
+		rayHandler = context.getRayHandler();
 		localPosition = new Vector2();
 		posBeforeRotation = new Vector2();
 		posAfterRotation = new Vector2();
@@ -51,6 +56,7 @@ public class ECSEngine extends PooledEngine{
 		this.addSystem(new PlayerCameraSystem(context));
 		this.addSystem(new AnimationSystem(context));
 		this.addSystem(new PlayerAnimationSystem(context));
+		this.addSystem(new LightSystem());
 		this.addSystem(new PlayerCollisionSystem(context));
 	}
 	
@@ -81,6 +87,13 @@ public class ECSEngine extends PooledEngine{
 		Main.FIXTURE_DEF.shape = pShape;
 		b2dComponent.body.createFixture(Main.FIXTURE_DEF);
 		pShape.dispose();	
+		
+		b2dComponent.lightDistance = 6;
+		b2dComponent.lightFluctuationSpeed = 4;
+		b2dComponent.light = new PointLight(rayHandler, 64, new Color(1, 1, 1, 0.7f), b2dComponent.lightDistance,
+							b2dComponent.body.getPosition().x, b2dComponent.body.getPosition().y);
+		b2dComponent.lightFluctuationDistance = b2dComponent.light.getDistance() * 0.16f;
+		b2dComponent.light.attachToBody(b2dComponent.body);
 		
 		player.add(b2dComponent);
 		
