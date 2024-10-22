@@ -1,11 +1,13 @@
 package com.hellish.screen;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.hellish.Main;
+import com.hellish.PreferenceManager;
 import com.hellish.audio.AudioType;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
@@ -16,7 +18,11 @@ import com.hellish.map.MapType;
 import com.hellish.view.GameUI;
 
 public class GameScreen extends AbstractScreen<GameUI> implements MapListener{
+	private static final String TAG = GameScreen.class.getSimpleName();
+	
 	private final MapManager mapManager;
+	private final PreferenceManager prefManager;
+	private final Entity player;
 	private final AssetManager assetManager;
 	private boolean isMusicLoaded;
 	
@@ -28,8 +34,9 @@ public class GameScreen extends AbstractScreen<GameUI> implements MapListener{
 		mapManager = context.getMapManager();
 		mapManager.addMapListener(this);
 		mapManager.setMap(MapType.MAP_1);
+		prefManager = context.getPreferenceManager();	
 		
-		context.getECSEngine().createPlayer(mapManager.getCurrentMap().getStartLocation(), 0.75f, 0.75f);
+		player = context.getECSEngine().createPlayer(mapManager.getCurrentMap().getStartLocation(), 0.75f, 0.75f);
 		
 		isMusicLoaded = false;
 		for (final AudioType audioType : AudioType.values()) {
@@ -53,6 +60,12 @@ public class GameScreen extends AbstractScreen<GameUI> implements MapListener{
 			mapManager.setMap(MapType.MAP_1);
 		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
 			mapManager.setMap(MapType.MAP_2);
+		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
+			prefManager.saveGameState(player);
+			Gdx.app.debug(TAG, "Đã tạo save file");
+		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
+			prefManager.loadGameState(player);
+			Gdx.app.debug(TAG, "Đã load save file");
 		}
 	}
 

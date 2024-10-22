@@ -60,7 +60,7 @@ public class ECSEngine extends PooledEngine{
 		this.addSystem(new PlayerCollisionSystem(context));
 	}
 	
-	public void createPlayer(final Vector2 playerSpawnLocation, final float width, final float height) {
+	public Entity createPlayer(final Vector2 playerSpawnLocation, final float width, final float height) {
 		final Entity player = this.createEntity();
 		
 		//Thành phần player
@@ -105,6 +105,7 @@ public class ECSEngine extends PooledEngine{
 		player.add(animationComponent);
 		
 		this.addEntity(player);
+		return player;
 	}
 
 	public void createGameObject(final GameObject gameObj) {

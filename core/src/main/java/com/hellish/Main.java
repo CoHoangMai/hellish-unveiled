@@ -81,6 +81,8 @@ public class Main extends Game {
 	
 	private GameRenderer gameRenderer;
 	
+	private PreferenceManager preferenceManager;
+	
 	@Override
 	public void create() {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -123,6 +125,9 @@ public class Main extends Game {
 		
 		//Game renderer
 		gameRenderer = new GameRenderer(this);
+		
+		//Preference manager
+		preferenceManager = new PreferenceManager();
 		
 		//Screen đầu
 		screenCache = new EnumMap<ScreenType, Screen>(ScreenType.class);
@@ -170,6 +175,10 @@ public class Main extends Game {
 		assetManager.load("ui/hud.json", Skin.class, skinParameter);
 		assetManager.finishLoading();
 		skin = assetManager.get("ui/hud.json", Skin.class);
+	}
+	
+	public PreferenceManager getPreferenceManager() {
+		return preferenceManager;
 	}
 	
 	public RayHandler getRayHandler() {
