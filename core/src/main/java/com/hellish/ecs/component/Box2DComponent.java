@@ -17,6 +17,7 @@ public class Box2DComponent implements Component, Pool.Poolable{
 	public float width;
 	public float height;
 	public Vector2 renderPosition = new Vector2();
+	public Vector2 prevPosition = new Vector2();
 	
 	@Override
 	public void reset() {
@@ -35,6 +36,7 @@ public class Box2DComponent implements Component, Pool.Poolable{
 		
 		width = height = 0;
 		renderPosition.set(0,0);
+		prevPosition.set(0,0);
 	}
 
 }

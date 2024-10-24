@@ -77,6 +77,7 @@ public class ECSEngine extends PooledEngine{
 		Main.resetBodyAndFixtureDefinition();
 		final Box2DComponent b2dComponent = this.createComponent(Box2DComponent.class);
 		Main.BODY_DEF.position.set(playerSpawnLocation.x, playerSpawnLocation.y + 0.5f);
+		b2dComponent.prevPosition.set(Main.BODY_DEF.position);
 		Main.BODY_DEF.fixedRotation = true;
 		Main.BODY_DEF.type = BodyDef.BodyType.DynamicBody;
 		b2dComponent.body = world.createBody(Main.BODY_DEF);
@@ -137,6 +138,7 @@ public class ECSEngine extends PooledEngine{
 		final Box2DComponent b2dComponent = this.createComponent(Box2DComponent.class);
 		Main.BODY_DEF.type = BodyDef.BodyType.StaticBody;
 		Main.BODY_DEF.position.set(gameObj.getPosition().x + halfWidth, gameObj.getPosition().y + halfHeight);
+		b2dComponent.prevPosition.set(Main.BODY_DEF.position);
 		b2dComponent.body = world.createBody(Main.BODY_DEF);
 		b2dComponent.body.setUserData(gameObjEntity);
 		b2dComponent.width = gameObj.getWidth();

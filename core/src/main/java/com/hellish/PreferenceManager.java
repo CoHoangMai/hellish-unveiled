@@ -12,14 +12,13 @@ import com.hellish.ecs.component.Box2DComponent;
 
 public class PreferenceManager implements Json.Serializable{
 	private final Preferences preferences;
-	private final Json json;
 	private final JsonReader jsonReader;
 	
 	private final Vector2 playerPos;
 	
 	public PreferenceManager() {
 		preferences = Gdx.app.getPreferences("HellishUnveiled");
-		json = new Json();
+		new Json();
 		jsonReader = new JsonReader();
 		playerPos = new Vector2();
 	}

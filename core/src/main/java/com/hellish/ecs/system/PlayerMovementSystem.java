@@ -25,6 +25,7 @@ public class PlayerMovementSystem extends IteratingSystem implements GameKeyInpu
 	protected void processEntity(Entity entity, float deltaTime) {
 			final PlayerComponent playerComponent = ECSEngine.playerCmpMapper.get(entity);
 			final Box2DComponent b2dComponent = ECSEngine.b2dCmpMapper.get(entity);
+			b2dComponent.prevPosition.set(b2dComponent.body.getPosition());
 			
 			b2dComponent.body.applyLinearImpulse(
 				(xFactor*playerComponent.speed.x - b2dComponent.body.getLinearVelocity().x) * b2dComponent.body.getMass(),

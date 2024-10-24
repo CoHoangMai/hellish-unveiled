@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.Box2DComponent;
@@ -19,8 +20,11 @@ public class PlayerCameraSystem extends IteratingSystem{
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
-		gameCamera.position.set(ECSEngine.b2dCmpMapper.get(entity).renderPosition, 0);
+		final Box2DComponent b2dCmp = ECSEngine.b2dCmpMapper.get(entity);
+		
+		float lerpFactor = 0.1f;
+		gameCamera.position.x = MathUtils.lerp(gameCamera.position.x, b2dCmp.body.getPosition().x, lerpFactor);
+		gameCamera.position.y = MathUtils.lerp(gameCamera.position.y, b2dCmp.body.getPosition().y, lerpFactor);
 		gameCamera.update();
 	}
-	
 }

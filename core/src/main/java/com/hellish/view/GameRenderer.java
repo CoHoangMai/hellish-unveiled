@@ -20,6 +20,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -154,6 +155,7 @@ public class GameRenderer implements Disposable, MapListener{
 			final Sprite frame = animation.getKeyFrame(aniComponent.aniTime);
 			
 			b2dComponent.renderPosition.lerp(b2dComponent.body.getPosition(), alpha);
+			final Vector2 position = b2dComponent.body.getPosition();
 			
 			boolean isFacingRight = frame.isFlipX();
 			if (b2dComponent.body.getLinearVelocity().x < 0 && isFacingRight) {
@@ -162,8 +164,8 @@ public class GameRenderer implements Disposable, MapListener{
 	            frame.setFlip(true, false); // Lật sang phải
 	        }
 			
-			frame.setBounds(b2dComponent.renderPosition.x - aniComponent.height * 0.5f, 
-					b2dComponent.renderPosition.y - aniComponent.width * 0.5f,
+			frame.setBounds(MathUtils.lerp(b2dComponent.prevPosition.x, position.x, alpha) - aniComponent.width * 0.5f, 
+					MathUtils.lerp(b2dComponent.prevPosition.y, position.y, alpha) - aniComponent.height * 0.5f,
 					aniComponent.width, aniComponent.height);
 			frame.draw(spriteBatch);
 		}
