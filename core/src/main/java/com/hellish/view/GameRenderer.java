@@ -31,6 +31,7 @@ import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.Box2DComponent;
 import com.hellish.ecs.component.GameObjectComponent;
+import com.hellish.ecs.component.ParticleEffectComponent;
 import com.hellish.map.Map;
 import com.hellish.map.MapListener;
 
@@ -47,6 +48,7 @@ public class GameRenderer implements Disposable, MapListener{
 	
 	private final ImmutableArray<Entity> animatedEntities;
 	private final ImmutableArray<Entity> gameObjectEntities;
+	private final ImmutableArray<Entity> effectsToRender;
 	private final OrthogonalTiledMapRenderer mapRenderer;
 	private final Array<TiledMapTileLayer> tiledMapLayers;
 	private IntMap<Animation<Sprite>> mapAnimations;
@@ -66,6 +68,7 @@ public class GameRenderer implements Disposable, MapListener{
 		
 		gameObjectEntities = context.getECSEngine().getEntitiesFor(Family.all(GameObjectComponent.class, Box2DComponent.class, AnimationComponent.class).get());
 		animatedEntities = context.getECSEngine().getEntitiesFor(Family.all(AnimationComponent.class, Box2DComponent.class).exclude(GameObjectComponent.class).get());
+		effectsToRender = context.getECSEngine().getEntitiesFor(Family.all(ParticleEffectComponent.class).get());
 		
 		mapRenderer = new OrthogonalTiledMapRenderer(null, UNIT_SCALE, context.getSpriteBatch());
 		context.getMapManager().addMapListener(this);
@@ -105,6 +108,13 @@ public class GameRenderer implements Disposable, MapListener{
 		for (final Entity entity : animatedEntities) {
 			renderEntity(entity, alpha);
 		}
+		for (final Entity entity : effectsToRender) {
+			final ParticleEffectComponent peCmp = ECSEngine.peCmpMapper.get(entity);
+			if(peCmp.effect != null) {
+				peCmp.effect.draw(spriteBatch);
+			}
+		}
+		spriteBatch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		spriteBatch.end();
 		
 		rayHandler.setCombinedMatrix(gameCamera);

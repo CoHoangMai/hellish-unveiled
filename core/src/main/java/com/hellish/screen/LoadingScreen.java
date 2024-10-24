@@ -1,12 +1,16 @@
 package com.hellish.screen;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
+import com.badlogic.gdx.assets.loaders.ParticleEffectLoader.ParticleEffectParameter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
+import com.hellish.ecs.component.ParticleEffectComponent.ParticleEffectType;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapType;
@@ -35,6 +39,12 @@ public class LoadingScreen extends AbstractScreen<LoadingUI> {
 		    } else {
 		        assetManager.load(audioType.getFilePath(), Sound.class);
 		    }
+		}
+		
+		final ParticleEffectParameter peParameter = new ParticleEffectLoader.ParticleEffectParameter();
+		peParameter.atlasFile = "characters_and_effects/char_and_effect.atlas";
+		for (final ParticleEffectType type : ParticleEffectType.values()) {
+			assetManager.load(type.getEffectFilePath(), ParticleEffect.class, peParameter);
 		}
 	}
 

@@ -33,8 +33,10 @@ public class PlayerCollisionSystem extends IteratingSystem implements WorldConta
 			gameObject.add(((ECSEngine)getEngine()).createComponent(RemoveComponent.class));
 			break;
 		case SYMBOL:
-			ECSEngine.playerCmpMapper.get(player).hasSymbol = true;
-			Gdx.app.debug("PlayerCollision", "Đã nhận được khả năng phá đá từ biểu tượng :))");
+			if (ECSEngine.playerCmpMapper.get(player).hasSymbol == false) {
+				Gdx.app.debug("PlayerCollision", "Đã nhận được khả năng phá đá từ biểu tượng :))");
+				ECSEngine.playerCmpMapper.get(player).hasSymbol = true;
+			}
 			break;
 		case ROCK:
 			if (ECSEngine.playerCmpMapper.get(player).hasSymbol) {

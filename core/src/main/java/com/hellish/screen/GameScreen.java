@@ -107,7 +107,7 @@ public class GameScreen extends AbstractScreen<GameUI> implements MapListener{
 
 	@Override
 	public void mapChange(Map map) {
-		
+		Gdx.app.debug(TAG, "YO IT'S SMOKING HOT IN HERE");
 	}
 	
 }

@@ -18,9 +18,12 @@ import com.hellish.Main;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.Box2DComponent;
 import com.hellish.ecs.component.GameObjectComponent;
+import com.hellish.ecs.component.ParticleEffectComponent;
+import com.hellish.ecs.component.ParticleEffectComponent.ParticleEffectType;
 import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.system.AnimationSystem;
 import com.hellish.ecs.system.LightSystem;
+import com.hellish.ecs.system.ParticleEffectSystem;
 import com.hellish.ecs.system.PlayerAnimationSystem;
 import com.hellish.ecs.system.PlayerCameraSystem;
 import com.hellish.ecs.system.PlayerCollisionSystem;
@@ -36,6 +39,7 @@ public class ECSEngine extends PooledEngine{
 	public static final ComponentMapper<Box2DComponent> b2dCmpMapper = ComponentMapper.getFor(Box2DComponent.class);
 	public static final ComponentMapper<AnimationComponent> aniCmpMapper = ComponentMapper.getFor(AnimationComponent.class);
 	public static final ComponentMapper<GameObjectComponent> gameObjCmpMapper = ComponentMapper.getFor(GameObjectComponent.class);
+	public static final ComponentMapper<ParticleEffectComponent> peCmpMapper = ComponentMapper.getFor(ParticleEffectComponent.class);
 	
 	private final RayHandler rayHandler;
 	private final World world;
@@ -57,6 +61,7 @@ public class ECSEngine extends PooledEngine{
 		this.addSystem(new AnimationSystem(context));
 		this.addSystem(new PlayerAnimationSystem(context));
 		this.addSystem(new LightSystem());
+		this.addSystem(new ParticleEffectSystem(context));
 		this.addSystem(new PlayerCollisionSystem(context));
 	}
 	
@@ -153,6 +158,13 @@ public class ECSEngine extends PooledEngine{
 		b2dComponent.body.createFixture(Main.FIXTURE_DEF);
 		pShape.dispose();
 		gameObjEntity.add(b2dComponent);
+		
+		//Test particle effect
+		final ParticleEffectComponent peCmp = createComponent(ParticleEffectComponent.class);
+		peCmp.effectType = ParticleEffectType.SMOKE;
+		peCmp.scaling = 0.05f;
+		peCmp.effectPosition.set(b2dComponent.body.getPosition());
+		gameObjEntity.add(peCmp);
 		
 		this.addEntity(gameObjEntity);
 	}
