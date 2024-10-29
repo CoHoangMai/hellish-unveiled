@@ -26,6 +26,7 @@ public class LoadingScreen extends AbstractScreen<LoadingUI> {
 		this.assetManager = context.getAssetManager();
 		
 		assetManager.load("characters_and_effects/char_and_effect.atlas", TextureAtlas.class);
+		assetManager.load("characters_and_effects/gameObjects.atlas", TextureAtlas.class);
 
 		for (final MapType maptype : MapType.values()) {
 			assetManager.load(maptype.getFilePath(), TiledMap.class);

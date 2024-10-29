@@ -31,6 +31,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.hellish.audio.AudioManager;
 import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.component.ComponentManager;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapManager;
 import com.hellish.screen.ScreenType;
@@ -77,6 +78,8 @@ public class Main extends Game {
 	
 	private MapManager mapManager;
 	
+	private ComponentManager componentManager;
+	
 	private ECSEngine ecsEngine;
 	
 	private GameRenderer gameRenderer;
@@ -104,7 +107,7 @@ public class Main extends Game {
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(assetManager.getFileHandleResolver()));
 		initializeSkin();
-		stage = new Stage(new FitViewport(960, 540), spriteBatch);
+		stage = new Stage(new FitViewport(16, 9), spriteBatch);
 		
 		//audio
 		audioManager = new AudioManager(this);
@@ -116,6 +119,9 @@ public class Main extends Game {
 		//viewport
 		gameCamera = new OrthographicCamera();
 		screenViewport = new FitViewport(16, 9, gameCamera);
+		
+		//componentManager
+		componentManager = new ComponentManager();
 		
 		//ECS
 		ecsEngine = new ECSEngine(this);
@@ -138,7 +144,7 @@ public class Main extends Game {
 		BODY_DEF.position.set(0, 0);
 		BODY_DEF.gravityScale = 1;
 		BODY_DEF.type = BodyDef.BodyType.StaticBody;
-		BODY_DEF.fixedRotation = false;
+		BODY_DEF.fixedRotation = true;
 		
 		FIXTURE_DEF.density = 0;
 		FIXTURE_DEF.isSensor = false;
@@ -187,6 +193,10 @@ public class Main extends Game {
 	
 	public MapManager getMapManager() {
 		return mapManager;
+	}
+	
+	public ComponentManager getComponentManager() {
+		return componentManager;
 	}
 	
 	public ECSEngine getECSEngine() {
@@ -262,13 +272,11 @@ public class Main extends Game {
 		
 		accumulator += deltaTime;
 		while (accumulator >= FIXED_TIME_STEP) {
-			//TODO save previous position of the body
 			world.step(FIXED_TIME_STEP, 6, 2);
 			accumulator -= FIXED_TIME_STEP;
 		}
 		
-		//TODO calculate renderPosition from previous position and real body position
-		gameRenderer.render(accumulator / FIXED_TIME_STEP);
+	//	gameRenderer.render(accumulator / FIXED_TIME_STEP);
 		stage.getViewport().apply();
 		stage.act(deltaTime);
 		stage.draw();

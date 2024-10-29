@@ -97,12 +97,14 @@ public class GameRenderer implements Disposable, MapListener{
 		
 		mapRenderer.setView(gameCamera);
 		spriteBatch.begin();
+		
 		if(mapRenderer.getMap() != null) {
 			AnimatedTiledMapTile.updateAnimationBaseTime();
 			for(final TiledMapTileLayer layer : tiledMapLayers) {
 				mapRenderer.renderTileLayer(layer);
 			}
 		}
+		
 		for (final Entity entity : gameObjectEntities) {
 			renderGameObject(entity, alpha);
 		}

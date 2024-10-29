@@ -23,15 +23,15 @@ public class PlayerAnimationSystem extends IteratingSystem{
 		final AnimationComponent animationComponent = ECSEngine.aniCmpMapper.get(entity);
 		
 		if(b2dComponent.body.getLinearVelocity().equals(Vector2.Zero)) {
-			animationComponent.aniType = AnimationType.HERO_DOWN_IDLE;
+			animationComponent.aniType = AnimationType.DOWN_IDLE;
 		} else if (b2dComponent.body.getLinearVelocity().x > 0) {
-			animationComponent.aniType = AnimationType.HERO_RIGHT_WALK;
+			animationComponent.aniType = AnimationType.RIGHT_WALK;
 		} else if (b2dComponent.body.getLinearVelocity().x < 0) {
-			animationComponent.aniType = AnimationType.HERO_LEFT_WALK;
+			animationComponent.aniType = AnimationType.LEFT_WALK;
 		} else if (b2dComponent.body.getLinearVelocity().y > 0) {
-			animationComponent.aniType = AnimationType.HERO_UP_WALK;
+			animationComponent.aniType = AnimationType.UP_WALK;
 		} else if (b2dComponent.body.getLinearVelocity().y < 0) {
-			animationComponent.aniType = AnimationType.HERO_DOWN_WALK;
+			animationComponent.aniType = AnimationType.DOWN_WALK;
 		} 
 	}	
 }

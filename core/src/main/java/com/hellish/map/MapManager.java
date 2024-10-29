@@ -5,15 +5,19 @@ import static com.hellish.Main.BIT_GROUND;
 import java.util.EnumMap;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
+import com.hellish.event.MapChangeEvent;
 
 public class MapManager {
 	public static final String TAG = MapManager.class.getSimpleName();
@@ -23,6 +27,7 @@ public class MapManager {
 	
 	private final AssetManager assetManager;
 	private final ECSEngine ecsEngine;
+	private final Stage stage;
 	private final Array<Entity> gameObjectsToRemove;
 	
 	private MapType currentMapType;
@@ -34,6 +39,7 @@ public class MapManager {
 		currentMapType = null;
 		currentMap = null;
 		world = context.getWorld();
+		stage = context.getStage();
 		ecsEngine = context.getECSEngine();
 		assetManager = context.getAssetManager();
 		gameObjectsToRemove = new Array<Entity>();
@@ -67,6 +73,16 @@ public class MapManager {
 		
 		spawnCollisionAreas();
 		spawnGameObjects();
+		
+		//NOTE: không dùng Pooling nên phần này đang không tối ưu
+		for (EntitySystem system : ecsEngine.getSystems()) {
+			if(system instanceof EventListener) {
+				stage.addListener((EventListener) system);
+			}
+		}	
+		MapChangeEvent mapChangeEvent = new MapChangeEvent(currentMap);
+		stage.getRoot().fire(mapChangeEvent);
+		
 		
 		for (final MapListener listener : listeners) {
 			listener.mapChange(currentMap);
