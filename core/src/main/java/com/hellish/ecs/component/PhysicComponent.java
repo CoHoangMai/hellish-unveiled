@@ -12,12 +12,14 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 
 public class PhysicComponent implements Component, Poolable{
 	public Body body;
+	public Vector2 impulse = new Vector2();
 	public Vector2 size = new Vector2();
 	public Vector2 prevPosition = new Vector2();
 
 	@Override
 	public void reset() {
-		// TODO Thêm nốt thuộc tính
+		//TODO thêm thuộc tính body
+		impulse.set(0, 0);
 		size.set(0, 0);
 		prevPosition.set(0, 0);		
 	}

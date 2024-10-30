@@ -111,10 +111,6 @@ public class Main extends Game {
 		
 		//audio
 		audioManager = new AudioManager(this);
-		
-		//input
-		inputManager = new InputManager();
-		Gdx.input.setInputProcessor(new InputMultiplexer(inputManager, stage));
 				
 		//viewport
 		gameCamera = new OrthographicCamera();
@@ -125,6 +121,10 @@ public class Main extends Game {
 		
 		//ECS
 		ecsEngine = new ECSEngine(this);
+		
+		//input
+		inputManager = new InputManager(this);
+		Gdx.input.setInputProcessor(new InputMultiplexer(inputManager, stage));
 		
 		//mapManager
 		mapManager = new MapManager(this);

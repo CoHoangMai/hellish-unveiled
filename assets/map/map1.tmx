@@ -182,7 +182,7 @@
   </object>
  </objectgroup>
  <objectgroup id="11" name="entities">
-  <object id="19" gid="323" x="496.583" y="358.478" width="64" height="64"/>
+  <object id="19" gid="323" x="173.583" y="487.478" width="64" height="64"/>
   <object id="20" gid="324" x="246.51" y="324.049" width="48" height="48"/>
   <object id="21" gid="324" x="692.696" y="294.51" width="48" height="48"/>
   <object id="24" gid="324" x="244.955" y="549.474" width="48" height="48"/>

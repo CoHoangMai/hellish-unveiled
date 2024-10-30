@@ -39,6 +39,11 @@ public class PhysicSystem extends IteratingSystem{
 		final PhysicComponent physicCmp = ECSEngine.physicCmpMapper.get(entity);
 		final ImageComponent imageCmp = ECSEngine.imageCmpMapper.get(entity);
 		
+		if(!physicCmp.impulse.isZero()) {
+			physicCmp.body.applyLinearImpulse(physicCmp.impulse, physicCmp.body.getWorldCenter(), true);
+			physicCmp.impulse.setZero();
+		}
+		
 		imageCmp.image.setPosition(physicCmp.body.getPosition().x - imageCmp.image.getWidth() * 0.5f,
 				physicCmp.body.getPosition().y - imageCmp.image.getHeight() * 0.5f);
 	}

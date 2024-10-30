@@ -74,12 +74,12 @@ public class MapManager {
 		spawnCollisionAreas();
 		spawnGameObjects();
 		
-		//NOTE: không dùng Pooling nên phần này đang không tối ưu
 		for (EntitySystem system : ecsEngine.getSystems()) {
 			if(system instanceof EventListener) {
 				stage.addListener((EventListener) system);
 			}
-		}	
+		}
+		//NOTE: không dùng Pooling nên phần này đang không tối ưu
 		MapChangeEvent mapChangeEvent = new MapChangeEvent(currentMap);
 		stage.getRoot().fire(mapChangeEvent);
 		

@@ -1,6 +1,7 @@
 package com.hellish.ecs.system;
 
 import static com.hellish.Main.UNIT_SCALE;
+import static com.hellish.view.SpawnConfiguration.DEFAULT_SPEED;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,9 @@ import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.ImageComponent;
+import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicComponent;
+import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.component.SpawnComponent;
 import com.hellish.event.MapChangeEvent;
 import com.hellish.view.AnimationModel;
@@ -89,6 +92,17 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		physicCmp.body.createFixture(fixtureDef);
 		pShape.dispose();	 
 		spawnedEntity.add(physicCmp);
+		
+		if (cfg.speedScaling > 0) {
+			final MoveComponent moveCmp = new MoveComponent();
+			moveCmp.speed = DEFAULT_SPEED * cfg.speedScaling;
+			spawnedEntity.add(moveCmp);
+		}
+		
+		if(spawnCmp.type.equals("Player")) {
+			final PlayerComponent playerCmp = new PlayerComponent();
+			spawnedEntity.add(playerCmp);
+		}
 		
 		getEngine().addEntity(spawnedEntity);
 		
