@@ -29,6 +29,7 @@ import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.component.SpawnComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.system.AnimationSystem;
+import com.hellish.ecs.system.CameraSystem;
 import com.hellish.ecs.system.DebugSystem;
 import com.hellish.ecs.system.EntitySpawnSystem;
 import com.hellish.ecs.system.LightSystem;
@@ -37,7 +38,6 @@ import com.hellish.ecs.system.ParticleEffectSystem;
 import com.hellish.ecs.system.PhysicSystem;
 import com.hellish.ecs.system.PlayerAnimationSystem;
 import com.hellish.ecs.system.PlayerCameraSystem;
-import com.hellish.ecs.system.PlayerCollisionSystem;
 import com.hellish.ecs.system.RenderSystem;
 import com.hellish.map.GameObject;
 import com.hellish.view.AnimationModel;
@@ -82,12 +82,12 @@ public class ECSEngine extends PooledEngine{
 		this.addSystem(new MoveSystem());
 		this.addSystem(new PhysicSystem(context));
 		this.addSystem(new AnimationSystem(context));
+		this.addSystem(new CameraSystem(context));
 		this.addSystem(new RenderSystem(context));
 		this.addSystem(new DebugSystem(context));
 		this.addSystem(new PlayerAnimationSystem(context));
 		this.addSystem(new LightSystem());
 		this.addSystem(new ParticleEffectSystem(context));
-		this.addSystem(new PlayerCollisionSystem(context));
 	}
 
 	public void createGameObject(final GameObject gameObj) {

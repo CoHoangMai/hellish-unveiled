@@ -34,7 +34,7 @@ public class PhysicComponent implements Component, Poolable{
 		PhysicComponent physicCmp = new PhysicComponent();
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = bodyType;
-		bodyDef.position.set(x + w*0.5f, y + h*0.5f);
+		bodyDef.position.set(x + w * 0.5f, y + h * 0.5f);
 		bodyDef.fixedRotation = true;
 		bodyDef.allowSleep = false;
 		physicCmp.body = world.createBody(bodyDef);

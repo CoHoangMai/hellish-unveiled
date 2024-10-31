@@ -64,9 +64,6 @@ public class Main extends Game {
 	private Box2DDebugRenderer box2DDebugRenderer;
 	private RayHandler rayHandler;
 	
-	private static final float FIXED_TIME_STEP = 1/60f;
-	private float accumulator;
-	
 	private AssetManager assetManager;
 	
 	private AudioManager audioManager;
@@ -90,8 +87,6 @@ public class Main extends Game {
 	public void create() {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		spriteBatch = new SpriteBatch();
-		
-		accumulator = 0;
 		
 		//box2d
 		Box2D.init();
@@ -270,13 +265,6 @@ public class Main extends Game {
 		final float deltaTime = Math.min(0.25f, Gdx.graphics.getRawDeltaTime());
 		ecsEngine.update(deltaTime);
 		
-		accumulator += deltaTime;
-		while (accumulator >= FIXED_TIME_STEP) {
-			world.step(FIXED_TIME_STEP, 6, 2);
-			accumulator -= FIXED_TIME_STEP;
-		}
-		
-	//	gameRenderer.render(accumulator / FIXED_TIME_STEP);
 		stage.getViewport().apply();
 		stage.act(deltaTime);
 		stage.draw();

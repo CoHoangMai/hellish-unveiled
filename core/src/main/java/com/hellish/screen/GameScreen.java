@@ -1,7 +1,6 @@
 package com.hellish.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -47,13 +46,6 @@ public class GameScreen extends AbstractScreen<GameUI> implements MapListener{
 			isMusicLoaded = true;
 			audioManager.playAudio(AudioType.GAME);
 		}
-		
-		//TODO bỏ đoạn test map này
-		if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-			mapManager.setMap(MapType.MAP_1);
-		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-			mapManager.setMap(MapType.MAP_2);
-		} 
 	}
 
 	@Override

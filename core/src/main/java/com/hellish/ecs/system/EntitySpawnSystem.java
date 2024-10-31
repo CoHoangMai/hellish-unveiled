@@ -87,7 +87,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		//fixtureDef.filter.categoryBits = BIT_PLAYER;
 		//fixtureDef.filter.maskBits = BIT_GROUND | BIT_GAME_OBJECT;
 		final PolygonShape pShape = new PolygonShape();
-		pShape.setAsBox(imageCmp.image.getWidth() * 0.5f, imageCmp.image.getHeight() * 0.5f);
+		pShape.setAsBox(imageCmp.image.getWidth() * 0.25f, imageCmp.image.getHeight() * 0.25f);
 		fixtureDef.shape = pShape;
 		physicCmp.body.createFixture(fixtureDef);
 		pShape.dispose();	 
