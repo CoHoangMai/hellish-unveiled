@@ -1,7 +1,7 @@
 package com.hellish.ecs.system;
 
 import static com.hellish.Main.UNIT_SCALE;
-import static com.hellish.view.SpawnConfiguration.DEFAULT_SPEED;
+import static com.hellish.ecs.component.SpawnComponent.SpawnConfiguration.DEFAULT_SPEED;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,14 +38,16 @@ import com.hellish.ecs.component.PhysicComponent;
 import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.component.SpawnComponent;
 import com.hellish.event.MapChangeEvent;
-import com.hellish.view.AnimationModel;
-import com.hellish.view.AnimationType;
-import com.hellish.view.SpawnConfiguration;
+import com.hellish.ecs.component.AnimationComponent.AnimationModel;
+import com.hellish.ecs.component.AnimationComponent.AnimationType;
+import com.hellish.ecs.component.ComponentManager;
+import com.hellish.ecs.component.SpawnComponent.SpawnConfiguration;
 
 public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	public static final String TAG = EntitySpawnSystem.class.getSimpleName();
 	private final World world;
 	private final AssetManager assetManager;
+	private final ComponentManager componentManager;
 	private final Map<String, SpawnConfiguration> cachedSpawnCfgs;
 	private final Map<AnimationModel, Vector2> cachedSizes;
 
@@ -54,6 +56,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		
 		world = context.getWorld();
 		assetManager = context.getAssetManager();
+		componentManager = context.getComponentManager();
 		cachedSpawnCfgs = new HashMap<>();
 		cachedSizes = new HashMap<>();
 	}
@@ -74,11 +77,8 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		spawnedEntity.add(imageCmp);
 		
 		final AnimationComponent aniCmp = getEngine().createComponent(AnimationComponent.class);
-		aniCmp.aniType = AnimationType.UP_WALK;
 		aniCmp.mode = Animation.PlayMode.LOOP;
-		aniCmp.nextAnimation(cfg.model, AnimationType.UP_WALK);
-		aniCmp.width = 64 * UNIT_SCALE;
-		aniCmp.height = 64 * UNIT_SCALE;
+		aniCmp.nextAnimation(cfg.model, AnimationType.SIDE_WALK);
 		spawnedEntity.add(aniCmp);
 		
 		final PhysicComponent physicCmp = PhysicComponent.physicCmpFromImage(world, imageCmp.image, BodyType.DynamicBody);
@@ -87,7 +87,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		//fixtureDef.filter.categoryBits = BIT_PLAYER;
 		//fixtureDef.filter.maskBits = BIT_GROUND | BIT_GAME_OBJECT;
 		final PolygonShape pShape = new PolygonShape();
-		pShape.setAsBox(imageCmp.image.getWidth() * 0.25f, imageCmp.image.getHeight() * 0.25f);
+		pShape.setAsBox(imageCmp.image.getWidth() * 0.2f, imageCmp.image.getHeight() * 0.2f);
 		fixtureDef.shape = pShape;
 		physicCmp.body.createFixture(fixtureDef);
 		pShape.dispose();	 
@@ -105,8 +105,14 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		}
 		
 		getEngine().addEntity(spawnedEntity);
+		spawnedEntity.getComponents().forEach(component -> {
+			componentManager.notifyComponentAdded(spawnedEntity, component);
+		});
 		
 		getEngine().removeEntity(entity);
+		entity.getComponents().forEach(component -> {
+			componentManager.notifyComponentRemoved(entity, component);
+		});
 	}
 	
 	private SpawnConfiguration spawnCfg(String type) {
@@ -157,6 +163,9 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				spawnComponent.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
 				entity.add(spawnComponent);
 				getEngine().addEntity(entity);
+				entity.getComponents().forEach(component -> {
+					componentManager.notifyComponentAdded(entity, component);
+				});
 			}
 			return true;	
 		}

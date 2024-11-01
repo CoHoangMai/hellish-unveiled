@@ -195,11 +195,6 @@
   <object id="17" gid="314" x="640.065" y="480.842" width="32" height="32"/>
   <object id="18" gid="308" x="672.713" y="511.935" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="8" name="playerStartLocation">
-  <object id="1" x="292.219" y="476.564">
-   <point/>
-  </object>
- </objectgroup>
  <layer id="5" name="fgd_1" width="30" height="20">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

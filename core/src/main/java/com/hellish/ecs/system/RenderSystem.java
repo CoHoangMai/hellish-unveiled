@@ -37,13 +37,14 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 		entitiesArray = new ArrayList<>();
 		backgroundLayers = new ArrayList<>();
 		foregroundLayers = new ArrayList<>();
-		orthoCam = (OrthographicCamera) stage.getCamera();
+		orthoCam = (OrthographicCamera)stage.getCamera();
 		mapRenderer = new OrthogonalTiledMapRenderer(null, UNIT_SCALE, stage.getBatch());
 	}
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		entitiesArray.add(entity);
+		
 	}
 	
 	@Override
@@ -53,16 +54,8 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 		
 		final ComponentMapper<ImageComponent> imageCmpMapper = ECSEngine.imageCmpMapper;
 		Collections.sort(entitiesArray, (e1, e2) -> imageCmpMapper.get(e1).compareTo(imageCmpMapper.get(e2)));
-		
-	    for (Entity entity : entitiesArray) {
-	    	if(imageCmpMapper.get(entity).image.getParent() == null) {
-				stage.addActor(imageCmpMapper.get(entity).image);
-			}
-	        imageCmpMapper.get(entity).image.toFront();
-	    }
-		
+
 		stage.getViewport().apply();
-		
 		AnimatedTiledMapTile.updateAnimationBaseTime();
 		mapRenderer.setView(orthoCam);
 		
@@ -75,9 +68,20 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 			}
 			stage.getBatch().end();
 		}
-		
+	    for (Entity entity : entitiesArray) {
+	    	if(imageCmpMapper.get(entity).image.getParent() == null) {
+				stage.addActor(imageCmpMapper.get(entity).image);
+			}
+	    	imageCmpMapper.get(entity).image.toFront();
+	    }
+
 		stage.act(deltaTime);
 		stage.draw();
+		
+		//Nếu không remove thì image luôn hiện lên phía trước mọi layer
+		for (Entity entity : entitiesArray) {
+			stage.getRoot().removeActor(imageCmpMapper.get(entity).image);
+		}
 		
 		if(!foregroundLayers.isEmpty()) {
 			stage.getBatch().setColor(Color.WHITE);
@@ -87,13 +91,6 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 				mapRenderer.renderTileLayer(layer);
 			}
 			stage.getBatch().end();
-		}
-	}
-	
-	public void removeEntity(Entity entity) {
-		final ImageComponent imageCmp = ECSEngine.imageCmpMapper.get(entity);
-		if (imageCmp != null) {
-			stage.getRoot().removeActor(imageCmp.image);
 		}
 	}
 

@@ -1,6 +1,5 @@
 package com.hellish.screen;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -8,15 +7,11 @@ import com.hellish.Main;
 import com.hellish.audio.AudioType;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
-import com.hellish.map.Map;
-import com.hellish.map.MapListener;
 import com.hellish.map.MapManager;
 import com.hellish.map.MapType;
 import com.hellish.view.GameUI;
 
-public class GameScreen extends AbstractScreen<GameUI> implements MapListener{
-	private static final String TAG = GameScreen.class.getSimpleName();
-	
+public class GameScreen extends AbstractScreen<GameUI>{
 	private final MapManager mapManager;
 	private final AssetManager assetManager;
 	private boolean isMusicLoaded;
@@ -27,7 +22,6 @@ public class GameScreen extends AbstractScreen<GameUI> implements MapListener{
 		assetManager = context.getAssetManager();
 		
 		mapManager = context.getMapManager();
-		mapManager.addMapListener(this);
 		mapManager.setMap(MapType.MAP_1);	
 		
 		isMusicLoaded = false;
@@ -83,10 +77,4 @@ public class GameScreen extends AbstractScreen<GameUI> implements MapListener{
 	public void keyUp(InputManager manager, GameKeys key) {
 		
 	}
-
-	@Override
-	public void mapChange(Map map) {
-		Gdx.app.debug(TAG, "YO IT'S SMOKING HOT IN HERE");
-	}
-	
 }

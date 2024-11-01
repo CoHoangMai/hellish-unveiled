@@ -7,7 +7,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,7 +21,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -35,9 +33,7 @@ import com.hellish.ecs.component.ComponentManager;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapManager;
 import com.hellish.screen.ScreenType;
-import com.hellish.view.GameRenderer;
 
-import box2dLight.Light;
 import box2dLight.RayHandler;
 
 import java.util.EnumMap;
@@ -49,19 +45,14 @@ public class Main extends Game {
 	
 	private SpriteBatch spriteBatch;
 	private EnumMap<ScreenType, Screen> screenCache;
-	private OrthographicCamera gameCamera;
+	//private OrthographicCamera gameCamera;
 	private FitViewport screenViewport;
 	
 	public static final BodyDef BODY_DEF = new BodyDef();
 	public static final FixtureDef FIXTURE_DEF = new FixtureDef();
 	public static final float UNIT_SCALE = 1 / 32f;
-	public static final short BIT_PLAYER = 1 << 0; 
-	public static final short BIT_GROUND = 1 << 1;	
-	public static final short BIT_GAME_OBJECT = 1 << 2;
 	
 	private World world;
-	private WorldContactListener worldContactListener;
-	private Box2DDebugRenderer box2DDebugRenderer;
 	private RayHandler rayHandler;
 	
 	private AssetManager assetManager;
@@ -79,8 +70,6 @@ public class Main extends Game {
 	
 	private ECSEngine ecsEngine;
 	
-	private GameRenderer gameRenderer;
-	
 	private PreferenceManager preferenceManager;
 	
 	@Override
@@ -91,12 +80,8 @@ public class Main extends Game {
 		//box2d
 		Box2D.init();
 		world = new World(new Vector2(0, 0), true);
-		worldContactListener = new WorldContactListener();
-		world.setContactListener(worldContactListener);
-		box2DDebugRenderer = new Box2DDebugRenderer();
 		rayHandler = new RayHandler(world);
 		rayHandler.setAmbientLight(0.05f, 0.05f, 0.4f, 0.2f);
-		Light.setGlobalContactFilter(BIT_PLAYER, (short) 1, BIT_GROUND);
 		
 		//assetManager
 		assetManager = new AssetManager();
@@ -106,10 +91,6 @@ public class Main extends Game {
 		
 		//audio
 		audioManager = new AudioManager(this);
-				
-		//viewport
-		gameCamera = new OrthographicCamera();
-		screenViewport = new FitViewport(16, 9, gameCamera);
 		
 		//componentManager
 		componentManager = new ComponentManager();
@@ -123,9 +104,6 @@ public class Main extends Game {
 		
 		//mapManager
 		mapManager = new MapManager(this);
-		
-		//Game renderer
-		gameRenderer = new GameRenderer(this);
 		
 		//Preference manager
 		preferenceManager = new PreferenceManager();
@@ -222,22 +200,10 @@ public class Main extends Game {
 		return assetManager;
 	}
 	
-	public OrthographicCamera getGameCamera() {
-		return gameCamera;
-	}
-	
 	public FitViewport getScreenViewport() {return screenViewport;}
 	
 	public World getWorld() {
 		return world;
-	}
-	
-	public Box2DDebugRenderer getBox2DDebugRenderer() {
-		return box2DDebugRenderer;
-	}
-	
-	public WorldContactListener getWorldContactListener() {
-		return worldContactListener;
 	}
 	
 	public void setScreen(final ScreenType screenType) {
@@ -273,7 +239,6 @@ public class Main extends Game {
 	@Override
 	public void dispose() {
 		super.dispose();
-		gameRenderer.dispose();
 		rayHandler.dispose();
 		world.dispose();
 		assetManager.dispose();

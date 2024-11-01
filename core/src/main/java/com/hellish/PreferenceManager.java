@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.hellish.ecs.ECSEngine;
-import com.hellish.ecs.component.Box2DComponent;
+import com.hellish.ecs.component.PhysicComponent;
 
 public class PreferenceManager implements Json.Serializable{
 	private final Preferences preferences;
@@ -37,7 +37,7 @@ public class PreferenceManager implements Json.Serializable{
 	}
 	
 	public void saveGameState(final Entity player) {
-		playerPos.set(ECSEngine.b2dCmpMapper.get(player).body.getPosition());
+		playerPos.set(ECSEngine.physicCmpMapper.get(player).body.getPosition());
 		preferences.putString("GAME_STATE", new Json().toJson(this));
 		preferences.flush();
 	}
@@ -45,9 +45,9 @@ public class PreferenceManager implements Json.Serializable{
 	public void loadGameState(final Entity player) {
 		final JsonValue savedJsonStr = jsonReader.parse(preferences.getString("GAME_STATE"));
 		
-		final Box2DComponent b2dComponent = ECSEngine.b2dCmpMapper.get(player);
-		b2dComponent.body.setTransform(savedJsonStr.getFloat("PLAYER_X", 0f), 
-				savedJsonStr.getFloat("PLAYER_Y", 0f), b2dComponent.body.getAngle());
+		final PhysicComponent physicComponent = ECSEngine.physicCmpMapper.get(player);
+		physicComponent.body.setTransform(savedJsonStr.getFloat("PLAYER_X", 0f), 
+				savedJsonStr.getFloat("PLAYER_Y", 0f), physicComponent.body.getAngle());
 	}
 
 	@Override
