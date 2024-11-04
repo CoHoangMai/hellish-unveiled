@@ -20,8 +20,6 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -34,20 +32,19 @@ import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.MoveComponent;
-import com.hellish.ecs.component.PhysicComponent;
+import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.component.SpawnComponent;
 import com.hellish.event.MapChangeEvent;
 import com.hellish.ecs.component.AnimationComponent.AnimationModel;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
-import com.hellish.ecs.component.ComponentManager;
+import com.hellish.ecs.component.CollisionComponent;
 import com.hellish.ecs.component.SpawnComponent.SpawnConfiguration;
 
 public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	public static final String TAG = EntitySpawnSystem.class.getSimpleName();
 	private final World world;
 	private final AssetManager assetManager;
-	private final ComponentManager componentManager;
 	private final Map<String, SpawnConfiguration> cachedSpawnCfgs;
 	private final Map<AnimationModel, Vector2> cachedSizes;
 
@@ -56,7 +53,6 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		
 		world = context.getWorld();
 		assetManager = context.getAssetManager();
-		componentManager = context.getComponentManager();
 		cachedSpawnCfgs = new HashMap<>();
 		cachedSizes = new HashMap<>();
 	}
@@ -78,20 +74,11 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		
 		final AnimationComponent aniCmp = getEngine().createComponent(AnimationComponent.class);
 		aniCmp.mode = Animation.PlayMode.LOOP;
-		aniCmp.nextAnimation(cfg.model, AnimationType.SIDE_WALK);
+		aniCmp.nextAnimation(cfg.model, AnimationType.IDLE);
 		spawnedEntity.add(aniCmp);
 		
-		final PhysicComponent physicCmp = PhysicComponent.physicCmpFromImage(world, imageCmp.image, BodyType.DynamicBody);
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.isSensor = false;
-		//fixtureDef.filter.categoryBits = BIT_PLAYER;
-		//fixtureDef.filter.maskBits = BIT_GROUND | BIT_GAME_OBJECT;
-		final PolygonShape pShape = new PolygonShape();
-		pShape.setAsBox(imageCmp.image.getWidth() * 0.2f, imageCmp.image.getHeight() * 0.2f);
-		fixtureDef.shape = pShape;
-		physicCmp.body.createFixture(fixtureDef);
-		pShape.dispose();	 
-		spawnedEntity.add(physicCmp);
+		final PhysicsComponent physicsCmp = PhysicsComponent.physicsCmpFromImgandCfg(world, imageCmp.image, cfg);
+		spawnedEntity.add(physicsCmp);
 		
 		if (cfg.speedScaling > 0) {
 			final MoveComponent moveCmp = new MoveComponent();
@@ -100,27 +87,38 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		}
 		
 		if(spawnCmp.type.equals("Player")) {
-			final PlayerComponent playerCmp = new PlayerComponent();
-			spawnedEntity.add(playerCmp);
+			spawnedEntity.add(new PlayerComponent());
+		}
+		
+		if (cfg.bodyType != BodyType.StaticBody) {
+			spawnedEntity.add(new CollisionComponent());
 		}
 		
 		getEngine().addEntity(spawnedEntity);
-		spawnedEntity.getComponents().forEach(component -> {
-			componentManager.notifyComponentAdded(spawnedEntity, component);
-		});
 		
 		getEngine().removeEntity(entity);
-		entity.getComponents().forEach(component -> {
-			componentManager.notifyComponentRemoved(entity, component);
-		});
 	}
 	
 	private SpawnConfiguration spawnCfg(String type) {
 		return cachedSpawnCfgs.computeIfAbsent(type, t -> {
 			if(t.equals("Player")) {
-				return new SpawnConfiguration(AnimationModel.PLAYER);
+				return new SpawnConfiguration(
+						AnimationModel.PLAYER, 1,
+						new Vector2(0.25f, 0.49f),
+						new Vector2(0, 0 * UNIT_SCALE),
+						BodyType.DynamicBody);
 			} else if (t.equals("Wolf")) {
-				return new SpawnConfiguration(AnimationModel.WOLF);
+				return new SpawnConfiguration(
+						AnimationModel.WOLF, 1,
+						new Vector2(0.4f, 0.4f),
+						new Vector2(0, -5 * UNIT_SCALE),
+						BodyType.DynamicBody);
+			} else if (t.equals("Chest")) {
+				return new SpawnConfiguration(
+						AnimationModel.CHEST, 0,
+						new Vector2(0.3f, 0.2f),
+						new Vector2(0, 0),
+						BodyType.StaticBody);
 			} else {
 				throw new IllegalArgumentException("Loại spawn " + t + " không có cài đặt SpawnConfiguration");
 			}
@@ -130,7 +128,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	private Vector2 size(AnimationModel model) {
 		return cachedSizes.computeIfAbsent(model, m -> {
 			final TextureAtlas atlas = assetManager.get("characters_and_effects/gameObjects.atlas", TextureAtlas.class);
-			Array<AtlasRegion> regions = atlas.findRegions(model.getModel() + "/" + AnimationType.UP_WALK.getAtlasKey());
+			Array<AtlasRegion> regions = atlas.findRegions(model.getModel() + "/" + AnimationType.IDLE.getAtlasKey());
 			if (regions.size == 0) {
 				throw new RuntimeException("Không có texture region cho " + model);
 			}
@@ -163,9 +161,6 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				spawnComponent.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
 				entity.add(spawnComponent);
 				getEngine().addEntity(entity);
-				entity.getComponents().forEach(component -> {
-					componentManager.notifyComponentAdded(entity, component);
-				});
 			}
 			return true;	
 		}

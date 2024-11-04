@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="30">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="31">
  <tileset firstgid="1" name="test-tiles" tilewidth="32" tileheight="32" tilecount="64" columns="8">
   <image source="TX Tileset Grass.png" width="256" height="256"/>
  </tileset>
@@ -9,11 +9,17 @@
    <properties>
     <property name="Blocked" type="bool" value="true"/>
    </properties>
+   <objectgroup draworder="index" id="2">
+    <object id="2" x="0" y="0" width="32" height="32"/>
+   </objectgroup>
   </tile>
   <tile id="19">
    <properties>
     <property name="Blocked" type="bool" value="true"/>
    </properties>
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="0" width="32" height="29"/>
+   </objectgroup>
   </tile>
   <tile id="21">
    <properties>
@@ -25,10 +31,28 @@
     <property name="Blocked" type="bool" value="true"/>
    </properties>
   </tile>
+  <tile id="45">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="30.1255" y="6.89411" width="1.87451" height="18.2118"/>
+   </objectgroup>
+  </tile>
+  <tile id="46">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="4.90909" width="32" height="23.1262"/>
+   </objectgroup>
+  </tile>
+  <tile id="47">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="8.1991" width="1.04207" height="15.9654"/>
+   </objectgroup>
+  </tile>
   <tile id="51">
    <properties>
     <property name="Blocked" type="bool" value="true"/>
    </properties>
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="0" width="32" height="29"/>
+   </objectgroup>
   </tile>
   <tile id="53">
    <properties>
@@ -49,16 +73,30 @@
    <properties>
     <property name="Blocked" type="bool" value="true"/>
    </properties>
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="3" y="9.09091" width="26" height="19.9091"/>
+   </objectgroup>
   </tile>
   <tile id="78">
    <properties>
     <property name="Blocked" type="bool" value="true"/>
    </properties>
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="6.20588" y="11.8182" width="19.5882" height="14.5455"/>
+   </objectgroup>
+  </tile>
+  <tile id="85">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="2" y="5.81818" width="28" height="23.1818"/>
+   </objectgroup>
   </tile>
   <tile id="89">
    <properties>
     <property name="Blocked" type="bool" value="true"/>
    </properties>
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="10" width="32" height="22"/>
+   </objectgroup>
   </tile>
   <tile id="103">
    <properties>
@@ -69,6 +107,9 @@
    <properties>
     <property name="Blocked" type="bool" value="true"/>
    </properties>
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="0" width="32" height="23"/>
+   </objectgroup>
   </tile>
   <tile id="123">
    <properties>
@@ -80,44 +121,134 @@
     <property name="Blocked" type="bool" value="true"/>
    </properties>
   </tile>
+  <tile id="137">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="2" y="5.25" width="28" height="17.75"/>
+   </objectgroup>
+  </tile>
   <tile id="138">
    <properties>
     <property name="type" value="SYMBOL"/>
    </properties>
+  </tile>
+  <tile id="167">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="7" y="6.72727" width="18" height="16.2727"/>
+   </objectgroup>
   </tile>
   <tile id="169">
    <properties>
     <property name="Blocked" type="bool" value="false"/>
    </properties>
   </tile>
+  <tile id="189">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="5.12549" y="24.5" width="26.8745" height="7.5"/>
+   </objectgroup>
+  </tile>
+  <tile id="190">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="22.5" width="25.9549" height="9.5"/>
+   </objectgroup>
+  </tile>
+  <tile id="205">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="4.88431" y="0" width="27.1157" height="22.8745"/>
+   </objectgroup>
+  </tile>
+  <tile id="206">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="0" width="25.1961" height="23.0353"/>
+   </objectgroup>
+  </tile>
+  <tile id="208">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="12.25" y="23.4773" width="19.75" height="8.5227"/>
+   </objectgroup>
+  </tile>
+  <tile id="209">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="25.9091" width="20" height="6.0909"/>
+   </objectgroup>
+  </tile>
+  <tile id="224">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="3" y="0" width="29" height="19"/>
+   </objectgroup>
+  </tile>
+  <tile id="225">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="0" y="0" width="27.2727" height="23.2727"/>
+   </objectgroup>
+  </tile>
+  <tile id="240">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="10" y="12" width="11" height="10"/>
+   </objectgroup>
+  </tile>
+  <tile id="241">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="8" y="10" width="16" height="14"/>
+   </objectgroup>
+  </tile>
+  <tile id="242">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="4" y="7" width="24" height="19"/>
+   </objectgroup>
+  </tile>
   <tile id="243">
    <properties>
     <property name="type" value="ROCK"/>
    </properties>
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="5.27273" y="7.72727" width="21.4545" height="17.5455"/>
+   </objectgroup>
   </tile>
   <tile id="244">
    <properties>
     <property name="type" value="ROCK"/>
    </properties>
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="2" y="4" width="27" height="22"/>
+   </objectgroup>
   </tile>
   <tile id="245">
    <properties>
     <property name="type" value="ROCK"/>
    </properties>
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="2" y="2" width="27" height="27"/>
+   </objectgroup>
+  </tile>
+  <tile id="247">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="7" y="9" width="18" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="248">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="7" y="8" width="19" height="16"/>
+   </objectgroup>
   </tile>
   <tile id="249">
    <properties>
     <property name="type" value="ROCK"/>
    </properties>
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="1.9647" y="6.9647" width="29.2314" height="17.151"/>
+   </objectgroup>
   </tile>
  </tileset>
- <tileset firstgid="321" name="entities" tilewidth="64" tileheight="64" tilecount="2" columns="0">
+ <tileset firstgid="321" name="entities" tilewidth="64" tileheight="64" tilecount="3" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="2" type="Player">
    <image source="../characters_and_effects/player.png" width="64" height="64"/>
   </tile>
   <tile id="3" type="Wolf">
    <image source="../characters_and_effects/wolf.png" width="48" height="48"/>
+  </tile>
+  <tile id="4" type="Chest">
+   <image source="../characters_and_effects/chest.png" width="64" height="64"/>
   </tile>
  </tileset>
  <layer id="1" name="ground" width="30" height="20">
@@ -154,13 +285,13 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,254,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,273,274,0,0,0,0,0,
+0,0,0,254,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,270,271,0,0,0,0,0,0,0,0,0,0,150,0,0,0,0,0,0,0,289,290,0,0,0,0,0,
 0,0,0,0,0,0,0,308,0,0,0,0,0,0,0,0,0,154,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,136,0,0,0,0,0,170,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,82,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,110,111,112,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -171,22 +302,13 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup color="#aa0000" id="10" name="collision">
-  <object id="6" x="545" y="231" width="29" height="48"/>
-  <object id="7" x="352.5" y="320" width="29" height="30"/>
-  <object id="8" x="356.5" y="263" width="23" height="20"/>
-  <object id="10" x="482.5" y="199" width="25" height="20"/>
-  <object id="11" x="192.5" y="512" width="29" height="30"/>
-  <object id="12" x="64" y="382">
-   <polyline points="0,0 0,160 256,162 255,162 349,130"/>
-  </object>
- </objectgroup>
  <objectgroup id="11" name="entities">
   <object id="19" gid="323" x="173.583" y="487.478" width="64" height="64"/>
   <object id="20" gid="324" x="246.51" y="324.049" width="48" height="48"/>
   <object id="21" gid="324" x="692.696" y="294.51" width="48" height="48"/>
   <object id="24" gid="324" x="244.955" y="549.474" width="48" height="48"/>
   <object id="26" gid="324" x="249.619" y="535.482" width="48" height="48"/>
+  <object id="30" gid="325" x="497" y="400" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="6" name="gameObjects">
   <object id="14" gid="203" x="669.604" y="382.899" width="32" height="32"/>
@@ -202,12 +324,12 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,134,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,134,0,0,0,0,0,0,0,273,274,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,104,0,0,0,0,0,138,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,120,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,66,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,79,0,0,0,0,0,0,0,0,66,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,95,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

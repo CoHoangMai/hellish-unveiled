@@ -11,7 +11,7 @@ import com.hellish.Main;
 public class DebugSystem extends EntitySystem{
 	private final World world;
 	private final Stage stage;
-	private Box2DDebugRenderer physicRenderer;
+	private Box2DDebugRenderer physicsRenderer;
 	private final GLProfiler profiler;
 	
 	public DebugSystem(final Main context) {
@@ -20,18 +20,18 @@ public class DebugSystem extends EntitySystem{
 		profiler = new GLProfiler(Gdx.graphics);
 		profiler.enable();
 		if(profiler.isEnabled()) {
-			physicRenderer = new Box2DDebugRenderer();
+			physicsRenderer = new Box2DDebugRenderer();
 		}
 	}
 	
 	@Override
 	public void update(float deltaTime) {
-		physicRenderer.render(world, stage.getCamera().combined);
+		physicsRenderer.render(world, stage.getCamera().combined);
 	}
 	
 	public void dispose() {
 		if(profiler.isEnabled()) {
-			physicRenderer.dispose();
+			physicsRenderer.dispose();
 		}
 	}
 }

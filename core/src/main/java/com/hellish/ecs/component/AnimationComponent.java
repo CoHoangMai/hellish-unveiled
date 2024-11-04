@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Pool;
 
 public class AnimationComponent implements Component, Pool.Poolable{
 	public enum AnimationModel {
-		PLAYER, WOLF, UNDEFINED;
+		PLAYER, WOLF, CHEST, UNDEFINED;
 
 		public String getModel() {
 			return this.name().toLowerCase();
@@ -15,7 +15,7 @@ public class AnimationComponent implements Component, Pool.Poolable{
 	}
 	
 	public enum AnimationType {
-		DOWN_WALK, UP_WALK, SIDE_WALK, DOWN_IDLE, UP_IDLE, SIDE_IDLE;
+		DOWN_WALK, UP_WALK, SIDE_WALK, IDLE, DOWN_IDLE, UP_IDLE, SIDE_IDLE;
 		
 		public String getAtlasKey() {
             return this.name().toLowerCase();
