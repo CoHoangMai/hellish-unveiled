@@ -6,8 +6,10 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.hellish.Main;
 import com.hellish.ecs.component.AnimationComponent;
+import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.CollisionComponent;
 import com.hellish.ecs.component.ComponentManager;
+import com.hellish.ecs.component.DeadComponent;
 import com.hellish.ecs.component.ParticleEffectComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
@@ -15,16 +17,20 @@ import com.hellish.ecs.component.SpawnComponent;
 import com.hellish.ecs.component.TiledComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.system.AnimationSystem;
+import com.hellish.ecs.system.AttackSystem;
 import com.hellish.ecs.system.CameraSystem;
 import com.hellish.ecs.system.CollisionDespawnSystem;
 import com.hellish.ecs.system.CollisionSpawnSystem;
+import com.hellish.ecs.system.DeadSystem;
 import com.hellish.ecs.system.DebugSystem;
 import com.hellish.ecs.system.EntitySpawnSystem;
+import com.hellish.ecs.system.LifeSystem;
 import com.hellish.ecs.system.MoveSystem;
 import com.hellish.ecs.system.ParticleEffectSystem;
 import com.hellish.ecs.system.PhysicsSystem;
 import com.hellish.ecs.system.RenderSystem;
 import com.hellish.ecs.component.ImageComponent.ImageComponentListener;
+import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent.PhysicsComponentListener;
 
@@ -38,6 +44,9 @@ public class ECSEngine extends PooledEngine{
 	public static final ComponentMapper<MoveComponent> moveCmpMapper = ComponentMapper.getFor(MoveComponent.class);
 	public static final ComponentMapper<TiledComponent> tiledCmpMapper = ComponentMapper.getFor(TiledComponent.class);
 	public static final ComponentMapper<CollisionComponent> collisionCmpMapper = ComponentMapper.getFor(CollisionComponent.class);
+	public static final ComponentMapper<LifeComponent> lifeCmpMapper = ComponentMapper.getFor(LifeComponent.class);
+	public static final ComponentMapper<DeadComponent> deadCmpMapper = ComponentMapper.getFor(DeadComponent.class);
+	public static final ComponentMapper<AttackComponent> attackCmpMapper = ComponentMapper.getFor(AttackComponent.class);
 	
 	
 	private final Stage stage;
@@ -56,6 +65,9 @@ public class ECSEngine extends PooledEngine{
 		this.addSystem(new CollisionSpawnSystem(context));
 		this.addSystem(new CollisionDespawnSystem(context));
 		this.addSystem(new MoveSystem());
+		this.addSystem(new AttackSystem(context));
+		this.addSystem(new DeadSystem(context));
+		this.addSystem(new LifeSystem());
 		this.addSystem(new PhysicsSystem(context));
 		this.addSystem(new AnimationSystem(context));
 		this.addSystem(new CameraSystem(context));
@@ -75,10 +87,9 @@ public class ECSEngine extends PooledEngine{
 	
 	@Override
     public void removeEntity(Entity entity) {
+		entity.getComponents().forEach(component -> {
+			componentManager.notifyComponentRemoved(entity, component);
+		});
         super.removeEntity(entity);
-        
-        entity.getComponents().forEach(component -> {
-            componentManager.notifyComponentRemoved(entity, component);
-        });
     }
 }

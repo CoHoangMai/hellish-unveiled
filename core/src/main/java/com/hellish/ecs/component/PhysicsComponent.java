@@ -2,6 +2,7 @@ package com.hellish.ecs.component;
 
 import static com.hellish.Main.UNIT_SCALE;
 import static com.hellish.ecs.system.CollisionSpawnSystem.SPAWN_AREA_SIZE;
+import static com.hellish.ecs.system.EntitySpawnSystem.HIT_BOX_SENSOR;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
@@ -14,7 +15,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.ChainShape;
-import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -49,6 +50,7 @@ public class PhysicsComponent implements Component, Poolable{
 		PhysicsComponent physicsCmp = new PhysicsComponent();
 		
 		physicsCmp.offset.set(cfg.physicsOffset);
+		physicsCmp.size.set(w, h);
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = cfg.bodyType;
@@ -60,12 +62,11 @@ public class PhysicsComponent implements Component, Poolable{
 		//hit box
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.isSensor = (cfg.bodyType != BodyType.StaticBody);
-		//fixtureDef.filter.categoryBits = BIT_PLAYER;
-		//fixtureDef.filter.maskBits = BIT_GROUND | BIT_GAME_OBJECT;
 		final PolygonShape pShape = new PolygonShape();
 		pShape.setAsBox(w * 0.5f, h * 0.5f);
 		fixtureDef.shape = pShape;
-		physicsCmp.body.createFixture(fixtureDef);
+		Fixture fixture = physicsCmp.body.createFixture(fixtureDef);
+		fixture.setUserData(HIT_BOX_SENSOR);
 		pShape.dispose();
 		
 		if (cfg.bodyType != BodyType.StaticBody) {
@@ -118,12 +119,13 @@ public class PhysicsComponent implements Component, Poolable{
 		physicsCmp.body.createFixture(loopShape, 0.0f);
 		loopShape.dispose();
 
-		CircleShape circleShape = new CircleShape();
-		circleShape.setRadius(SPAWN_AREA_SIZE + 2); 
-		FixtureDef circleFixtureDef = new FixtureDef();
-	    circleFixtureDef.shape = circleShape;
-	    circleFixtureDef.isSensor = true;
-	    physicsCmp.body.createFixture(circleFixtureDef);
+		FixtureDef spawnAreaFixDef = new FixtureDef();
+		PolygonShape spawnAreaShape = new PolygonShape();
+		Vector2 center = new Vector2(bodyW * 0.5f, bodyH * 0.5f);
+		spawnAreaShape.setAsBox(SPAWN_AREA_SIZE + 1, SPAWN_AREA_SIZE + 1, center, 0);
+	    spawnAreaFixDef.shape = spawnAreaShape;
+	    spawnAreaFixDef.isSensor = true;
+	    physicsCmp.body.createFixture(spawnAreaFixDef);
 		
 		return physicsCmp;
 	}

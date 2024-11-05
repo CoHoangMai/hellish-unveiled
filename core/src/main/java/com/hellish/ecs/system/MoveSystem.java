@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 
@@ -26,6 +27,12 @@ public class MoveSystem extends IteratingSystem{
 			return;
 		}
 		physicsCmp.impulse.set(moveCmp.speed * moveCmp.cosine - velX, moveCmp.speed * moveCmp.sine - velY);
+		
+		final ImageComponent imageCmp = ECSEngine.imageCmpMapper.get(entity);
+		if(imageCmp != null) {
+			if(moveCmp.cosine != 0) {
+				imageCmp.image.setFlipX(moveCmp.cosine > 0);
+			}
+		}
 	}
-
 }

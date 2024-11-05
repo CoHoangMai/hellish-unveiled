@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PlayerComponent;
 
@@ -65,10 +66,10 @@ public class InputManager implements InputProcessor{
 			//Không có mapping -> không làm gì cả
 			return false;
 		}
-		 if (isMovementKey(keycode)) {
-			 switch (keycode) {
-			 	case Input.Keys.UP:
-			 		playerSin = 1f;
+		if (isMovementKey(keycode)) {
+			switch (keycode) {
+				case Input.Keys.UP:
+					playerSin = 1f;
 			 		break;
 			 	case Input.Keys.DOWN:
 			 		playerSin = -1f;
@@ -82,6 +83,12 @@ public class InputManager implements InputProcessor{
 	            }
 			 updatePlayerMovement();
 			 return true;
+		 } else if (keycode == Input.Keys.SPACE) {
+			 for (Entity player : ecsEngine.getEntitiesFor(Family.all(PlayerComponent.class).get())) {
+					final AttackComponent attackCmp = ECSEngine.attackCmpMapper.get(player);
+					attackCmp.doAttack = true;
+					attackCmp.startAttack();
+				}
 		 }
 		
 		notifyKeyDown(gameKey);

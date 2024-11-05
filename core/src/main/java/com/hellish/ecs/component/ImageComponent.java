@@ -3,11 +3,11 @@ package com.hellish.ecs.component;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.hellish.actor.FlipImage;
 
 public class ImageComponent implements Component, Poolable, Comparable<ImageComponent>{
-	public Image image;
+	public FlipImage image;
 	public int layer = 0;
 
 	@Override

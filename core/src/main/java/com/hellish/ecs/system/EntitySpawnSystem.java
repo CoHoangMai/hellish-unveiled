@@ -2,6 +2,8 @@ package com.hellish.ecs.system;
 
 import static com.hellish.Main.UNIT_SCALE;
 import static com.hellish.ecs.component.SpawnComponent.SpawnConfiguration.DEFAULT_SPEED;
+import static com.hellish.ecs.component.SpawnComponent.SpawnConfiguration.DEFAULT_ATTACK_DAMAGE;
+import static com.hellish.ecs.component.SpawnComponent.SpawnConfiguration.DEFAULT_LIFE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +13,6 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -23,14 +24,15 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Scaling;
 import com.hellish.Main;
+import com.hellish.actor.FlipImage;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.ImageComponent;
+import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
@@ -38,11 +40,13 @@ import com.hellish.ecs.component.SpawnComponent;
 import com.hellish.event.MapChangeEvent;
 import com.hellish.ecs.component.AnimationComponent.AnimationModel;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
+import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.CollisionComponent;
 import com.hellish.ecs.component.SpawnComponent.SpawnConfiguration;
 
 public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	public static final String TAG = EntitySpawnSystem.class.getSimpleName();
+	public static final String HIT_BOX_SENSOR = "HitBoxSensor";
 	private final World world;
 	private final AssetManager assetManager;
 	private final Map<String, SpawnConfiguration> cachedSpawnCfgs;
@@ -66,7 +70,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		final Entity spawnedEntity = getEngine().createEntity();
 		
 		final ImageComponent imageCmp = getEngine().createComponent(ImageComponent.class);
-		imageCmp.image = new Image(new Texture("characters_and_effects/particle.png"));
+		imageCmp.image = new FlipImage();
 		imageCmp.image.setPosition(spawnCmp.location.x, spawnCmp.location.y);
 		imageCmp.image.setSize(relativeSize.x, relativeSize.y);
 		imageCmp.image.setScaling(Scaling.fill);
@@ -86,6 +90,20 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			spawnedEntity.add(moveCmp);
 		}
 		
+		if(cfg.canAttack) {
+			final AttackComponent attackCmp = new AttackComponent();
+			attackCmp.maxDelay = cfg.attackDelay;
+			attackCmp.damage = Math.round(DEFAULT_ATTACK_DAMAGE * cfg.attackScaling);
+			attackCmp.extraRange = cfg.attackExtraRange;
+			spawnedEntity.add(attackCmp);
+		}
+		
+		if(cfg.lifeScaling > 0) {
+			final LifeComponent lifeCmp = new LifeComponent();
+			lifeCmp.max = DEFAULT_LIFE * cfg.lifeScaling;
+			spawnedEntity.add(lifeCmp);
+		}
+		
 		if(spawnCmp.type.equals("Player")) {
 			spawnedEntity.add(new PlayerComponent());
 		}
@@ -102,23 +120,28 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	private SpawnConfiguration spawnCfg(String type) {
 		return cachedSpawnCfgs.computeIfAbsent(type, t -> {
 			if(t.equals("Player")) {
-				return new SpawnConfiguration(
-						AnimationModel.PLAYER, 1,
-						new Vector2(0.25f, 0.49f),
-						new Vector2(0, 0 * UNIT_SCALE),
-						BodyType.DynamicBody);
+				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.PLAYER);
+				builder.speedScaling = 1.5f;
+				builder.physicsScaling = new Vector2(0.25f, 0.49f);
+				builder.attackScaling = 1.25f;
+				builder.attackExtraRange = 0.75f;
+				builder.bodyType = BodyType.DynamicBody;
+				return new SpawnConfiguration(builder);
 			} else if (t.equals("Wolf")) {
-				return new SpawnConfiguration(
-						AnimationModel.WOLF, 1,
-						new Vector2(0.4f, 0.4f),
-						new Vector2(0, -5 * UNIT_SCALE),
-						BodyType.DynamicBody);
+				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.WOLF);
+				builder.physicsScaling = new Vector2(0.4f, 0.4f);
+				builder.physicsOffset = new Vector2(0, -5 * UNIT_SCALE);
+				builder.lifeScaling = 0.75f;
+				builder.bodyType = BodyType.DynamicBody;
+				return new SpawnConfiguration(builder);
 			} else if (t.equals("Chest")) {
-				return new SpawnConfiguration(
-						AnimationModel.CHEST, 0,
-						new Vector2(0.3f, 0.2f),
-						new Vector2(0, 0),
-						BodyType.StaticBody);
+				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.CHEST);
+				builder.speedScaling = 0;
+				builder.physicsScaling = new Vector2(0.3f, 0.2f);
+				builder.canAttack = false;
+				builder.lifeScaling = 0;
+				builder.bodyType = BodyType.StaticBody;
+				return new SpawnConfiguration(builder);
 			} else {
 				throw new IllegalArgumentException("Loại spawn " + t + " không có cài đặt SpawnConfiguration");
 			}

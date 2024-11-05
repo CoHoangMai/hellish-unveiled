@@ -3,9 +3,9 @@ package com.hellish.ecs.component;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
-public class AnimationComponent implements Component, Pool.Poolable{
+public class AnimationComponent implements Component, Poolable{
 	public enum AnimationModel {
 		PLAYER, WOLF, CHEST, UNDEFINED;
 
@@ -21,7 +21,6 @@ public class AnimationComponent implements Component, Pool.Poolable{
             return this.name().toLowerCase();
         }
 	}
-
 	
 	public AnimationModel model;
 	public float aniTime;
