@@ -24,7 +24,8 @@ import com.hellish.event.MapChangeEvent;
 import static com.hellish.Main.UNIT_SCALE;
 	
 public class RenderSystem extends IteratingSystem implements Disposable, EventListener{
-	private final Stage stage;
+	private final Stage gameStage;
+	private final Stage uiStage;
 	private final ArrayList<Entity> entitiesArray;
 	private final ArrayList<TiledMapTileLayer> backgroundLayers;
 	private final ArrayList<TiledMapTileLayer> foregroundLayers;
@@ -33,12 +34,13 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 
 	public RenderSystem(final Main context) {
 		super(Family.all(ImageComponent.class).get());
-		stage = context.getStage();
+		gameStage = context.getGameStage();
+		uiStage = context.getUIStage();
 		entitiesArray = new ArrayList<>();
 		backgroundLayers = new ArrayList<>();
 		foregroundLayers = new ArrayList<>();
-		orthoCam = (OrthographicCamera)stage.getCamera();
-		mapRenderer = new OrthogonalTiledMapRenderer(null, UNIT_SCALE, stage.getBatch());
+		orthoCam = (OrthographicCamera)gameStage.getCamera();
+		mapRenderer = new OrthogonalTiledMapRenderer(null, UNIT_SCALE, gameStage.getBatch());
 	}
 
 	@Override
@@ -55,43 +57,47 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 		final ComponentMapper<ImageComponent> imageCmpMapper = ECSEngine.imageCmpMapper;
 		Collections.sort(entitiesArray, (e1, e2) -> imageCmpMapper.get(e1).compareTo(imageCmpMapper.get(e2)));
 
-		stage.getViewport().apply();
+		gameStage.getViewport().apply();
 		AnimatedTiledMapTile.updateAnimationBaseTime();
 		mapRenderer.setView(orthoCam);
 		
 		if (!backgroundLayers.isEmpty()) {
-			stage.getBatch().setColor(Color.WHITE);
-			stage.getBatch().setProjectionMatrix(orthoCam.combined);
-			stage.getBatch().begin();
+			gameStage.getBatch().setColor(Color.WHITE);
+			gameStage.getBatch().setProjectionMatrix(orthoCam.combined);
+			gameStage.getBatch().begin();
 			for (TiledMapTileLayer layer : backgroundLayers) {
 				mapRenderer.renderTileLayer(layer);
 			}
-			stage.getBatch().end();
+			gameStage.getBatch().end();
 		}
 	    for (Entity entity : entitiesArray) {
 	    	if(imageCmpMapper.get(entity).image.getParent() == null) {
-				stage.addActor(imageCmpMapper.get(entity).image);
+				gameStage.addActor(imageCmpMapper.get(entity).image);
 			}
 	    	imageCmpMapper.get(entity).image.toFront();
 	    }
 
-		stage.act(deltaTime);
-		stage.draw();
+		gameStage.act(deltaTime);
+		gameStage.draw();
 		
 		//Nếu không remove thì image luôn hiện lên phía trước mọi layer
 		for (Entity entity : entitiesArray) {
-			stage.getRoot().removeActor(imageCmpMapper.get(entity).image);
+			gameStage.getRoot().removeActor(imageCmpMapper.get(entity).image);
 		}
 		
 		if(!foregroundLayers.isEmpty()) {
-			stage.getBatch().setColor(Color.WHITE);
-			stage.getBatch().setProjectionMatrix(orthoCam.combined);
-			stage.getBatch().begin();
+			gameStage.getBatch().setColor(Color.WHITE);
+			gameStage.getBatch().setProjectionMatrix(orthoCam.combined);
+			gameStage.getBatch().begin();
 			for (TiledMapTileLayer layer : foregroundLayers) {
 				mapRenderer.renderTileLayer(layer);
 			}
-			stage.getBatch().end();
+			gameStage.getBatch().end();
 		}
+		
+		uiStage.getViewport().apply();
+		uiStage.act(deltaTime);
+		uiStage.draw();
 	}
 
 	@Override

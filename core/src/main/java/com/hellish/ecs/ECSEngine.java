@@ -2,14 +2,18 @@ package com.hellish.ecs;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.hellish.Main;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.CollisionComponent;
 import com.hellish.ecs.component.ComponentManager;
 import com.hellish.ecs.component.DeadComponent;
+import com.hellish.ecs.component.FloatingTextComponent;
 import com.hellish.ecs.component.ParticleEffectComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
@@ -24,17 +28,19 @@ import com.hellish.ecs.system.CollisionSpawnSystem;
 import com.hellish.ecs.system.DeadSystem;
 import com.hellish.ecs.system.DebugSystem;
 import com.hellish.ecs.system.EntitySpawnSystem;
+import com.hellish.ecs.system.FloatingTextSystem;
 import com.hellish.ecs.system.LifeSystem;
 import com.hellish.ecs.system.MoveSystem;
 import com.hellish.ecs.system.ParticleEffectSystem;
 import com.hellish.ecs.system.PhysicsSystem;
 import com.hellish.ecs.system.RenderSystem;
+import com.hellish.ecs.component.FloatingTextComponent.FloatingTextComponentListener;
 import com.hellish.ecs.component.ImageComponent.ImageComponentListener;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent.PhysicsComponentListener;
 
-public class ECSEngine extends PooledEngine{
+public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<PlayerComponent> playerCmpMapper = ComponentMapper.getFor(PlayerComponent.class);
 	public static final ComponentMapper<AnimationComponent> aniCmpMapper = ComponentMapper.getFor(AnimationComponent.class);
 	public static final ComponentMapper<ParticleEffectComponent> peCmpMapper = ComponentMapper.getFor(ParticleEffectComponent.class);
@@ -47,33 +53,45 @@ public class ECSEngine extends PooledEngine{
 	public static final ComponentMapper<LifeComponent> lifeCmpMapper = ComponentMapper.getFor(LifeComponent.class);
 	public static final ComponentMapper<DeadComponent> deadCmpMapper = ComponentMapper.getFor(DeadComponent.class);
 	public static final ComponentMapper<AttackComponent> attackCmpMapper = ComponentMapper.getFor(AttackComponent.class);
+	public static final ComponentMapper<FloatingTextComponent> floatTxtCmpMapper = ComponentMapper.getFor(FloatingTextComponent.class);
 	
 	
-	private final Stage stage;
+	private final Stage gameStage;
+	private final Stage uiStage;
 	private final ComponentManager componentManager;
+	private final Array<EntitySystem> addedSystems;
 	
 	public ECSEngine(final Main context) {
 		super();
 		
-		stage = context.getStage();	
+		gameStage = context.getGameStage();	
+		uiStage = context.getUIStage();
+		addedSystems = new Array<EntitySystem>();
 		
 		componentManager = context.getComponentManager();
-		componentManager.addComponentListener(new ImageComponentListener(stage));
+		componentManager.addComponentListener(new ImageComponentListener(gameStage));
 		componentManager.addComponentListener(new PhysicsComponentListener());
+		componentManager.addComponentListener(new FloatingTextComponentListener(uiStage));
 		
-		this.addSystem(new EntitySpawnSystem(context));
-		this.addSystem(new CollisionSpawnSystem(context));
-		this.addSystem(new CollisionDespawnSystem(context));
-		this.addSystem(new MoveSystem());
-		this.addSystem(new AttackSystem(context));
-		this.addSystem(new DeadSystem(context));
-		this.addSystem(new LifeSystem());
-		this.addSystem(new PhysicsSystem(context));
-		this.addSystem(new AnimationSystem(context));
-		this.addSystem(new CameraSystem(context));
-		this.addSystem(new RenderSystem(context));
-		this.addSystem(new DebugSystem(context));
-		this.addSystem(new ParticleEffectSystem(context));
+		addAndTrackSystem(new EntitySpawnSystem(context));
+		addAndTrackSystem(new CollisionSpawnSystem(context));
+		addAndTrackSystem(new CollisionDespawnSystem(context));
+		addAndTrackSystem(new MoveSystem());
+		addAndTrackSystem(new AttackSystem(context));
+		addAndTrackSystem(new DeadSystem(context));
+		addAndTrackSystem(new LifeSystem());
+		addAndTrackSystem(new PhysicsSystem(context));
+		addAndTrackSystem(new AnimationSystem(context));
+		addAndTrackSystem(new CameraSystem(context));
+		addAndTrackSystem(new FloatingTextSystem(context));
+		addAndTrackSystem(new RenderSystem(context));
+		addAndTrackSystem(new DebugSystem(context));
+		addAndTrackSystem(new ParticleEffectSystem(context));
+	}
+	
+	private void addAndTrackSystem(EntitySystem system) {
+		addedSystems.add(system);
+		addSystem(system);
 	}
 	
 	@Override
@@ -92,4 +110,13 @@ public class ECSEngine extends PooledEngine{
 		});
         super.removeEntity(entity);
     }
+
+	@Override
+	public void dispose() {
+		for(EntitySystem system : addedSystems) {
+			if (system instanceof Disposable) {
+				((Disposable) system).dispose();
+			}
+		}
+	}
 }

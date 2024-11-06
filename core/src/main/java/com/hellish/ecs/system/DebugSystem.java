@@ -13,13 +13,13 @@ import com.hellish.Main;
 
 public class DebugSystem extends EntitySystem{
 	private final World world;
-	private final Stage stage;
+	private final Stage gameStage;
 	private Box2DDebugRenderer physicsRenderer;
 	private ShapeRenderer shapeRenderer;
 	private final GLProfiler profiler;
 	
 	public DebugSystem(final Main context) {
-		stage = context.getStage();
+		gameStage = context.getGameStage();
 		world = context.getWorld();
 		profiler = new GLProfiler(Gdx.graphics);
 		profiler.enable();
@@ -31,9 +31,9 @@ public class DebugSystem extends EntitySystem{
 	
 	@Override
 	public void update(float deltaTime) {
-		physicsRenderer.render(world, stage.getCamera().combined);
+		physicsRenderer.render(world, gameStage.getCamera().combined);
 		
-		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+		shapeRenderer.setProjectionMatrix(gameStage.getCamera().combined);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		
 		shapeRenderer.setColor(1, 0, 0, 0);

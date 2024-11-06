@@ -23,7 +23,7 @@ public class CameraSystem extends IteratingSystem implements EventListener{
 	public CameraSystem(final Main context) {
 		super(Family.all(PlayerComponent.class, ImageComponent.class).get());
 		
-		camera = context.getStage().getCamera();
+		camera = context.getGameStage().getCamera();
 	}
 
 	@Override

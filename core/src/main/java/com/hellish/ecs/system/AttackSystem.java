@@ -43,6 +43,7 @@ public class AttackSystem extends IteratingSystem{
 		}
 		attackCmp.delay -= deltaTime;
 		if(attackCmp.delay <= 0 && attackCmp.isAttacking()) {
+			System.out.println("PHỆT");
 			attackCmp.state = AttackState.DEAL_DAMAGE;
 			
 			final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
@@ -103,7 +104,6 @@ public class AttackSystem extends IteratingSystem{
 				return true;
 			}, AABB_RECT.x, AABB_RECT.y, AABB_RECT.width, AABB_RECT.height);
 			
-			System.out.println("PHỆT");
 			attackCmp.state = AttackState.READY;
 		}
 		

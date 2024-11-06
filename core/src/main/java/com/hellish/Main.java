@@ -59,7 +59,8 @@ public class Main extends Game {
 	
 	private AudioManager audioManager;
 	
-	private Stage stage;
+	private Stage gameStage;
+	private Stage uiStage;
 	private Skin skin;
 	
 	private InputManager inputManager;
@@ -87,7 +88,8 @@ public class Main extends Game {
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(assetManager.getFileHandleResolver()));
 		initializeSkin();
-		stage = new Stage(new FitViewport(16, 9), spriteBatch);
+		gameStage = new Stage(new FitViewport(16, 9));
+		uiStage = new Stage(new FitViewport(1280, 720));
 		
 		//audio
 		audioManager = new AudioManager(this);
@@ -100,7 +102,7 @@ public class Main extends Game {
 		
 		//input
 		inputManager = new InputManager(this);
-		Gdx.input.setInputProcessor(new InputMultiplexer(inputManager, stage));
+		Gdx.input.setInputProcessor(new InputMultiplexer(inputManager, gameStage));
 		
 		//mapManager
 		mapManager = new MapManager(this);
@@ -184,8 +186,12 @@ public class Main extends Game {
 		return inputManager;
 	}
 	
-	public Stage getStage() {
-		return stage;
+	public Stage getGameStage() {
+		return gameStage;
+	}
+	
+	public Stage getUIStage() {
+		return uiStage;
 	}
 	
 	public Skin getSkin() {
@@ -231,9 +237,9 @@ public class Main extends Game {
 		final float deltaTime = Math.min(0.25f, Gdx.graphics.getRawDeltaTime());
 		ecsEngine.update(deltaTime);
 		
-		stage.getViewport().apply();
-		stage.act(deltaTime);
-		stage.draw();
+		gameStage.getViewport().apply();
+		gameStage.act(deltaTime);
+		gameStage.draw();
 	}
 	
 	@Override
@@ -241,9 +247,11 @@ public class Main extends Game {
 		super.dispose();
 		rayHandler.dispose();
 		world.dispose();
+		ecsEngine.dispose();
 		assetManager.dispose();
 		spriteBatch.dispose();	
-		stage.dispose();
+		gameStage.dispose();
+		uiStage.dispose();
 	}
 		
 }

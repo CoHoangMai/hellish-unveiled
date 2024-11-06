@@ -15,7 +15,8 @@ public abstract class AbstractScreen<T extends Table> implements Screen, GameKey
 	protected final Main context;
 	protected final World world;
 	protected final RayHandler rayHandler;
-	protected final Stage stage;
+	protected final Stage gameStage;
+	protected final Stage uiStage;
 	protected final T screenUI;
 	protected final InputManager inputManager;
 	protected final AudioManager audioManager;
@@ -26,7 +27,8 @@ public abstract class AbstractScreen<T extends Table> implements Screen, GameKey
 		rayHandler = context.getRayHandler();
 		inputManager = context.getInputManager();
 		
-		stage = context.getStage();
+		gameStage = context.getGameStage();
+		uiStage = context.getUIStage();
 		screenUI = getScreenUI(context);
 		audioManager = context.getAudioManager();
 	}
@@ -35,18 +37,19 @@ public abstract class AbstractScreen<T extends Table> implements Screen, GameKey
 	
 	@Override
 	public void resize(final int width, final int height) {
-		stage.getViewport().update(width, height, true);
+		gameStage.getViewport().update(width, height, true);
+		uiStage.getViewport().update(width, height, true);
 	}
 	
 	@Override
 	public void show() {
 		inputManager.addInputListener(this);
-		stage.addActor(screenUI);
+		gameStage.addActor(screenUI);
 	}
 	
 	@Override
 	public void hide() {
 		inputManager.removeInputListener(this);
-		stage.getRoot().removeActor(screenUI);
+		gameStage.getRoot().removeActor(screenUI);
 	}
 }

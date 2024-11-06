@@ -17,7 +17,7 @@ public class MapManager {
 	
 	private final AssetManager assetManager;
 	private final ECSEngine ecsEngine;
-	private final Stage stage;
+	private final Stage gameStage;
 	
 	private MapType currentMapType;
 	private Map currentMap;
@@ -26,7 +26,7 @@ public class MapManager {
 	public MapManager(final Main context) {
 		currentMapType = null;
 		currentMap = null;
-		stage = context.getStage();
+		gameStage = context.getGameStage();
 		ecsEngine = context.getECSEngine();
 		assetManager = context.getAssetManager();
 		mapCache = new EnumMap<MapType, Map>(MapType.class);
@@ -53,12 +53,12 @@ public class MapManager {
 		
 		for (EntitySystem system : ecsEngine.getSystems()) {
 			if(system instanceof EventListener) {
-				stage.addListener((EventListener) system);
+				gameStage.addListener((EventListener) system);
 			}
 		}
 		//NOTE: không dùng Pooling nên phần này đang không tối ưu
 		MapChangeEvent mapChangeEvent = new MapChangeEvent(currentMap);
-		stage.getRoot().fire(mapChangeEvent);
+		gameStage.getRoot().fire(mapChangeEvent);
 	}
 	
 	public Map getCurrentMap() {

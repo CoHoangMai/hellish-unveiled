@@ -10,18 +10,18 @@ import com.hellish.ecs.component.TiledComponent;
 import com.hellish.event.CollisionDespawnEvent;
 
 public class CollisionDespawnSystem extends IteratingSystem{
-	private final Stage stage;
+	private final Stage gameStage;
 	public CollisionDespawnSystem(final Main context) {
 		super(Family.all(TiledComponent.class).get());
 		
-		stage = context.getStage();
+		gameStage = context.getGameStage();
 	}
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		final TiledComponent tiledCmp = ECSEngine.tiledCmpMapper.get(entity);
 		if(tiledCmp.nearbyEntities.isEmpty()) {
-			stage.getRoot().fire(new CollisionDespawnEvent(tiledCmp.cell));
+			gameStage.getRoot().fire(new CollisionDespawnEvent(tiledCmp.cell));
 			getEngine().removeEntity(entity);
 		}
 	}
