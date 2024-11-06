@@ -30,6 +30,7 @@ import com.hellish.ecs.system.DebugSystem;
 import com.hellish.ecs.system.EntitySpawnSystem;
 import com.hellish.ecs.system.FloatingTextSystem;
 import com.hellish.ecs.system.LifeSystem;
+import com.hellish.ecs.system.LootSystem;
 import com.hellish.ecs.system.MoveSystem;
 import com.hellish.ecs.system.ParticleEffectSystem;
 import com.hellish.ecs.system.PhysicsSystem;
@@ -37,6 +38,7 @@ import com.hellish.ecs.system.RenderSystem;
 import com.hellish.ecs.component.FloatingTextComponent.FloatingTextComponentListener;
 import com.hellish.ecs.component.ImageComponent.ImageComponentListener;
 import com.hellish.ecs.component.LifeComponent;
+import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent.PhysicsComponentListener;
 
@@ -54,7 +56,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<DeadComponent> deadCmpMapper = ComponentMapper.getFor(DeadComponent.class);
 	public static final ComponentMapper<AttackComponent> attackCmpMapper = ComponentMapper.getFor(AttackComponent.class);
 	public static final ComponentMapper<FloatingTextComponent> floatTxtCmpMapper = ComponentMapper.getFor(FloatingTextComponent.class);
-	
+	public static final ComponentMapper<LootComponent> lootCmpMapper = ComponentMapper.getFor(LootComponent.class);
 	
 	private final Stage gameStage;
 	private final Stage uiStage;
@@ -78,6 +80,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addAndTrackSystem(new CollisionDespawnSystem(context));
 		addAndTrackSystem(new MoveSystem());
 		addAndTrackSystem(new AttackSystem(context));
+		addAndTrackSystem(new LootSystem(context));
 		addAndTrackSystem(new DeadSystem(context));
 		addAndTrackSystem(new LifeSystem());
 		addAndTrackSystem(new PhysicsSystem(context));

@@ -25,6 +25,7 @@ public class SpawnComponent implements Component, Poolable{
 		public final float attackDelay;
 		public final float attackExtraRange;
 		public final float lifeScaling;
+		public final boolean lootable;
 		public final Vector2 physicsScaling;
 		public final Vector2 physicsOffset;
 		public final BodyType bodyType;
@@ -41,6 +42,7 @@ public class SpawnComponent implements Component, Poolable{
 			this.attackDelay = builder.attackDelay;
 			this.attackExtraRange = builder.attackExtraRange;
 			this.lifeScaling = builder.lifeScaling;
+			this.lootable = builder.lootable;
 			this.physicsScaling = builder.physicsScaling;
 			this.physicsOffset = builder.physicsOffset;
 			this.bodyType = builder.bodyType;
@@ -55,6 +57,7 @@ public class SpawnComponent implements Component, Poolable{
 			public float attackDelay = 0.2f;
 			public float attackExtraRange = 0;
 			public float lifeScaling = 1;
+			public boolean lootable = false;
 			public Vector2 physicsScaling = new Vector2(1, 1);
 			public Vector2 physicsOffset = new Vector2(0, 0);
 			public BodyType bodyType = BodyType.DynamicBody;

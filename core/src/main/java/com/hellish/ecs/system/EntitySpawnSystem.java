@@ -33,6 +33,7 @@ import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.LifeComponent;
+import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
@@ -108,6 +109,10 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			spawnedEntity.add(new PlayerComponent());
 		}
 		
+		if(cfg.lootable) {
+			spawnedEntity.add(new LootComponent());
+		}
+		
 		if (cfg.bodyType != BodyType.StaticBody) {
 			spawnedEntity.add(new CollisionComponent());
 		}
@@ -140,6 +145,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.physicsScaling = new Vector2(0.3f, 0.2f);
 				builder.canAttack = false;
 				builder.lifeScaling = 0;
+				builder.lootable = true;
 				builder.bodyType = BodyType.StaticBody;
 				return new SpawnConfiguration(builder);
 			} else {

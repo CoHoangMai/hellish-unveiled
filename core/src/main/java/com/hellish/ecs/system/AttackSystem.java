@@ -15,6 +15,7 @@ import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.AttackComponent.AttackState;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.LifeComponent;
+import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 
 public class AttackSystem extends IteratingSystem{
@@ -98,7 +99,12 @@ public class AttackSystem extends IteratingSystem{
 				}
 				
 				if (isAttackerPlayer) {
-					//Loot và Dialog
+					final LootComponent lootCmp = ECSEngine.lootCmpMapper.get(fixtureEntity);
+					if(lootCmp != null) {
+						lootCmp.interactEntity = entity;
+						System.out.println("Mở rương");
+					}
+					
 					return true;
 				}
 				return true;
