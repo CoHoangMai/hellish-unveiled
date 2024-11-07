@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.hellish.Main;
 import com.hellish.actor.FlipImage;
 import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.AttackComponent.AttackState;
 import com.hellish.ecs.component.ImageComponent;
@@ -109,9 +110,11 @@ public class AttackSystem extends IteratingSystem{
 				}
 				return true;
 			}, AABB_RECT.x, AABB_RECT.y, AABB_RECT.width, AABB_RECT.height);
-			
-			attackCmp.state = AttackState.READY;
 		}
 		
+		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
+		if(aniCmp != null && aniCmp.isAnimationFinished()) {
+			attackCmp.state = AttackState.READY;
+		}
 	}
 }

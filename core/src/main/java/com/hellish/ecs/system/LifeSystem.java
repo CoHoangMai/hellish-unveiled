@@ -5,11 +5,14 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Disposable;
 import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.component.AnimationComponent;
+import com.hellish.ecs.component.AnimationComponent.AnimationType;
 import com.hellish.ecs.component.DeadComponent;
 import com.hellish.ecs.component.FloatingTextComponent;
 import com.hellish.ecs.component.LifeComponent;
@@ -39,11 +42,18 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 			lifeCmp.takeDamage = 0;
 		}
 		if (lifeCmp.isDead()) {
+			final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
+			if(aniCmp != null) {
+				aniCmp.nextAnimation(AnimationType.DIE);
+				aniCmp.mode = PlayMode.NORMAL;
+			}
 			final DeadComponent deadCmp = new DeadComponent();
 			entity.add(deadCmp);
-			System.out.println("Xin vĩnh biệt cụ");
 			if (ECSEngine.playerCmpMapper.has(entity)) {
-				deadCmp.reviveTime = 7f;
+				deadCmp.reviveTime = 2f;
+				System.out.println("Mệt quá nghỉ 2s");
+			} else {
+				System.out.println("Xin vĩnh biệt cụ");
 			}
 		}
 	}

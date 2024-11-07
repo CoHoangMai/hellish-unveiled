@@ -16,7 +16,7 @@ public class AnimationComponent implements Component, Poolable{
 	
 	public enum AnimationType {
 		DOWN_WALK, UP_WALK, SIDE_WALK, IDLE, DOWN_IDLE, UP_IDLE, SIDE_IDLE,
-		OPEN;
+		ATTACK, SIDE_ATTACK, OPEN, DIE;
 		
 		public String getAtlasKey() {
             return this.name().toLowerCase();
@@ -53,4 +53,7 @@ public class AnimationComponent implements Component, Poolable{
 		this.nextAnimation = NO_ANIMATION;
 	}
 	
+	public boolean isAnimationFinished() {
+		return animation.isAnimationFinished(aniTime);
+	}
 }

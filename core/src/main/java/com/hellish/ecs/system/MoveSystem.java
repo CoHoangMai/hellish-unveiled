@@ -22,7 +22,7 @@ public class MoveSystem extends IteratingSystem{
 		float velX = physicsCmp.body.getLinearVelocity().x;
 		float velY = physicsCmp.body.getLinearVelocity().y;
 		
-		if (moveCmp.cosine == 0 && moveCmp.sine == 0) {
+		if ((moveCmp.cosine == 0 && moveCmp.sine == 0) || moveCmp.rooted) {
 			physicsCmp.impulse.set(mass * (0f - velX), mass * (0f - velY));
 			return;
 		}

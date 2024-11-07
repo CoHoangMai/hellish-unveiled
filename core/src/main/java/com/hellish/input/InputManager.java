@@ -87,7 +87,6 @@ public class InputManager implements InputProcessor{
 			 for (Entity player : ecsEngine.getEntitiesFor(Family.all(PlayerComponent.class).get())) {
 					final AttackComponent attackCmp = ECSEngine.attackCmpMapper.get(player);
 					attackCmp.doAttack = true;
-					attackCmp.startAttack();
 				}
 		 }
 		

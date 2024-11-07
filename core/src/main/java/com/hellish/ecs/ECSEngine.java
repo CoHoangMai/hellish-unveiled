@@ -18,6 +18,7 @@ import com.hellish.ecs.component.ParticleEffectComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.component.SpawnComponent;
+import com.hellish.ecs.component.StateComponent;
 import com.hellish.ecs.component.TiledComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.system.AnimationSystem;
@@ -35,12 +36,14 @@ import com.hellish.ecs.system.MoveSystem;
 import com.hellish.ecs.system.ParticleEffectSystem;
 import com.hellish.ecs.system.PhysicsSystem;
 import com.hellish.ecs.system.RenderSystem;
+import com.hellish.ecs.system.StateSystem;
 import com.hellish.ecs.component.FloatingTextComponent.FloatingTextComponentListener;
 import com.hellish.ecs.component.ImageComponent.ImageComponentListener;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent.PhysicsComponentListener;
+import com.hellish.ecs.component.StateComponent.StateComponentListener;
 
 public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<PlayerComponent> playerCmpMapper = ComponentMapper.getFor(PlayerComponent.class);
@@ -57,6 +60,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<AttackComponent> attackCmpMapper = ComponentMapper.getFor(AttackComponent.class);
 	public static final ComponentMapper<FloatingTextComponent> floatTxtCmpMapper = ComponentMapper.getFor(FloatingTextComponent.class);
 	public static final ComponentMapper<LootComponent> lootCmpMapper = ComponentMapper.getFor(LootComponent.class);
+	public static final ComponentMapper<StateComponent> stateCmpMapper = ComponentMapper.getFor(StateComponent.class);
 	
 	private final Stage gameStage;
 	private final Stage uiStage;
@@ -74,17 +78,19 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		componentManager.addComponentListener(new ImageComponentListener(gameStage));
 		componentManager.addComponentListener(new PhysicsComponentListener());
 		componentManager.addComponentListener(new FloatingTextComponentListener(uiStage));
+		componentManager.addComponentListener(new StateComponentListener());
 		
 		addAndTrackSystem(new EntitySpawnSystem(context));
 		addAndTrackSystem(new CollisionSpawnSystem(context));
 		addAndTrackSystem(new CollisionDespawnSystem(context));
 		addAndTrackSystem(new MoveSystem());
-		addAndTrackSystem(new AttackSystem(context));
 		addAndTrackSystem(new LootSystem(context));
 		addAndTrackSystem(new DeadSystem(context));
 		addAndTrackSystem(new LifeSystem());
 		addAndTrackSystem(new PhysicsSystem(context));
 		addAndTrackSystem(new AnimationSystem(context));
+		addAndTrackSystem(new AttackSystem(context));
+		addAndTrackSystem(new StateSystem());
 		addAndTrackSystem(new CameraSystem(context));
 		addAndTrackSystem(new FloatingTextSystem(context));
 		addAndTrackSystem(new RenderSystem(context));

@@ -44,6 +44,7 @@ import com.hellish.ecs.component.AnimationComponent.AnimationType;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.CollisionComponent;
 import com.hellish.ecs.component.SpawnComponent.SpawnConfiguration;
+import com.hellish.ecs.component.StateComponent;
 
 public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	public static final String TAG = EntitySpawnSystem.class.getSimpleName();
@@ -102,11 +103,15 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		if(cfg.lifeScaling > 0) {
 			final LifeComponent lifeCmp = new LifeComponent();
 			lifeCmp.max = DEFAULT_LIFE * cfg.lifeScaling;
+			if(spawnCmp.type.equals("Player")) {
+				lifeCmp.regeneration = -2;
+			}
 			spawnedEntity.add(lifeCmp);
 		}
 		
 		if(spawnCmp.type.equals("Player")) {
 			spawnedEntity.add(new PlayerComponent());
+			spawnedEntity.add(new StateComponent());
 		}
 		
 		if(cfg.lootable) {
