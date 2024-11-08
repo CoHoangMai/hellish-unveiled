@@ -4,13 +4,11 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.hellish.Main;
-import com.hellish.ai.DefaultState;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.ComponentManager;
 import com.hellish.ecs.component.DeadComponent;
 import com.hellish.ecs.component.LifeComponent;
-import com.hellish.ecs.component.StateComponent;
 
 public class DeadSystem extends IteratingSystem{
 	private ComponentManager componentManager;
@@ -40,12 +38,7 @@ public class DeadSystem extends IteratingSystem{
 			if(deadCmp.reviveTime <= 0) {
 				final LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(entity);
 				lifeCmp.life = lifeCmp.max;
-				
-				final StateComponent stateCmp = ECSEngine.stateCmpMapper.get(entity);
-				if(stateCmp != null) {
-					stateCmp.nextState = DefaultState.RESSURECT;
-					System.out.println("Nghỉ xong rồi");
-				}
+				System.out.println("...Nhưng đam mê trêu chó là không thể từ bỏ!!!");
 				
 				entity.getComponents().forEach(component -> {
 					componentManager.notifyComponentRemoved(entity, deadCmp);

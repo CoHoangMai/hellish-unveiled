@@ -1,6 +1,8 @@
 package com.hellish.ecs.system;
 
 import static com.hellish.ecs.system.AttackSystem.AABB_RECT;
+import static com.hellish.ai.AiEntity.TMP_RECT1;
+import static com.hellish.ai.AiEntity.TMP_RECT2;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
@@ -36,9 +38,13 @@ public class DebugSystem extends EntitySystem{
 		shapeRenderer.setProjectionMatrix(gameStage.getCamera().combined);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		
-		shapeRenderer.setColor(1, 0, 0, 0);
+		shapeRenderer.setColor(0, 1, 0, 0);
 		shapeRenderer.rect(AABB_RECT.x, AABB_RECT.y, AABB_RECT.width - AABB_RECT.x, AABB_RECT.height - AABB_RECT.y);
-
+		shapeRenderer.setColor(1, 0, 0, 0);
+		shapeRenderer.rect(TMP_RECT1.x, TMP_RECT1.y, TMP_RECT1.width, TMP_RECT1.height);
+		shapeRenderer.setColor(0, 0, 1, 0);
+		shapeRenderer.rect(TMP_RECT2.x, TMP_RECT2.y, TMP_RECT2.width, TMP_RECT2.height);
+		
 		shapeRenderer.end();
 	}
 	

@@ -21,12 +21,15 @@ public class MoveSystem extends IteratingSystem{
 		float mass = physicsCmp.body.getMass();
 		float velX = physicsCmp.body.getLinearVelocity().x;
 		float velY = physicsCmp.body.getLinearVelocity().y;
+		float speedFactor = (moveCmp.slow) ? 0.4f : 1;
 		
 		if ((moveCmp.cosine == 0 && moveCmp.sine == 0) || moveCmp.rooted) {
 			physicsCmp.impulse.set(mass * (0f - velX), mass * (0f - velY));
 			return;
 		}
-		physicsCmp.impulse.set(moveCmp.speed * moveCmp.cosine - velX, moveCmp.speed * moveCmp.sine - velY);
+		physicsCmp.impulse.set(
+				moveCmp.speed * speedFactor * moveCmp.cosine - velX, 
+				moveCmp.speed * speedFactor * moveCmp.sine - velY);
 		
 		final ImageComponent imageCmp = ECSEngine.imageCmpMapper.get(entity);
 		if(imageCmp != null) {

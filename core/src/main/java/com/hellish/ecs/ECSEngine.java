@@ -21,6 +21,7 @@ import com.hellish.ecs.component.SpawnComponent;
 import com.hellish.ecs.component.StateComponent;
 import com.hellish.ecs.component.TiledComponent;
 import com.hellish.ecs.component.ImageComponent;
+import com.hellish.ecs.system.AiSystem;
 import com.hellish.ecs.system.AnimationSystem;
 import com.hellish.ecs.system.AttackSystem;
 import com.hellish.ecs.system.CameraSystem;
@@ -37,6 +38,8 @@ import com.hellish.ecs.system.ParticleEffectSystem;
 import com.hellish.ecs.system.PhysicsSystem;
 import com.hellish.ecs.system.RenderSystem;
 import com.hellish.ecs.system.StateSystem;
+import com.hellish.ecs.component.AiComponent;
+import com.hellish.ecs.component.AiComponent.AiComponentListener;
 import com.hellish.ecs.component.FloatingTextComponent.FloatingTextComponentListener;
 import com.hellish.ecs.component.ImageComponent.ImageComponentListener;
 import com.hellish.ecs.component.LifeComponent;
@@ -61,6 +64,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<FloatingTextComponent> floatTxtCmpMapper = ComponentMapper.getFor(FloatingTextComponent.class);
 	public static final ComponentMapper<LootComponent> lootCmpMapper = ComponentMapper.getFor(LootComponent.class);
 	public static final ComponentMapper<StateComponent> stateCmpMapper = ComponentMapper.getFor(StateComponent.class);
+	public static final ComponentMapper<AiComponent> aiCmpMapper = ComponentMapper.getFor(AiComponent.class);
 	
 	private final Stage gameStage;
 	private final Stage uiStage;
@@ -79,6 +83,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		componentManager.addComponentListener(new PhysicsComponentListener());
 		componentManager.addComponentListener(new FloatingTextComponentListener(uiStage));
 		componentManager.addComponentListener(new StateComponentListener());
+		componentManager.addComponentListener(new AiComponentListener());
 		
 		addAndTrackSystem(new EntitySpawnSystem(context));
 		addAndTrackSystem(new CollisionSpawnSystem(context));
@@ -91,6 +96,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addAndTrackSystem(new AnimationSystem(context));
 		addAndTrackSystem(new AttackSystem(context));
 		addAndTrackSystem(new StateSystem());
+		addAndTrackSystem(new AiSystem());
 		addAndTrackSystem(new CameraSystem(context));
 		addAndTrackSystem(new FloatingTextSystem(context));
 		addAndTrackSystem(new RenderSystem(context));

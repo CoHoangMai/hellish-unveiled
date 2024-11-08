@@ -45,7 +45,6 @@ public class AttackSystem extends IteratingSystem{
 		}
 		attackCmp.delay -= deltaTime;
 		if(attackCmp.delay <= 0 && attackCmp.isAttacking()) {
-			System.out.println("PHỆT");
 			attackCmp.state = AttackState.DEAL_DAMAGE;
 			
 			final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
@@ -53,26 +52,27 @@ public class AttackSystem extends IteratingSystem{
 			boolean attackRight = image.isFlipX();
 			float x = physicsCmp.body.getPosition().x;
 			float y = physicsCmp.body.getPosition().y;
-			float offX = physicsCmp.offset.x;
-			float offY = physicsCmp.offset.y;
 			float w = physicsCmp.size.x;
 			float h = physicsCmp.size.y;
 			float halfW = w * 0.5f;
 			float halfH = h * 0.5f;
 			
+			//Chiều rộng và chiều cao của AABB_RECT thực chất là tọa độ góc trên phải của
+			//hình chữ nhật ta mong muốn. Khi truyền chúng vào QueryAABB thì vẫn chính xác
+			//vì QueryAABB lấy 2 thông số cuối đó là tọa độ góc trên phải.
 			if(attackRight) {
 				AABB_RECT.set(
-					offX + x - halfW,
-					offY + y - halfH,
-					offX + x + halfW + attackCmp.extraRange,
-					offY + y + halfH
+					x,
+					y - halfH,
+					x + halfW + attackCmp.extraRange,
+					y + halfH
 				);
 			} else {
 				AABB_RECT.set(
-					offX + x - halfW  - attackCmp.extraRange,
-					offY + y - halfH,
-					offX + x + halfW,
-					offY + y + halfH	
+					x - halfW  - attackCmp.extraRange,
+					y - halfH,
+					x,
+					y + halfH	
 				);
 			}
 			
@@ -96,7 +96,11 @@ public class AttackSystem extends IteratingSystem{
 				final LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(fixtureEntity);
 				if (lifeCmp != null) {
 					lifeCmp.takeDamage += attackCmp.damage * MathUtils.random(0.9f, 1.1f);
-					System.out.println("Phệt trúng!");
+					if(ECSEngine.playerCmpMapper.has(fixtureEntity)) {
+						System.out.println("Bị cắn mất " + (int)lifeCmp.takeDamage + " miếng HP!");
+					} else {
+						System.out.println("Phệt trúng con chó!");
+					}
 				}
 				
 				if (isAttackerPlayer) {

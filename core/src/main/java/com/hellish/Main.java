@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ai.GdxAI;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.Color;
@@ -235,6 +236,7 @@ public class Main extends Game {
 		
 		@SuppressWarnings("deprecation")
 		final float deltaTime = Math.min(0.25f, Gdx.graphics.getRawDeltaTime());
+		GdxAI.getTimepiece().update(deltaTime);
 		ecsEngine.update(deltaTime);
 		
 		gameStage.getViewport().apply();

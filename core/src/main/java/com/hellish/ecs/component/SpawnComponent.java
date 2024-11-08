@@ -26,6 +26,7 @@ public class SpawnComponent implements Component, Poolable{
 		public final float attackExtraRange;
 		public final float lifeScaling;
 		public final boolean lootable;
+		public final String aiTreePath;
 		public final Vector2 physicsScaling;
 		public final Vector2 physicsOffset;
 		public final BodyType bodyType;
@@ -43,6 +44,7 @@ public class SpawnComponent implements Component, Poolable{
 			this.attackExtraRange = builder.attackExtraRange;
 			this.lifeScaling = builder.lifeScaling;
 			this.lootable = builder.lootable;
+			this.aiTreePath = builder.aiTreePath;
 			this.physicsScaling = builder.physicsScaling;
 			this.physicsOffset = builder.physicsOffset;
 			this.bodyType = builder.bodyType;
@@ -58,6 +60,7 @@ public class SpawnComponent implements Component, Poolable{
 			public float attackExtraRange = 0;
 			public float lifeScaling = 1;
 			public boolean lootable = false;
+			public String aiTreePath = "";
 			public Vector2 physicsScaling = new Vector2(1, 1);
 			public Vector2 physicsOffset = new Vector2(0, 0);
 			public BodyType bodyType = BodyType.DynamicBody;

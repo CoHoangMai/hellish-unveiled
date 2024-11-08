@@ -21,6 +21,8 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -30,6 +32,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.hellish.Main;
 import com.hellish.actor.FlipImage;
 import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.component.AiComponent;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.LifeComponent;
@@ -49,6 +52,7 @@ import com.hellish.ecs.component.StateComponent;
 public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	public static final String TAG = EntitySpawnSystem.class.getSimpleName();
 	public static final String HIT_BOX_SENSOR = "HitBoxSensor";
+	public static final String AI_SENSOR = "AiSensor";
 	private final World world;
 	private final AssetManager assetManager;
 	private final Map<String, SpawnConfiguration> cachedSpawnCfgs;
@@ -103,9 +107,6 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		if(cfg.lifeScaling > 0) {
 			final LifeComponent lifeCmp = new LifeComponent();
 			lifeCmp.max = DEFAULT_LIFE * cfg.lifeScaling;
-			if(spawnCmp.type.equals("Player")) {
-				lifeCmp.regeneration = -2;
-			}
 			spawnedEntity.add(lifeCmp);
 		}
 		
@@ -122,6 +123,17 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			spawnedEntity.add(new CollisionComponent());
 		}
 		
+		if(!cfg.aiTreePath.isBlank()) {
+			final AiComponent aiCmp = new AiComponent();
+			aiCmp.treePath = cfg.aiTreePath;
+			spawnedEntity.add(aiCmp);
+			
+			CircleShape circleShape = new CircleShape();
+			circleShape.setRadius(4);
+			Fixture fixture = physicsCmp.body.createFixture(circleShape, 0);
+			fixture.setUserData(AI_SENSOR);
+			fixture.setSensor(true);
+		}
 		getEngine().addEntity(spawnedEntity);
 		
 		getEngine().removeEntity(entity);
@@ -132,17 +144,18 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			if(t.equals("Player")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.PLAYER);
 				builder.speedScaling = 1.5f;
-				builder.physicsScaling = new Vector2(0.25f, 0.49f);
+				builder.physicsScaling = new Vector2(0.2f, 0.44f);
+				builder.physicsOffset = new Vector2(0, -2 * UNIT_SCALE);
 				builder.attackScaling = 1.25f;
 				builder.attackExtraRange = 0.75f;
-				builder.bodyType = BodyType.DynamicBody;
 				return new SpawnConfiguration(builder);
 			} else if (t.equals("Wolf")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.WOLF);
 				builder.physicsScaling = new Vector2(0.4f, 0.4f);
 				builder.physicsOffset = new Vector2(0, -5 * UNIT_SCALE);
 				builder.lifeScaling = 0.75f;
-				builder.bodyType = BodyType.DynamicBody;
+				builder.attackExtraRange = 0.1f;
+				builder.aiTreePath = "ai/wolf.tree";
 				return new SpawnConfiguration(builder);
 			} else if (t.equals("Chest")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.CHEST);

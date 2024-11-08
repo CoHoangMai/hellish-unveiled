@@ -8,12 +8,14 @@ public class MoveComponent implements Component, Poolable{
 	public float sine;
 	public float cosine;
 	public boolean rooted;
+	public boolean slow;
 	
 	public MoveComponent() {
 		speed = 0;
 		sine = 0;
 		cosine = 0;
 		rooted = false;
+		slow = false;
 	}
 	
 	@Override
@@ -22,6 +24,7 @@ public class MoveComponent implements Component, Poolable{
 		sine = 0;
 		cosine = 0;
 		rooted = false;
+		slow = false;
 	}
 
 }

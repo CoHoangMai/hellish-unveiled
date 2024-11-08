@@ -1,5 +1,7 @@
 package com.hellish.ecs.system;
 
+import static com.hellish.ecs.system.EntitySpawnSystem.AI_SENSOR;
+
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -15,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.component.AiComponent;
 import com.hellish.ecs.component.CollisionComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.PhysicsComponent;
@@ -112,16 +115,29 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 		final Entity entityB = getEntity(contact.getFixtureB());
 		final ComponentMapper<TiledComponent> tiledCmpMapper = ECSEngine.tiledCmpMapper;
 		final ComponentMapper<CollisionComponent> collCmpMapper = ECSEngine.collisionCmpMapper;
-		final boolean isEntityATiledCollisionSensor = tiledCmpMapper.has(entityA) && isSensorA(contact);
-		final boolean isEntityBTiledCollisionFixture = collCmpMapper.has(entityB) && !isSensorB(contact);
-		final boolean isEntityBTiledCollisionSensor = tiledCmpMapper.has(entityB) && isSensorB(contact);
-		final boolean isEntityATiledCollisionFixture = collCmpMapper.has(entityA) && !isSensorA(contact);
+		final ComponentMapper<AiComponent> aiCmpMapper = ECSEngine.aiCmpMapper;
 		
-		if (isEntityATiledCollisionSensor && isEntityBTiledCollisionFixture) {
+		final boolean isEntityATiledCollisionSensor = tiledCmpMapper.has(entityA) && isSensorA(contact);
+		final boolean isEntityBTiledCollisionSensor = tiledCmpMapper.has(entityB) && isSensorB(contact);
+		final boolean isEntityACollisionFixture = collCmpMapper.has(entityA) && !isSensorA(contact);
+		final boolean isEntityBCollisionFixture = collCmpMapper.has(entityB) && !isSensorB(contact);
+		final boolean isEntityAAiSensor = aiCmpMapper.has(entityA) && isSensorA(contact) 
+				&& contact.getFixtureA().getUserData() == AI_SENSOR;
+		final boolean isEntityBAiSensor = aiCmpMapper.has(entityB) && isSensorB(contact)
+				&& contact.getFixtureB().getUserData() == AI_SENSOR;
+		
+		if (isEntityATiledCollisionSensor && isEntityBCollisionFixture) {
 			tiledCmpMapper.get(entityA).nearbyEntities.add(entityB);	
 		}
-		if (isEntityATiledCollisionFixture && isEntityBTiledCollisionSensor) {
+		if (isEntityACollisionFixture && isEntityBTiledCollisionSensor) {
 			tiledCmpMapper.get(entityB).nearbyEntities.add(entityA);
+		}
+		
+		if(isEntityAAiSensor && isEntityBCollisionFixture) {
+			aiCmpMapper.get(entityA).nearbyEntities.add(entityB);
+		}
+		if(isEntityBAiSensor && isEntityACollisionFixture) {
+			aiCmpMapper.get(entityB).nearbyEntities.add(entityA);
 		}
 	}
 
@@ -130,14 +146,26 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 		final Entity entityA = getEntity(contact.getFixtureA());
         final Entity entityB = getEntity(contact.getFixtureB());
         final ComponentMapper<TiledComponent> tiledCmpMapper = ECSEngine.tiledCmpMapper;
+		final ComponentMapper<AiComponent> aiCmpMapper = ECSEngine.aiCmpMapper;
 		final boolean isEntityATiledCollisionSensor = tiledCmpMapper.has(entityA) && isSensorA(contact);
 		final boolean isEntityBTiledCollisionSensor = tiledCmpMapper.has(entityB) && isSensorB(contact);
+		final boolean isEntityAAiSensor = aiCmpMapper.has(entityA) && isSensorA(contact) 
+				&& contact.getFixtureA().getUserData() == AI_SENSOR;
+		final boolean isEntityBAiSensor = aiCmpMapper.has(entityB) && isSensorB(contact)
+				&& contact.getFixtureB().getUserData() == AI_SENSOR;
 		
 		if (isEntityATiledCollisionSensor && !isSensorB(contact)) {
 			tiledCmpMapper.get(entityA).nearbyEntities.remove(entityB);	
 		}
 		if (isEntityBTiledCollisionSensor && !isSensorA(contact)) {
 			tiledCmpMapper.get(entityB).nearbyEntities.remove(entityA);
+		}
+		
+		if(isEntityAAiSensor && !isSensorB(contact)) {
+			aiCmpMapper.get(entityA).nearbyEntities.remove(entityB);
+		}
+		if(isEntityBAiSensor && !isSensorA(contact)) {
+			aiCmpMapper.get(entityB).nearbyEntities.remove(entityA);
 		}
 	}
 

@@ -37,7 +37,7 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 		
 		if (lifeCmp.takeDamage > 0) {
 			final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
-			lifeCmp.life -= lifeCmp.takeDamage;
+			lifeCmp.life -= (int)lifeCmp.takeDamage;
 			floatingText(Integer.toString((int) lifeCmp.takeDamage), physicsCmp.body.getPosition(), physicsCmp.size);
 			lifeCmp.takeDamage = 0;
 		}
@@ -50,10 +50,10 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 			final DeadComponent deadCmp = new DeadComponent();
 			entity.add(deadCmp);
 			if (ECSEngine.playerCmpMapper.has(entity)) {
-				deadCmp.reviveTime = 2f;
-				System.out.println("Mệt quá nghỉ 2s");
+				deadCmp.reviveTime = 7f;
+				System.out.println("Gục ngã vì chó cắn quá đau.....");
 			} else {
-				System.out.println("Xin vĩnh biệt cụ");
+				System.out.println("Bay màu con chó");
 			}
 		}
 	}
