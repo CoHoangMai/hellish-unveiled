@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
 public class ComponentManager {
@@ -19,7 +20,7 @@ public class ComponentManager {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <C extends Component> void notifyComponentAdded(Entity entity, C component) {
+	public <C extends Component> void notifyComponentAdded(Entity entity, C component, Stage stage) {
 		for(ComponentListener<? extends Component> listener : listeners) {
 			 Type[] genericInterfaces = listener.getClass().getGenericInterfaces();
 	            if (genericInterfaces.length > 0) {
@@ -29,7 +30,7 @@ public class ComponentManager {
 	                    ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
 	                    Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
 	                    if (actualTypeArguments.length > 0 && actualTypeArguments[0] == component.getClass()) {
-	                        ((ComponentListener<C>) listener).onComponentAdded(entity, component);
+	                        ((ComponentListener<C>) listener).onComponentAdded(entity, component, stage);
 	                    }
 	                }
 	            }

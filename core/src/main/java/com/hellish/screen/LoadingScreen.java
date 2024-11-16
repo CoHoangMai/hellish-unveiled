@@ -14,9 +14,10 @@ import com.hellish.ecs.component.ParticleEffectComponent.ParticleEffectType;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapType;
-import com.hellish.view.LoadingUI;
+import com.hellish.ui.Scene2DSkin;
+import com.hellish.ui.view.LoadingView;
 
-public class LoadingScreen extends AbstractScreen<LoadingUI> {
+public class LoadingScreen extends AbstractScreen<LoadingView> {
 	private final AssetManager assetManager;
 	private boolean isMusicLoaded;
 	
@@ -57,7 +58,7 @@ public class LoadingScreen extends AbstractScreen<LoadingUI> {
 			audioManager.playAudio(AudioType.INTRO);
 		}
 		
-		screenUI.setProgress(assetManager.getProgress());
+		screenView.setProgress(assetManager.getProgress());
 	}
 
 	@Override
@@ -94,8 +95,8 @@ public class LoadingScreen extends AbstractScreen<LoadingUI> {
 	}
 
 	@Override
-	protected LoadingUI getScreenUI(Main context) {
-		return new LoadingUI(context);
+	protected LoadingView getScreenView(Main context) {
+		return new LoadingView(Scene2DSkin.defaultSkin);
 	}
 
 	@Override

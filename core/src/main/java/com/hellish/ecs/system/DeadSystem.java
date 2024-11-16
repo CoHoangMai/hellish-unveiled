@@ -3,19 +3,23 @@ package com.hellish.ecs.system;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.ComponentManager;
 import com.hellish.ecs.component.DeadComponent;
 import com.hellish.ecs.component.LifeComponent;
+import com.hellish.event.EntityReviveEvent;
 
 public class DeadSystem extends IteratingSystem{
-	private ComponentManager componentManager;
+	private final ComponentManager componentManager;
+	private final Stage stage;
 
 	public DeadSystem(final Main context) {
 		super(Family.all(DeadComponent.class).get());
 		
+		stage = context.getGameStage();
 		componentManager = context.getComponentManager();
 	}
 
@@ -39,6 +43,7 @@ public class DeadSystem extends IteratingSystem{
 				final LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(entity);
 				lifeCmp.life = lifeCmp.max;
 				System.out.println("...Nhưng đam mê trêu chó là không thể từ bỏ!!!");
+				stage.getRoot().fire(new EntityReviveEvent(entity));
 				
 				entity.getComponents().forEach(component -> {
 					componentManager.notifyComponentRemoved(entity, deadCmp);
@@ -47,5 +52,4 @@ public class DeadSystem extends IteratingSystem{
 			}
 		}
 	}
-
 }

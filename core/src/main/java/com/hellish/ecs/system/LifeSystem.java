@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Disposable;
+import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
@@ -17,13 +19,17 @@ import com.hellish.ecs.component.DeadComponent;
 import com.hellish.ecs.component.FloatingTextComponent;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.PhysicsComponent;
+import com.hellish.event.EntityTakeDamageEvent;
 
 public class LifeSystem extends IteratingSystem implements Disposable{
+	private final Stage stage;
 	private final BitmapFont damageFont;
 	private final Label.LabelStyle floatTxtFntStyle;
 	
-	public LifeSystem() {
+	public LifeSystem(final Main context) {
 		super(Family.all(LifeComponent.class, PhysicsComponent.class).exclude(DeadComponent.class).get());
+		
+		stage = context.getGameStage();
 		
 		this.damageFont = new BitmapFont(Gdx.files.internal("ui/damage.fnt"));
 		damageFont.getData().setScale(0.33f);
@@ -38,6 +44,7 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 		if (lifeCmp.takeDamage > 0) {
 			final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
 			lifeCmp.life -= (int)lifeCmp.takeDamage;
+			stage.getRoot().fire(new EntityTakeDamageEvent(entity));
 			floatingText(Integer.toString((int) lifeCmp.takeDamage), physicsCmp.body.getPosition(), physicsCmp.size);
 			lifeCmp.takeDamage = 0;
 		}

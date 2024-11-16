@@ -39,7 +39,7 @@ public class ImageComponent implements Component, Poolable, Comparable<ImageComp
         }
 
 		@Override
-		public void onComponentAdded(Entity entity, ImageComponent component) {
+		public void onComponentAdded(Entity entity, ImageComponent component, Stage stage) {
 			stage.addActor(component.image);
 		}
 

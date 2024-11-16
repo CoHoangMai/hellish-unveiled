@@ -91,7 +91,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addAndTrackSystem(new MoveSystem());
 		addAndTrackSystem(new LootSystem(context));
 		addAndTrackSystem(new DeadSystem(context));
-		addAndTrackSystem(new LifeSystem());
+		addAndTrackSystem(new LifeSystem(context));
 		addAndTrackSystem(new PhysicsSystem(context));
 		addAndTrackSystem(new AnimationSystem(context));
 		addAndTrackSystem(new AttackSystem(context));
@@ -114,7 +114,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		super.addEntity(entity);
 		
 		entity.getComponents().forEach(component -> {
-			componentManager.notifyComponentAdded(entity, component);
+			componentManager.notifyComponentAdded(entity, component, gameStage);
 		});
 	}
 	

@@ -9,9 +9,11 @@ import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapManager;
 import com.hellish.map.MapType;
-import com.hellish.view.GameUI;
+import com.hellish.ui.Scene2DSkin;
+import com.hellish.ui.model.GameModel;
+import com.hellish.ui.view.GameView;
 
-public class GameScreen extends AbstractScreen<GameUI>{
+public class GameScreen extends AbstractScreen<GameView>{
 	private final MapManager mapManager;
 	private final AssetManager assetManager;
 	private boolean isMusicLoaded;
@@ -64,8 +66,8 @@ public class GameScreen extends AbstractScreen<GameUI>{
 	}
 
 	@Override
-	protected GameUI getScreenUI(Main context) {
-		return new GameUI(context);
+	protected GameView getScreenView(Main context) {
+		return new GameView(new GameModel(context.getGameStage()), Scene2DSkin.defaultSkin);
 	}
 
 	@Override

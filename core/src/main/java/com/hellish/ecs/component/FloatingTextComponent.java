@@ -42,7 +42,7 @@ public class FloatingTextComponent implements Component, Poolable{
 		}
 		
 		@Override
-		public void onComponentAdded(Entity entity, FloatingTextComponent component) {
+		public void onComponentAdded(Entity entity, FloatingTextComponent component, Stage stage) {
 			component.label.addAction(Actions.fadeOut(component.lifeSpan, Interpolation.pow3OutInverse));
 			uiStage.addActor(component.label);
 			

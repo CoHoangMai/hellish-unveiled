@@ -12,20 +12,14 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ai.GdxAI;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.SkinLoader;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Colors;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.hellish.audio.AudioManager;
@@ -34,6 +28,7 @@ import com.hellish.ecs.component.ComponentManager;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapManager;
 import com.hellish.screen.ScreenType;
+import com.hellish.ui.Scene2DSkin;
 
 import box2dLight.RayHandler;
 
@@ -43,10 +38,8 @@ public class Main extends Game {
 	private static final String TAG = Main.class.getSimpleName();
 	public static final String VIETNAMESE_CHARS = "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ";
 	
-	
 	private SpriteBatch spriteBatch;
 	private EnumMap<ScreenType, Screen> screenCache;
-	//private OrthographicCamera gameCamera;
 	private FitViewport screenViewport;
 	
 	public static final BodyDef BODY_DEF = new BodyDef();
@@ -88,9 +81,10 @@ public class Main extends Game {
 		//assetManager
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(assetManager.getFileHandleResolver()));
-		initializeSkin();
+		//initializeSkin();
+		Scene2DSkin.loadSkin();
 		gameStage = new Stage(new FitViewport(16, 9));
-		uiStage = new Stage(new FitViewport(1280, 720));
+		uiStage = new Stage(new FitViewport(320, 180));
 		
 		//audio
 		audioManager = new AudioManager(this);
@@ -129,34 +123,6 @@ public class Main extends Game {
 		FIXTURE_DEF.filter.categoryBits = 0x0001;
 		FIXTURE_DEF.filter.maskBits = -1;
 		FIXTURE_DEF.shape = null;
-	}
-	
-	public void	initializeSkin() {
-		//Tạo màu markup
-		Colors.put("Red", Color.RED);
-		Colors.put("Blue", Color.BLUE);
-		
-		//Tạo ttf bitmap
-		final ObjectMap<String, Object> resources = new ObjectMap<String, Object>();
-		final FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/KK7-VCROSDMono.ttf"));
-		final FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-		fontParameter.minFilter = Texture.TextureFilter.Linear;
-		fontParameter.magFilter = Texture.TextureFilter.Linear;
-		fontParameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS + VIETNAMESE_CHARS;
-		final int[] sizesToCreate = {16, 20, 26, 32};
-		for(int size: sizesToCreate) {
-			fontParameter.size = size;
-			final BitmapFont bitmapFont = fontGenerator.generateFont(fontParameter);
-			bitmapFont.getData().markupEnabled = true;
-			resources.put("font_" + size, bitmapFont);
-		}
-		fontGenerator.dispose();
-		
-		//Load skin
-		final SkinLoader.SkinParameter skinParameter = new SkinLoader.SkinParameter("ui/gorehud.atlas", resources);
-		assetManager.load("ui/hud.json", Skin.class, skinParameter);
-		assetManager.finishLoading();
-		skin = assetManager.get("ui/hud.json", Skin.class);
 	}
 	
 	public PreferenceManager getPreferenceManager() {
@@ -232,6 +198,8 @@ public class Main extends Game {
 	
 	@Override
 	public void render() {
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 		super.render();
 		
 		@SuppressWarnings("deprecation")
@@ -254,6 +222,6 @@ public class Main extends Game {
 		spriteBatch.dispose();	
 		gameStage.dispose();
 		uiStage.dispose();
+		Scene2DSkin.disposeSkin();
 	}
-		
 }

@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AiComponent;
 import com.hellish.ecs.component.AnimationComponent;
@@ -19,6 +21,8 @@ import com.hellish.ecs.component.StateComponent;
 public class AiEntity {
 	public static final Rectangle TMP_RECT1 = new Rectangle();
 	public static final Rectangle TMP_RECT2 = new Rectangle();
+
+	public final Entity entity;
 	
 	private final AnimationComponent aniCmp;
 	private final ImageComponent imageCmp;
@@ -28,10 +32,14 @@ public class AiEntity {
 	private final LifeComponent lifeCmp;
 
 	private StateComponent stateCmp;
-
 	private final AiComponent aiCmp;
 	
-	public AiEntity(Entity entity) {
+	private final Stage stage;
+	
+	public AiEntity(Entity entity, Stage stage) {
+		this.entity = entity;
+		this.stage = stage;
+		
 		physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
 		moveCmp = ECSEngine.moveCmpMapper.get(entity);
 		attackCmp = ECSEngine.attackCmpMapper.get(entity);
@@ -222,5 +230,9 @@ public class AiEntity {
 			return false;
 		}
 		return attackCmp.isReady() && inTargetRange(range);
+	}
+
+	public void fireEvent(Event event) {
+		stage.getRoot().fire(event);
 	}
 }

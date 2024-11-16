@@ -19,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool.Poolable;
@@ -132,7 +133,7 @@ public class PhysicsComponent implements Component, Poolable{
 	
 	public static class PhysicsComponentListener implements ComponentListener<PhysicsComponent> {
 		@Override
-		public void onComponentAdded(Entity entity, PhysicsComponent component) {
+		public void onComponentAdded(Entity entity, PhysicsComponent component, Stage stage) {
 			component.body.setUserData(entity);
 		}
 
