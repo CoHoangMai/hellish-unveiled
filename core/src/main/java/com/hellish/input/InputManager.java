@@ -5,6 +5,8 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
@@ -13,6 +15,8 @@ import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PlayerComponent;
 
 public class InputManager implements InputProcessor{
+	private final Stage uiStage;
+	
 	private final GameKeys[] keyMapping;
 	private final boolean[] keyState;
 	private final Array<GameKeyInputListener> listeners;
@@ -21,6 +25,7 @@ public class InputManager implements InputProcessor{
 	
 	private float playerSin;
 	private float playerCos;
+	private Vector2 directionVector;
 	
 	public InputManager(final Main context) {
 		this.keyMapping = new GameKeys[256];
@@ -33,10 +38,13 @@ public class InputManager implements InputProcessor{
 		listeners = new Array<GameKeyInputListener>();
 		
 		ecsEngine = context.getECSEngine();
+		uiStage = context.getUIStage();
+		
 		Gdx.input.setInputProcessor(this);
 		
 		playerSin = 0f;
 		playerCos = 0f;
+		directionVector = new Vector2();
 	}
 	
 	public void addInputListener(final GameKeyInputListener listener) {
@@ -52,10 +60,11 @@ public class InputManager implements InputProcessor{
 	}
 	
 	private void updatePlayerMovement() {
+		directionVector.set(playerCos, playerSin).nor();
 		for (Entity player : ecsEngine.getEntitiesFor(Family.all(PlayerComponent.class).get())) {
 			final MoveComponent moveCmp = ECSEngine.moveCmpMapper.get(player);
-			moveCmp.sine = playerSin;
-			moveCmp.cosine = playerCos;
+			moveCmp.cosine = directionVector.x;
+			moveCmp.sine = directionVector.y;
 		}
 	}
 	
@@ -88,6 +97,9 @@ public class InputManager implements InputProcessor{
 					final AttackComponent attackCmp = ECSEngine.attackCmpMapper.get(player);
 					attackCmp.doAttack = true;
 				}
+		 } else if (keycode == Input.Keys.A) {
+			 //TODO cần sửa lại
+			 uiStage.getActors().get(1).setVisible(!uiStage.getActors().get(1).isVisible());
 		 }
 		
 		notifyKeyDown(gameKey);

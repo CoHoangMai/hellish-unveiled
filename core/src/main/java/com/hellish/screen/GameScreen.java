@@ -3,6 +3,8 @@ package com.hellish.screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
 import com.hellish.input.GameKeys;
@@ -11,9 +13,11 @@ import com.hellish.map.MapManager;
 import com.hellish.map.MapType;
 import com.hellish.ui.Scene2DSkin;
 import com.hellish.ui.model.GameModel;
+import com.hellish.ui.model.InventoryModel;
 import com.hellish.ui.view.GameView;
+import com.hellish.ui.view.InventoryView;
 
-public class GameScreen extends AbstractScreen<GameView>{
+public class GameScreen extends AbstractScreen<Table>{
 	private final MapManager mapManager;
 	private final AssetManager assetManager;
 	private boolean isMusicLoaded;
@@ -66,8 +70,17 @@ public class GameScreen extends AbstractScreen<GameView>{
 	}
 
 	@Override
-	protected GameView getScreenView(Main context) {
-		return new GameView(new GameModel(context.getGameStage()), Scene2DSkin.defaultSkin);
+	protected Array<Table> getScreenViews(Main context) {
+		Array<Table> views = new Array<>();
+		
+		GameView gameView = new GameView(new GameModel(context.getGameStage()), Scene2DSkin.defaultSkin);
+        views.add(gameView);
+        
+        InventoryView invView = new InventoryView(new InventoryModel(context), Scene2DSkin.defaultSkin);
+        invView.setVisible(false);
+        views.add(invView);
+        
+		return views;
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import com.hellish.ecs.system.DeadSystem;
 import com.hellish.ecs.system.DebugSystem;
 import com.hellish.ecs.system.EntitySpawnSystem;
 import com.hellish.ecs.system.FloatingTextSystem;
+import com.hellish.ecs.system.InventorySystem;
 import com.hellish.ecs.system.LifeSystem;
 import com.hellish.ecs.system.LootSystem;
 import com.hellish.ecs.system.MoveSystem;
@@ -42,6 +43,8 @@ import com.hellish.ecs.component.AiComponent;
 import com.hellish.ecs.component.AiComponent.AiComponentListener;
 import com.hellish.ecs.component.FloatingTextComponent.FloatingTextComponentListener;
 import com.hellish.ecs.component.ImageComponent.ImageComponentListener;
+import com.hellish.ecs.component.InventoryComponent;
+import com.hellish.ecs.component.ItemComponent;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.MoveComponent;
@@ -65,6 +68,8 @@ public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<LootComponent> lootCmpMapper = ComponentMapper.getFor(LootComponent.class);
 	public static final ComponentMapper<StateComponent> stateCmpMapper = ComponentMapper.getFor(StateComponent.class);
 	public static final ComponentMapper<AiComponent> aiCmpMapper = ComponentMapper.getFor(AiComponent.class);
+	public static final ComponentMapper<ItemComponent> itemCmpMapper = ComponentMapper.getFor(ItemComponent.class);
+	public static final ComponentMapper<InventoryComponent> invCmpMapper = ComponentMapper.getFor(InventoryComponent.class);
 	
 	private final Stage gameStage;
 	private final Stage uiStage;
@@ -90,6 +95,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addAndTrackSystem(new CollisionDespawnSystem(context));
 		addAndTrackSystem(new MoveSystem());
 		addAndTrackSystem(new LootSystem(context));
+		addAndTrackSystem(new InventorySystem(context));
 		addAndTrackSystem(new DeadSystem(context));
 		addAndTrackSystem(new LifeSystem(context));
 		addAndTrackSystem(new PhysicsSystem(context));

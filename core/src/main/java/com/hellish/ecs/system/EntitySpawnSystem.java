@@ -35,6 +35,8 @@ import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AiComponent;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.ImageComponent;
+import com.hellish.ecs.component.InventoryComponent;
+import com.hellish.ecs.component.ItemComponent.ItemType;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.MoveComponent;
@@ -113,6 +115,13 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		if(spawnCmp.type.equals("Player")) {
 			spawnedEntity.add(new PlayerComponent());
 			spawnedEntity.add(new StateComponent());
+			
+			InventoryComponent itemCmp = new InventoryComponent();
+			itemCmp.itemsToAdd.add(ItemType.SWORD);
+			itemCmp.itemsToAdd.add(ItemType.BIG_SWORD);
+			itemCmp.itemsToAdd.add(ItemType.HELMET);
+			itemCmp.itemsToAdd.add(ItemType.BOOTS);
+			spawnedEntity.add(itemCmp);
 		}
 		
 		if(cfg.lootable) {

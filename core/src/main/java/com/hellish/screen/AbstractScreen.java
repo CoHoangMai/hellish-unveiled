@@ -4,6 +4,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioManager;
 import com.hellish.input.GameKeyInputListener;
@@ -17,7 +18,7 @@ public abstract class AbstractScreen<T extends Table> implements Screen, GameKey
 	protected final RayHandler rayHandler;
 	protected final Stage gameStage;
 	protected final Stage uiStage;
-	protected final T screenView;
+	protected final Array<T> screenViews;
 	protected final InputManager inputManager;
 	protected final AudioManager audioManager;
 	
@@ -29,11 +30,11 @@ public abstract class AbstractScreen<T extends Table> implements Screen, GameKey
 		
 		gameStage = context.getGameStage();
 		uiStage = context.getUIStage();
-		screenView = getScreenView(context);
+		screenViews = getScreenViews(context);
 		audioManager = context.getAudioManager();
 	}
 	
-	protected abstract T getScreenView(final Main context);
+	protected abstract Array<T> getScreenViews(final Main context);
 	
 	@Override
 	public void resize(final int width, final int height) {
@@ -44,12 +45,16 @@ public abstract class AbstractScreen<T extends Table> implements Screen, GameKey
 	@Override
 	public void show() {
 		inputManager.addInputListener(this);
-		uiStage.addActor(screenView);
+		for(T screenView : screenViews) {
+			uiStage.addActor(screenView);
+		}
 	}
 	
 	@Override
 	public void hide() {
 		inputManager.removeInputListener(this);
-		uiStage.getRoot().removeActor(screenView);
+		for(T screenView : screenViews) {
+			uiStage.getRoot().removeActor(screenView);
+		}
 	}
 }

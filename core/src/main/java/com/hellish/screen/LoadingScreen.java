@@ -8,6 +8,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
 import com.hellish.ecs.component.ParticleEffectComponent.ParticleEffectType;
@@ -17,8 +19,9 @@ import com.hellish.map.MapType;
 import com.hellish.ui.Scene2DSkin;
 import com.hellish.ui.view.LoadingView;
 
-public class LoadingScreen extends AbstractScreen<LoadingView> {
+public class LoadingScreen extends AbstractScreen<Table> {
 	private final AssetManager assetManager;
+	private LoadingView loadingView;
 	private boolean isMusicLoaded;
 	
 	public LoadingScreen(final Main context) {
@@ -58,7 +61,7 @@ public class LoadingScreen extends AbstractScreen<LoadingView> {
 			audioManager.playAudio(AudioType.INTRO);
 		}
 		
-		screenView.setProgress(assetManager.getProgress());
+		loadingView.setProgress(assetManager.getProgress());
 	}
 
 	@Override
@@ -95,8 +98,14 @@ public class LoadingScreen extends AbstractScreen<LoadingView> {
 	}
 
 	@Override
-	protected LoadingView getScreenView(Main context) {
-		return new LoadingView(Scene2DSkin.defaultSkin);
+	protected Array<Table> getScreenViews(Main context) {
+		Array<Table> views = new Array<>();
+        
+        LoadingView loadingView = new LoadingView(Scene2DSkin.defaultSkin);
+        views.add(loadingView);
+        this.loadingView = loadingView;
+        
+		return views;
 	}
 
 	@Override

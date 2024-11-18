@@ -97,7 +97,7 @@ public class Main extends Game {
 		
 		//input
 		inputManager = new InputManager(this);
-		Gdx.input.setInputProcessor(new InputMultiplexer(inputManager, gameStage));
+		Gdx.input.setInputProcessor(new InputMultiplexer(inputManager, gameStage, uiStage));
 		
 		//mapManager
 		mapManager = new MapManager(this);
@@ -194,7 +194,7 @@ public class Main extends Game {
 			Gdx.app.debug(TAG, "Đổi sang screen: " + screenType);
 			setScreen(screen);
 		}
-	}
+	} 
 	
 	@Override
 	public void render() {
