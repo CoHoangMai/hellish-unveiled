@@ -9,6 +9,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -25,6 +27,8 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.hellish.audio.AudioManager;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.ComponentManager;
+import com.hellish.event.GamePauseEvent;
+import com.hellish.event.GameResumeEvent;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapManager;
 import com.hellish.screen.ScreenType;
@@ -34,7 +38,7 @@ import box2dLight.RayHandler;
 
 import java.util.EnumMap;
 
-public class Main extends Game {
+public class Main extends Game implements EventListener{
 	private static final String TAG = Main.class.getSimpleName();
 	public static final String VIETNAMESE_CHARS = "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ";
 	
@@ -67,6 +71,8 @@ public class Main extends Game {
 	
 	private PreferenceManager preferenceManager;
 	
+	private boolean paused;
+	
 	@Override
 	public void create() {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -81,10 +87,11 @@ public class Main extends Game {
 		//assetManager
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(assetManager.getFileHandleResolver()));
-		//initializeSkin();
 		Scene2DSkin.loadSkin();
-		gameStage = new Stage(new FitViewport(16, 9));
-		uiStage = new Stage(new FitViewport(320, 180));
+		gameStage = new Stage(new FitViewport(16, 9), spriteBatch);
+		uiStage = new Stage(new FitViewport(320, 180), spriteBatch);
+		gameStage.addListener(this);
+		uiStage.addListener(this);
 		
 		//audio
 		audioManager = new AudioManager(this);
@@ -104,6 +111,8 @@ public class Main extends Game {
 		
 		//Preference manager
 		preferenceManager = new PreferenceManager();
+		
+		paused = false;
 		
 		//Screen đầu
 		screenCache = new EnumMap<ScreenType, Screen>(ScreenType.class);
@@ -199,17 +208,20 @@ public class Main extends Game {
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		super.render();
 		
 		@SuppressWarnings("deprecation")
-		final float deltaTime = Math.min(0.25f, Gdx.graphics.getRawDeltaTime());
+		final float deltaTime = paused ? 0 : Math.min(0.25f, Gdx.graphics.getRawDeltaTime());
 		GdxAI.getTimepiece().update(deltaTime);
 		ecsEngine.update(deltaTime);
-		
-		gameStage.getViewport().apply();
-		gameStage.act(deltaTime);
-		gameStage.draw();
+
+		super.render();
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+		gameStage.getViewport().update(width, height);
+		uiStage.getViewport().update(width, height);
 	}
 	
 	@Override
@@ -219,9 +231,23 @@ public class Main extends Game {
 		world.dispose();
 		ecsEngine.dispose();
 		assetManager.dispose();
-		spriteBatch.dispose();	
 		gameStage.dispose();
 		uiStage.dispose();
+		spriteBatch.dispose();
 		Scene2DSkin.disposeSkin();
+	}
+
+	@Override
+	public boolean handle(Event event) {
+		if(event instanceof GamePauseEvent) {
+			paused = true;
+			getScreen().pause();
+		} else if(event instanceof GameResumeEvent) {
+			paused = false;
+			getScreen().resume();
+		} else {
+			return false;
+		}
+		return true;
 	}
 }

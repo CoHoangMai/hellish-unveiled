@@ -63,12 +63,6 @@ public class LoadingScreen extends AbstractScreen<Table> {
 		
 		loadingView.setProgress(assetManager.getProgress());
 	}
-
-	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-		
-	}
 	
 	@Override
 	public void show() {

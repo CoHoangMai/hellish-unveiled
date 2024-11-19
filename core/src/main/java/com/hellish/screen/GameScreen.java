@@ -1,12 +1,22 @@
 package com.hellish.screen;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
+import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.system.AnimationSystem;
+import com.hellish.ecs.system.CameraSystem;
+import com.hellish.ecs.system.DebugSystem;
+import com.hellish.ecs.system.RenderSystem;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapManager;
@@ -16,16 +26,19 @@ import com.hellish.ui.model.GameModel;
 import com.hellish.ui.model.InventoryModel;
 import com.hellish.ui.view.GameView;
 import com.hellish.ui.view.InventoryView;
+import com.hellish.ui.view.PauseView;
 
 public class GameScreen extends AbstractScreen<Table>{
 	private final MapManager mapManager;
 	private final AssetManager assetManager;
+	private final ECSEngine ecsEngine;
 	private boolean isMusicLoaded;
 	
 	public GameScreen(final Main context) {
 		super(context);
 		
 		assetManager = context.getAssetManager();
+		ecsEngine = context.getECSEngine();
 		
 		mapManager = context.getMapManager();
 		mapManager.setMap(MapType.MAP_1);	
@@ -39,6 +52,28 @@ public class GameScreen extends AbstractScreen<Table>{
 		    }
 		}
 	}
+	
+	private void pauseWorld(boolean pause) {
+		HashSet<Class<?>> mandatorySystems = new HashSet<>(Arrays.asList(
+			AnimationSystem.class,
+			CameraSystem.class,
+			RenderSystem.class,
+			DebugSystem.class
+		));
+		
+		for(EntitySystem system : ecsEngine.getSystems()) {
+			if(!mandatorySystems.contains(system.getClass())) {
+				system.setProcessing(!pause);
+			}
+		}
+		
+		for(Actor actor : uiStage.getActors()) {
+			if(actor instanceof PauseView) {
+				actor.setVisible(pause);
+				break;
+			}
+		}
+	}
 
 	@Override
 	public void render(float delta) {
@@ -49,18 +84,13 @@ public class GameScreen extends AbstractScreen<Table>{
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-	}
-
-	@Override
 	public void pause() {
-		
+		pauseWorld(true);
 	}
 
 	@Override
 	public void resume() {
-		
+		pauseWorld(false);
 	}
 
 
@@ -79,6 +109,10 @@ public class GameScreen extends AbstractScreen<Table>{
         InventoryView invView = new InventoryView(new InventoryModel(context), Scene2DSkin.defaultSkin);
         invView.setVisible(false);
         views.add(invView);
+        
+        PauseView pauseView = new PauseView(Scene2DSkin.defaultSkin);
+        pauseView.setVisible(false);
+        views.add(pauseView);
         
 		return views;
 	}

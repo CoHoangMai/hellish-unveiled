@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.hellish.Main;
 import com.hellish.ecs.component.AnimationComponent;
@@ -74,14 +73,12 @@ public class ECSEngine extends PooledEngine implements Disposable{
 	private final Stage gameStage;
 	private final Stage uiStage;
 	private final ComponentManager componentManager;
-	private final Array<EntitySystem> addedSystems;
 	
 	public ECSEngine(final Main context) {
 		super();
 		
 		gameStage = context.getGameStage();	
 		uiStage = context.getUIStage();
-		addedSystems = new Array<EntitySystem>();
 		
 		componentManager = context.getComponentManager();
 		componentManager.addComponentListener(new ImageComponentListener(gameStage));
@@ -90,29 +87,24 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		componentManager.addComponentListener(new StateComponentListener());
 		componentManager.addComponentListener(new AiComponentListener());
 		
-		addAndTrackSystem(new EntitySpawnSystem(context));
-		addAndTrackSystem(new CollisionSpawnSystem(context));
-		addAndTrackSystem(new CollisionDespawnSystem(context));
-		addAndTrackSystem(new MoveSystem());
-		addAndTrackSystem(new LootSystem(context));
-		addAndTrackSystem(new InventorySystem(context));
-		addAndTrackSystem(new DeadSystem(context));
-		addAndTrackSystem(new LifeSystem(context));
-		addAndTrackSystem(new PhysicsSystem(context));
-		addAndTrackSystem(new AnimationSystem(context));
-		addAndTrackSystem(new AttackSystem(context));
-		addAndTrackSystem(new StateSystem());
-		addAndTrackSystem(new AiSystem());
-		addAndTrackSystem(new CameraSystem(context));
-		addAndTrackSystem(new FloatingTextSystem(context));
-		addAndTrackSystem(new RenderSystem(context));
-		addAndTrackSystem(new DebugSystem(context));
-		addAndTrackSystem(new ParticleEffectSystem(context));
-	}
-	
-	private void addAndTrackSystem(EntitySystem system) {
-		addedSystems.add(system);
-		addSystem(system);
+		addSystem(new EntitySpawnSystem(context));
+		addSystem(new CollisionSpawnSystem(context));
+		addSystem(new CollisionDespawnSystem(context));
+		addSystem(new MoveSystem());
+		addSystem(new LootSystem(context));
+		addSystem(new InventorySystem(context));
+		addSystem(new DeadSystem(context));
+		addSystem(new LifeSystem(context));
+		addSystem(new PhysicsSystem(context));
+		addSystem(new AnimationSystem(context));
+		addSystem(new AttackSystem(context));
+		addSystem(new StateSystem());
+		addSystem(new AiSystem());
+		addSystem(new CameraSystem(context));
+		addSystem(new FloatingTextSystem(context));
+		addSystem(new RenderSystem(context));
+		addSystem(new DebugSystem(context));
+		addSystem(new ParticleEffectSystem(context));
 	}
 	
 	@Override
@@ -134,7 +126,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 
 	@Override
 	public void dispose() {
-		for(EntitySystem system : addedSystems) {
+		for(EntitySystem system : getSystems()) {
 			if (system instanceof Disposable) {
 				((Disposable) system).dispose();
 			}

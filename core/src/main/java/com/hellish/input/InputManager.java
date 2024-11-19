@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
@@ -13,8 +14,12 @@ import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PlayerComponent;
+import com.hellish.event.GamePauseEvent;
+import com.hellish.event.GameResumeEvent;
+import com.hellish.ui.view.InventoryView;
 
 public class InputManager implements InputProcessor{
+	private final Stage gameStage;
 	private final Stage uiStage;
 	
 	private final GameKeys[] keyMapping;
@@ -27,6 +32,8 @@ public class InputManager implements InputProcessor{
 	private float playerCos;
 	private Vector2 directionVector;
 	
+	private boolean paused;
+	
 	public InputManager(final Main context) {
 		this.keyMapping = new GameKeys[256];
 		for (final GameKeys gameKey: GameKeys.values()) {
@@ -38,6 +45,7 @@ public class InputManager implements InputProcessor{
 		listeners = new Array<GameKeyInputListener>();
 		
 		ecsEngine = context.getECSEngine();
+		gameStage = context.getGameStage();
 		uiStage = context.getUIStage();
 		
 		Gdx.input.setInputProcessor(this);
@@ -45,6 +53,8 @@ public class InputManager implements InputProcessor{
 		playerSin = 0f;
 		playerCos = 0f;
 		directionVector = new Vector2();
+		
+		paused = false;
 	}
 	
 	public void addInputListener(final GameKeyInputListener listener) {
@@ -99,7 +109,15 @@ public class InputManager implements InputProcessor{
 				}
 		 } else if (keycode == Input.Keys.A) {
 			 //TODO cần sửa lại
-			 uiStage.getActors().get(1).setVisible(!uiStage.getActors().get(1).isVisible());
+			 for(Actor actor : uiStage.getActors()) {
+					if(actor instanceof InventoryView) {
+						actor.setVisible(!actor.isVisible());
+						break;
+					}
+				}
+		 } else if (keycode == Input.Keys.W) {
+			 paused = !paused;
+			 gameStage.getRoot().fire(paused ? new GamePauseEvent() : new GameResumeEvent());
 		 }
 		
 		notifyKeyDown(gameKey);
