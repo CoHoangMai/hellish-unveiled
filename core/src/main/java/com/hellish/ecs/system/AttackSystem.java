@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import com.hellish.Main;
-import com.hellish.actor.FlipImage;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.AttackComponent;
@@ -17,6 +16,8 @@ import com.hellish.ecs.component.AttackComponent.AttackState;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.LootComponent;
+import com.hellish.ecs.component.MoveComponent;
+import com.hellish.ecs.component.MoveComponent.Direction;
 import com.hellish.ecs.component.PhysicsComponent;
 
 public class AttackSystem extends IteratingSystem{
@@ -25,7 +26,7 @@ public class AttackSystem extends IteratingSystem{
 	private World world;
 	
 	public AttackSystem(final Main context) {
-		super(Family.all(AttackComponent.class, PhysicsComponent.class, ImageComponent.class).get());
+		super(Family.all(AttackComponent.class, PhysicsComponent.class, ImageComponent.class, MoveComponent.class).get());
 		
 		world = context.getWorld();
 	}
@@ -33,6 +34,7 @@ public class AttackSystem extends IteratingSystem{
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		final AttackComponent attackCmp = ECSEngine.attackCmpMapper.get(entity);
+		final MoveComponent moveCmp = ECSEngine.moveCmpMapper.get(entity);
 		
 		if (attackCmp.isReady() && !attackCmp.doAttack) {
 			return;
@@ -48,8 +50,7 @@ public class AttackSystem extends IteratingSystem{
 			attackCmp.state = AttackState.DEAL_DAMAGE;
 			
 			final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
-			final FlipImage image = ECSEngine.imageCmpMapper.get(entity).image;
-			boolean attackRight = image.isFlipX();
+			Direction attackDirection = moveCmp.direction;
 			float x = physicsCmp.body.getPosition().x;
 			float y = physicsCmp.body.getPosition().y;
 			float w = physicsCmp.size.x;
@@ -60,20 +61,39 @@ public class AttackSystem extends IteratingSystem{
 			//Chiều rộng và chiều cao của AABB_RECT thực chất là tọa độ góc trên phải của
 			//hình chữ nhật ta mong muốn. Khi truyền chúng vào QueryAABB thì vẫn chính xác
 			//vì QueryAABB lấy 2 thông số cuối đó là tọa độ góc trên phải.
-			if(attackRight) {
-				AABB_RECT.set(
-					x,
-					y - halfH,
-					x + halfW + attackCmp.extraRange,
-					y + halfH
-				);
-			} else {
-				AABB_RECT.set(
-					x - halfW  - attackCmp.extraRange,
-					y - halfH,
-					x,
-					y + halfH	
-				);
+			switch(attackDirection) {
+				case RIGHT:
+					AABB_RECT.set(
+						x,
+						y - halfH,
+						x + halfW + attackCmp.extraRange,
+						y + halfH
+					);
+					break;
+				case LEFT:
+					AABB_RECT.set(
+						x - halfW  - attackCmp.extraRange,
+						y - halfH,
+						x,
+						y + halfH	
+					);
+					break;
+				case UP:
+					AABB_RECT.set(
+						x - halfH,
+						y,
+						x + halfH,
+						y + halfW  + attackCmp.extraRange
+					);
+					break;
+				case DOWN:
+					AABB_RECT.set(
+						x - halfH,
+						y - halfW - attackCmp.extraRange,
+						x + halfH,
+						y	
+					);
+					break;
 			}
 			
 			world.QueryAABB(fixture -> {

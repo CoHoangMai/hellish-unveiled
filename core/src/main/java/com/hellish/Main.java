@@ -5,9 +5,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -31,6 +29,7 @@ import com.hellish.event.GamePauseEvent;
 import com.hellish.event.GameResumeEvent;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapManager;
+import com.hellish.screen.GameScreen;
 import com.hellish.screen.ScreenType;
 import com.hellish.ui.Scene2DSkin;
 
@@ -41,14 +40,11 @@ import java.util.EnumMap;
 public class Main extends Game implements EventListener{
 	private static final String TAG = Main.class.getSimpleName();
 	public static final String VIETNAMESE_CHARS = "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ";
+	public static final float UNIT_SCALE = 1 / 32f;
 	
 	private SpriteBatch spriteBatch;
 	private EnumMap<ScreenType, Screen> screenCache;
 	private FitViewport screenViewport;
-	
-	public static final BodyDef BODY_DEF = new BodyDef();
-	public static final FixtureDef FIXTURE_DEF = new FixtureDef();
-	public static final float UNIT_SCALE = 1 / 32f;
 	
 	private World world;
 	private RayHandler rayHandler;
@@ -62,14 +58,11 @@ public class Main extends Game implements EventListener{
 	private Skin skin;
 	
 	private InputManager inputManager;
-	
 	private MapManager mapManager;
-	
 	private ComponentManager componentManager;
+	private PreferenceManager preferenceManager;
 	
 	private ECSEngine ecsEngine;
-	
-	private PreferenceManager preferenceManager;
 	
 	private boolean paused;
 	
@@ -117,21 +110,6 @@ public class Main extends Game implements EventListener{
 		//Screen đầu
 		screenCache = new EnumMap<ScreenType, Screen>(ScreenType.class);
 		setScreen(ScreenType.LOADING);	
-	}
-	
-	public static void resetBodyAndFixtureDefinition() {
-		BODY_DEF.position.set(0, 0);
-		BODY_DEF.gravityScale = 1;
-		BODY_DEF.type = BodyDef.BodyType.StaticBody;
-		BODY_DEF.fixedRotation = true;
-		
-		FIXTURE_DEF.density = 0;
-		FIXTURE_DEF.isSensor = false;
-		FIXTURE_DEF.restitution = 0;
-		FIXTURE_DEF.friction = 0.2f;
-		FIXTURE_DEF.filter.categoryBits = 0x0001;
-		FIXTURE_DEF.filter.maskBits = -1;
-		FIXTURE_DEF.shape = null;
 	}
 	
 	public PreferenceManager getPreferenceManager() {
@@ -241,10 +219,14 @@ public class Main extends Game implements EventListener{
 	public boolean handle(Event event) {
 		if(event instanceof GamePauseEvent) {
 			paused = true;
-			getScreen().pause();
+			if(getScreen() instanceof GameScreen) {
+				getScreen().pause();
+			}
 		} else if(event instanceof GameResumeEvent) {
 			paused = false;
-			getScreen().resume();
+			if(getScreen() instanceof GameScreen) {
+				getScreen().resume();
+			}
 		} else {
 			return false;
 		}

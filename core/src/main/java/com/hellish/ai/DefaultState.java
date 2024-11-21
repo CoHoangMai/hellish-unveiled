@@ -25,7 +25,7 @@ public enum DefaultState implements EntityState{
 	WALK{
 		@Override
 		public void enter(AiEntity aiEntity) {
-			aiEntity.animation(AnimationType.SIDE_WALK);
+			aiEntity.animation(AnimationType.WALK);
 		}
 		
 		@Override
@@ -41,7 +41,7 @@ public enum DefaultState implements EntityState{
 	ATTACK{
 		@Override
 		public void enter(AiEntity aiEntity) {
-			aiEntity.animation(AnimationType.SIDE_ATTACK, Animation.PlayMode.NORMAL);
+			aiEntity.animation(AnimationType.ATTACK, Animation.PlayMode.NORMAL);
 			aiEntity.root(true);
 			aiEntity.startAttack();
 		}
@@ -51,7 +51,7 @@ public enum DefaultState implements EntityState{
 			if(aiEntity.attackCmp().isReady() && !aiEntity.attackCmp().doAttack) {
 				aiEntity.changeToPreviousState();
 			} else if (aiEntity.attackCmp().isReady()) {
-				aiEntity.animation(AnimationType.SIDE_ATTACK, Animation.PlayMode.NORMAL, true);
+				aiEntity.animation(AnimationType.ATTACK, Animation.PlayMode.NORMAL, true);
 				aiEntity.startAttack();
 			}
 		}

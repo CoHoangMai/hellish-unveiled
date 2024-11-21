@@ -3,20 +3,28 @@ package com.hellish.screen;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
 import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.component.AttackComponent;
+import com.hellish.ecs.component.MoveComponent;
+import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.system.AnimationSystem;
 import com.hellish.ecs.system.CameraSystem;
 import com.hellish.ecs.system.DebugSystem;
 import com.hellish.ecs.system.RenderSystem;
+import com.hellish.event.GamePauseEvent;
+import com.hellish.event.GameResumeEvent;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapManager;
@@ -33,6 +41,11 @@ public class GameScreen extends AbstractScreen<Table>{
 	private final AssetManager assetManager;
 	private final ECSEngine ecsEngine;
 	private boolean isMusicLoaded;
+	private boolean paused;
+	
+	private float playerSin;
+	private float playerCos;
+	private Vector2 directionVector;
 	
 	public GameScreen(final Main context) {
 		super(context);
@@ -41,8 +54,13 @@ public class GameScreen extends AbstractScreen<Table>{
 		ecsEngine = context.getECSEngine();
 		
 		mapManager = context.getMapManager();
-		mapManager.setMap(MapType.MAP_1);	
+		mapManager.setMap(MapType.MAP_1);
 		
+		playerSin = 0f;
+		playerCos = 0f;
+		directionVector = new Vector2();
+
+		paused = false;
 		isMusicLoaded = false;
 		for (final AudioType audioType : AudioType.values()) {
 		    if (audioType.isMusic()) {
@@ -116,14 +134,78 @@ public class GameScreen extends AbstractScreen<Table>{
         
 		return views;
 	}
+	
+	private boolean isMovementKey(GameKeys key) {
+		return key == GameKeys.UP || key == GameKeys.DOWN || key == GameKeys.LEFT || key == GameKeys.RIGHT;
+	}
+	
+	private void updatePlayerMovement() {
+		directionVector.set(playerCos, playerSin).nor();
+		for (Entity player : ecsEngine.getEntitiesFor(Family.all(PlayerComponent.class).get())) {
+			final MoveComponent moveCmp = ECSEngine.moveCmpMapper.get(player);
+			moveCmp.cosine = directionVector.x;
+			moveCmp.sine = directionVector.y;
+		}
+	}
 
 	@Override
 	public void keyPressed(InputManager manager, GameKeys key) {
-
+		if (isMovementKey(key)) {
+			switch (key) {
+				case UP:
+					playerSin = 1;
+			 		break;
+			 	case DOWN:
+			 		playerSin = -1;
+			 		break;
+			 	case RIGHT:
+			 		playerCos = 1;
+			 		break;
+			 	case LEFT:
+			 		playerCos = -1;
+			 		break;
+			 	default:
+			 		return;
+	            }
+			 updatePlayerMovement();
+		 } else if (key == GameKeys.ATTACK) {
+			 for (Entity player : ecsEngine.getEntitiesFor(Family.all(PlayerComponent.class).get())) {
+				final AttackComponent attackCmp = ECSEngine.attackCmpMapper.get(player);
+				attackCmp.doAttack = true;
+			}
+		 } else if (key == GameKeys.INVENTORY) {
+			 for(Actor actor : uiStage.getActors()) {
+					if(actor instanceof InventoryView) {
+						actor.setVisible(!actor.isVisible());
+						break;
+					}
+				}
+		 } else if (key == GameKeys.PAUSE) {
+			 paused = !paused;
+			 gameStage.getRoot().fire(paused ? new GamePauseEvent() : new GameResumeEvent());
+		 }
 	}
 
 	@Override
 	public void keyUp(InputManager manager, GameKeys key) {
-		
+        if (isMovementKey(key)) {
+        	switch (key) {
+        		case UP:
+                    playerSin = manager.isKeyPressed(GameKeys.DOWN) ? -1 : 0;
+                    break;
+                case DOWN:
+                    playerSin = manager.isKeyPressed(GameKeys.UP) ? 1 : 0;
+                    break;
+                case RIGHT:
+                    playerCos = manager.isKeyPressed(GameKeys.LEFT) ? -1 : 0;
+                    break;
+                case LEFT:
+                    playerCos = manager.isKeyPressed(GameKeys.RIGHT) ? 1 : 0;
+                    break;
+                default:
+                    return;
+            }
+        	updatePlayerMovement();
+        }
 	}
 }

@@ -51,8 +51,7 @@ public class InventoryModel extends PropertyChangeSource implements EventListene
 					ItemComponent itemCmp = ECSEngine.itemCmpMapper.get(itemEntity);
 					if(itemCmp != null) {
 						updatedItems.add(new ItemModel(
-								//Hãy cùng băm và cầu nguyện
-								itemEntity.hashCode(),
+								itemEntity,
 								itemCmp.itemType.category,
 								itemCmp.itemType.uiAtlasKey,
 								itemCmp.slotIdx,
@@ -69,8 +68,7 @@ public class InventoryModel extends PropertyChangeSource implements EventListene
 
 	private ItemComponent getPlayerItemByModel(ItemModel itemModel) {
 		for(Entity itemEntity : getPlayerInventoryCmp().items) {
-			//Cầu nguyện
-			if(itemEntity.hashCode() == itemModel.itemEntityId) {
+			if(itemEntity == itemModel.itemEntity) {
 				return ECSEngine.itemCmpMapper.get(itemEntity);
 			}
 		}

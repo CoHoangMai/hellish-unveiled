@@ -20,12 +20,12 @@ public class WanderTask extends Action{
 			if(startPos.isZero()) {
 				startPos.set(getObject().getPosition());
 			}
-			getObject().animation(AnimationType.SIDE_WALK);
 			targetPos.set(startPos);
 			targetPos.x += MathUtils.random(-range, range);
 			targetPos.y += MathUtils.random(-range, range);
 			getObject().moveToPosition(targetPos);
 			getObject().moveSlowly(true);
+			getObject().animation(AnimationType.WALK);
 		}
 		
 		if(getObject().inRange(0, targetPos)) {

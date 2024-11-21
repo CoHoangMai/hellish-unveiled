@@ -10,7 +10,7 @@ public class AttackTask extends Action{
 		if(getStatus() != Status.RUNNING) {
 			getObject().startAttack();
 			getObject().stopMovement();
-			getObject().animation(AnimationType.SIDE_ATTACK, PlayMode.NORMAL, true);
+			getObject().animation(AnimationType.ATTACK, PlayMode.NORMAL, true);
 			getObject().fireEvent(new EntityAggroEvent(getObject().entity));
 			return Status.RUNNING;
 		}

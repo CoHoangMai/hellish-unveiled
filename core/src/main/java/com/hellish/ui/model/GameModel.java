@@ -72,8 +72,8 @@ public class GameModel extends PropertyChangeSource implements EventListener{
 		if(!lastEnemy.equals(enemy)) {
 			lastEnemy = enemy;
 			AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(enemy);
-			if(aniCmp != null && aniCmp.model != null) {
-				setEnemyType(aniCmp.model.getModel());
+			if(aniCmp != null && aniCmp.currentModel != null) {
+				setEnemyType(aniCmp.currentModel.getModel());
 			}
 		}
 	}

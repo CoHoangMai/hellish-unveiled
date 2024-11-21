@@ -27,7 +27,7 @@ public class LoadingView extends Table{
 		txtButton = new TextButton("", skin.get(Buttons.TEXT_BUTTON.getSkinKey(), TextButtonStyle.class));
 		txtButton.getLabel().setWrap(true);
 		
-		pressAnyKeyButton = new TextButton("[RED]Nhấn phím bất kì test nhân phẩm để tiếp tục", 
+		pressAnyKeyButton = new TextButton("[RED]Nhấn phím Enter hoặc Z để tiếp tục", 
 				skin.get(Buttons.TEXT_BUTTON.getSkinKey(), TextButtonStyle.class));
 		pressAnyKeyButton.getLabel().setWrap(true);
 		pressAnyKeyButton.setVisible(false);
@@ -43,7 +43,7 @@ public class LoadingView extends Table{
 		final StringBuilder stringBuilder = txtButton.getLabel().getText();
 		stringBuilder.setLength(0);
 		stringBuilder.append("[Red]Loading đến ");
-		stringBuilder.append(progress*100);
+		stringBuilder.append(String.format("%.1f", progress * 100));
 		stringBuilder.append("%");
 		txtButton.getLabel().invalidateHierarchy();
 		

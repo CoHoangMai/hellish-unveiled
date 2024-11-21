@@ -84,11 +84,6 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		imageCmp.image.setScaling(Scaling.fill);
 		spawnedEntity.add(imageCmp);
 		
-		final AnimationComponent aniCmp = getEngine().createComponent(AnimationComponent.class);
-		aniCmp.mode = Animation.PlayMode.LOOP;
-		aniCmp.nextAnimation(cfg.model, AnimationType.IDLE);
-		spawnedEntity.add(aniCmp);
-		
 		final PhysicsComponent physicsCmp = PhysicsComponent.physicsCmpFromImgandCfg(world, imageCmp.image, cfg);
 		spawnedEntity.add(physicsCmp);
 		
@@ -97,6 +92,11 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			moveCmp.speed = DEFAULT_SPEED * cfg.speedScaling;
 			spawnedEntity.add(moveCmp);
 		}
+		
+		final AnimationComponent aniCmp = getEngine().createComponent(AnimationComponent.class);
+		aniCmp.mode = Animation.PlayMode.LOOP;
+		aniCmp.nextAnimation(cfg.model, AnimationType.IDLE);
+		spawnedEntity.add(aniCmp);
 		
 		if(cfg.canAttack) {
 			final AttackComponent attackCmp = new AttackComponent();

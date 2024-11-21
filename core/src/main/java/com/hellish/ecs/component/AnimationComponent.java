@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.hellish.ecs.component.MoveComponent.Direction;
 
 public class AnimationComponent implements Component, Poolable{
 	public enum AnimationModel {
@@ -15,42 +16,73 @@ public class AnimationComponent implements Component, Poolable{
 	}
 	
 	public enum AnimationType {
-		DOWN_WALK, UP_WALK, SIDE_WALK, IDLE, DOWN_IDLE, UP_IDLE, SIDE_IDLE,
-		ATTACK, SIDE_ATTACK, OPEN, DIE;
+		IDLE, WALK, ATTACK, OPEN, DIE;
 		
 		public String getAtlasKey() {
             return this.name().toLowerCase();
         }
 	}
 	
-	public AnimationModel model;
 	public float aniTime;
 	public Animation.PlayMode mode;
 	public Animation<TextureRegionDrawable> animation;
-	public String nextAnimation;
+	public AnimationModel currentModel;
+	public AnimationModel nextModel;
+	public AnimationType currentAnimationType;
+	public AnimationType nextAnimationType;
+	public String currentDirectionKey;
+	public String nextDirectionKey;
 	
-	public static final String NO_ANIMATION = "";
-
-	@Override
-	public void reset() {
-		model = AnimationModel.UNDEFINED;
+	public AnimationComponent() {
 		aniTime = 0;
 		mode = Animation.PlayMode.LOOP;
 		animation = null;
-		nextAnimation = NO_ANIMATION;
+		currentModel = AnimationModel.UNDEFINED;
+		nextModel = AnimationModel.UNDEFINED;
+		currentAnimationType = AnimationType.IDLE;
+		nextAnimationType = AnimationType.IDLE;
+		currentDirectionKey = "down_";
+		nextDirectionKey = "down_";
+	}
+
+	@Override
+	public void reset() {
+		aniTime = 0;
+		mode = Animation.PlayMode.LOOP;
+		animation = null;
+		currentModel = AnimationModel.UNDEFINED;
+		nextModel = AnimationModel.UNDEFINED;
+		currentAnimationType = AnimationType.IDLE;
+		nextAnimationType = AnimationType.IDLE;
+		currentDirectionKey = "down_";
+		nextDirectionKey = "down_";
+	}
+	
+	public String getDirectionKey(Direction direction) {
+		if(direction == Direction.UP) {
+			return "up_";
+		} else if(direction == Direction.DOWN) {
+			return "down_";
+		} else if(direction == Direction.LEFT || direction == Direction.RIGHT) {
+			return "side_";
+		} else {
+			return "";
+		}
 	}
 	
 	public void nextAnimation(AnimationType type) {
-		this.nextAnimation = model.getModel() + "/" + type.getAtlasKey();	
+		this.nextAnimationType = type;
 	}
 	
 	public void nextAnimation(AnimationModel model, AnimationType type) {
-		this.model = model;
-		this.nextAnimation = model.getModel() + "/" + type.getAtlasKey();	
-	}
+		this.nextModel = model;
+		this.nextAnimationType = type;
+	} 
 	
 	public void clearAnimation() {
-		this.nextAnimation = NO_ANIMATION;
+		this.currentModel = this.nextModel;
+		this.currentAnimationType = this.nextAnimationType;
+		this.currentDirectionKey = this.nextDirectionKey;
 	}
 	
 	public boolean isAnimationFinished() {
