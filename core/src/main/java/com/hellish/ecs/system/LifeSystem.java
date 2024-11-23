@@ -39,7 +39,18 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		final LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(entity);
+		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
 		lifeCmp.life = Math.min(lifeCmp.life + lifeCmp.regeneration * deltaTime, lifeCmp.max);
+		
+		if(lifeCmp.life < lifeCmp.max * 0.5f) {
+			if(!lifeCmp.isInjured) {
+				lifeCmp.isInjured = true;
+			}
+		} else {
+			if(lifeCmp.isInjured) {
+				lifeCmp.isInjured = false;
+			}
+		}
 		
 		if (lifeCmp.takeDamage > 0) {
 			final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
@@ -48,8 +59,9 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 			floatingText(Integer.toString((int) lifeCmp.takeDamage), physicsCmp.body.getPosition(), physicsCmp.size);
 			lifeCmp.takeDamage = 0;
 		}
+		
 		if (lifeCmp.isDead()) {
-			final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
+			lifeCmp.isInjured = false;
 			if(aniCmp != null) {
 				aniCmp.nextAnimation(AnimationType.DIE);
 				aniCmp.mode = PlayMode.NORMAL;

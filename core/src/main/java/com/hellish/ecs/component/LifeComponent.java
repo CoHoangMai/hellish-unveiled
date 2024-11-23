@@ -8,17 +8,27 @@ public class LifeComponent implements Component, Poolable{
 	public float max = 30;
 	public float regeneration = 1;
 	public float takeDamage = 0;
+	public boolean isInjured = false;
 	
 	public boolean isDead() {
 		return life <= 0;
+	}
+	
+	public LifeComponent() {
+		life = 30;
+		max = 30;
+		regeneration = 0;
+		takeDamage = 0;
+		isInjured = false;
 	}
 	
 	@Override
 	public void reset() {
 		life = 30;
 		max = 30;
-		regeneration = 1;
+		regeneration = 0;
 		takeDamage = 0;
+		isInjured = false;
 	}
 
 }

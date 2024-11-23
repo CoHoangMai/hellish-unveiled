@@ -12,8 +12,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -21,9 +19,10 @@ import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.ImageComponent;
-import com.hellish.event.EntityDirectionChangedEvent;
+import com.hellish.ecs.component.LifeComponent;
+import com.hellish.ecs.component.MoveComponent;
 
-public class AnimationSystem extends IteratingSystem implements EventListener{
+public class AnimationSystem extends IteratingSystem {
 	public static final String TAG = AnimationSystem.class.getSimpleName();
 	private static final float DEFAULT_FRAME_DURATION = 1 / 8f;
 	
@@ -43,12 +42,22 @@ public class AnimationSystem extends IteratingSystem implements EventListener{
 	protected void processEntity(Entity entity, float deltaTime) {
 		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
 		final ImageComponent imgCmp = ECSEngine.imageCmpMapper.get(entity);
+		final MoveComponent moveCmp = ECSEngine.moveCmpMapper.get(entity);
+		final LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(entity);
+		
+		if(moveCmp != null && aniCmp.currentDirectionKey != aniCmp.getDirectionKey(moveCmp.direction)) {
+			aniCmp.nextDirectionKey = aniCmp.getDirectionKey(moveCmp.direction);
+		}
+		
+		if(lifeCmp != null && lifeCmp.isInjured != aniCmp.currentInjuredStatus) {
+			aniCmp.nextInjuredStatus = lifeCmp.isInjured;
+		}
 		
 		if (aniCmp.currentModel == aniCmp.nextModel && aniCmp.currentAnimationType == aniCmp.nextAnimationType
-				&& aniCmp.currentDirectionKey == aniCmp.nextDirectionKey) {
+				&& aniCmp.currentDirectionKey == aniCmp.nextDirectionKey && aniCmp.currentInjuredStatus == aniCmp.nextInjuredStatus) {
 			aniCmp.aniTime += deltaTime;
 		} else {
-			aniCmp.animation = animation(aniCmp.nextModel.getModel(), aniCmp.nextAnimationType.getAtlasKey(), aniCmp.nextDirectionKey);
+			aniCmp.animation = animation(aniCmp.nextModel.getModel(), aniCmp.nextInjuredStatus, aniCmp.nextAnimationType.getAtlasKey(), aniCmp.nextDirectionKey);
 			aniCmp.clearAnimation();
 			aniCmp.aniTime = 0;
 		}
@@ -56,9 +65,17 @@ public class AnimationSystem extends IteratingSystem implements EventListener{
 		imgCmp.image.setDrawable(aniCmp.animation.getKeyFrame(aniCmp.aniTime));
 	}
 	
-	private Animation<TextureRegionDrawable> animation(String modelKey, String typeKey, String directionKey){
-		String directionAtlasKey = modelKey + "/" + directionKey + typeKey;
-		String noDirectionAtlasKey = modelKey + "/" + typeKey;
+	private Animation<TextureRegionDrawable> animation(String modelKey, boolean isInjured, String typeKey, String directionKey){
+		String directionAtlasKey;
+		String noDirectionAtlasKey;
+		
+		if(modelKey.contains("zombie") && isInjured) {
+			directionAtlasKey = modelKey + "/injured_" + directionKey + typeKey;
+			noDirectionAtlasKey = modelKey + "/injured_" + typeKey;
+		} else {
+			directionAtlasKey = modelKey + "/" + directionKey + typeKey;
+			noDirectionAtlasKey = modelKey + "/" + typeKey;
+		}
 		
 		if(animationCache.containsKey(directionAtlasKey)) {
 			return animationCache.get(directionAtlasKey);
@@ -108,21 +125,5 @@ public class AnimationSystem extends IteratingSystem implements EventListener{
         animationCache.put(directionAtlasKey, animation);
 		Gdx.app.debug(TAG, "Tạo animation mới loại " + directionAtlasKey);
         return animation;
-	}
-
-	@Override
-	public boolean handle(Event event) {
-		if(event instanceof EntityDirectionChangedEvent) {
-			EntityDirectionChangedEvent directionEvent = (EntityDirectionChangedEvent) event;
-			AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(directionEvent.getEntity());
-			
-			if(aniCmp.currentDirectionKey == aniCmp.getDirectionKey(directionEvent.getDirection())) {
-				return true;
-			}
-			
-			aniCmp.nextDirectionKey = aniCmp.getDirectionKey(directionEvent.getDirection());
-			return true;
-		}
-		return false;
 	}
 }

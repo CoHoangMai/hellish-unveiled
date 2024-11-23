@@ -8,7 +8,9 @@ import com.hellish.ecs.component.MoveComponent.Direction;
 
 public class AnimationComponent implements Component, Poolable{
 	public enum AnimationModel {
-		PLAYER, WOLF, CHEST, UNDEFINED;
+		PLAYER, WOLF, CHEST,
+		FLAG_ZOMBIE, RUNNING_ZOMBIE, TREE_ZOMBIE,
+		UNDEFINED;
 
 		public String getModel() {
 			return this.name().toLowerCase();
@@ -28,6 +30,8 @@ public class AnimationComponent implements Component, Poolable{
 	public Animation<TextureRegionDrawable> animation;
 	public AnimationModel currentModel;
 	public AnimationModel nextModel;
+	public boolean currentInjuredStatus;
+	public boolean nextInjuredStatus;
 	public AnimationType currentAnimationType;
 	public AnimationType nextAnimationType;
 	public String currentDirectionKey;
@@ -39,6 +43,8 @@ public class AnimationComponent implements Component, Poolable{
 		animation = null;
 		currentModel = AnimationModel.UNDEFINED;
 		nextModel = AnimationModel.UNDEFINED;
+		currentInjuredStatus = false;
+		nextInjuredStatus = false;
 		currentAnimationType = AnimationType.IDLE;
 		nextAnimationType = AnimationType.IDLE;
 		currentDirectionKey = "down_";
@@ -52,6 +58,8 @@ public class AnimationComponent implements Component, Poolable{
 		animation = null;
 		currentModel = AnimationModel.UNDEFINED;
 		nextModel = AnimationModel.UNDEFINED;
+		currentInjuredStatus = false;
+		nextInjuredStatus = false;
 		currentAnimationType = AnimationType.IDLE;
 		nextAnimationType = AnimationType.IDLE;
 		currentDirectionKey = "down_";
@@ -81,6 +89,7 @@ public class AnimationComponent implements Component, Poolable{
 	
 	public void clearAnimation() {
 		this.currentModel = this.nextModel;
+		this.currentInjuredStatus = this.nextInjuredStatus;
 		this.currentAnimationType = this.nextAnimationType;
 		this.currentDirectionKey = this.nextDirectionKey;
 	}

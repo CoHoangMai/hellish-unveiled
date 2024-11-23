@@ -3,22 +3,15 @@ package com.hellish.ecs.system;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.MoveComponent.Direction;
 import com.hellish.ecs.component.PhysicsComponent;
-import com.hellish.event.EntityDirectionChangedEvent;
 
 public class MoveSystem extends IteratingSystem{
-	private final Stage stage;
-
-	public MoveSystem(final Main context) {
+	public MoveSystem() {
 		super(Family.all(MoveComponent.class, PhysicsComponent.class).get());
-		
-		stage = context.getGameStage();
 	}
 
 	@Override
@@ -37,7 +30,6 @@ public class MoveSystem extends IteratingSystem{
 		
 		if(moveCmp.direction != getDirection(moveCmp)) {
 			moveCmp.direction = getDirection(moveCmp);
-			stage.getRoot().fire(new EntityDirectionChangedEvent(entity, moveCmp.direction));
 		}
 		
 		

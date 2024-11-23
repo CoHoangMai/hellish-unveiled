@@ -15,6 +15,15 @@ public class AttackComponent implements Component, Poolable{
 	public float extraRange;
 	public AttackState state;
 	
+	public AttackComponent() {
+		doAttack = false;
+		damage = 0;
+		delay = 0;
+		maxDelay = 0;
+		extraRange = 0;
+		state = AttackState.READY;
+	}
+	
 	@Override
 	public void reset() {
 		doAttack = false;

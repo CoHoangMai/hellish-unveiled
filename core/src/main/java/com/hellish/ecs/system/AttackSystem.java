@@ -48,7 +48,6 @@ public class AttackSystem extends IteratingSystem{
 		attackCmp.delay -= deltaTime;
 		if(attackCmp.delay <= 0 && attackCmp.isAttacking()) {
 			attackCmp.state = AttackState.DEAL_DAMAGE;
-			
 			final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
 			Direction attackDirection = moveCmp.direction;
 			float x = physicsCmp.body.getPosition().x;
@@ -137,7 +136,7 @@ public class AttackSystem extends IteratingSystem{
 		}
 		
 		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
-		if(aniCmp != null && aniCmp.isAnimationFinished()) {
+		if(aniCmp != null && aniCmp.isAnimationFinished() && attackCmp.state == AttackState.DEAL_DAMAGE) {
 			attackCmp.state = AttackState.READY;
 		}
 	}

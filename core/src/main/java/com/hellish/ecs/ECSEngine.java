@@ -90,7 +90,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addSystem(new EntitySpawnSystem(context));
 		addSystem(new CollisionSpawnSystem(context));
 		addSystem(new CollisionDespawnSystem(context));
-		addSystem(new MoveSystem(context));
+		addSystem(new MoveSystem());
 		addSystem(new LootSystem(context));
 		addSystem(new InventorySystem(context));
 		addSystem(new DeadSystem(context));

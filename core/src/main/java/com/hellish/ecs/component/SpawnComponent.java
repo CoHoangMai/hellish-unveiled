@@ -9,7 +9,12 @@ import com.hellish.ecs.component.AnimationComponent.AnimationModel;
 
 public class SpawnComponent implements Component, Poolable{
 	public String type;
-	public Vector2 location = new Vector2(0, 0);
+	public Vector2 location;
+	
+	public SpawnComponent() {
+		type = "";
+		location = new Vector2(0, 0);
+	}
 
 	@Override
 	public void reset() {

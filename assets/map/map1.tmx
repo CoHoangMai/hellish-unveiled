@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="31">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="36">
  <tileset firstgid="1" name="test-tiles" tilewidth="32" tileheight="32" tilecount="64" columns="8">
   <image source="TX Tileset Grass.png" width="256" height="256"/>
  </tileset>
@@ -239,7 +239,7 @@
    </objectgroup>
   </tile>
  </tileset>
- <tileset firstgid="321" name="entities" tilewidth="64" tileheight="64" tilecount="3" columns="0">
+ <tileset firstgid="321" name="entities" tilewidth="64" tileheight="64" tilecount="6" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="2" type="Player">
    <image source="../characters_and_effects/player.png" width="64" height="64"/>
@@ -249,6 +249,15 @@
   </tile>
   <tile id="4" type="Chest">
    <image source="../characters_and_effects/chest.png" width="64" height="64"/>
+  </tile>
+  <tile id="5" type="RunningZombie">
+   <image source="../raw assets/gameObjects/running_zombie/idle_00.png" width="64" height="64"/>
+  </tile>
+  <tile id="6" type="FlagZombie">
+   <image source="../raw assets/gameObjects/flag_zombie/idle_00.png" width="64" height="64"/>
+  </tile>
+  <tile id="7" type="TreeZombie">
+   <image source="../raw assets/gameObjects/tree_zombie/idle_00.png" width="64" height="64"/>
   </tile>
  </tileset>
  <layer id="1" name="ground" width="30" height="20">
@@ -303,12 +312,12 @@
 </data>
  </layer>
  <objectgroup id="11" name="entities">
-  <object id="19" gid="323" x="173.583" y="487.478" width="64" height="64"/>
-  <object id="20" gid="324" x="246.51" y="324.049" width="48" height="48"/>
-  <object id="21" gid="324" x="692.696" y="294.51" width="48" height="48"/>
-  <object id="24" gid="324" x="244.955" y="549.474" width="48" height="48"/>
-  <object id="26" gid="324" x="249.619" y="535.482" width="48" height="48"/>
+  <object id="19" gid="323" x="49.583" y="424.478" width="64" height="64"/>
   <object id="30" gid="325" x="497" y="400" width="64" height="64"/>
+  <object id="31" gid="326" x="507" y="404" width="64" height="64"/>
+  <object id="33" gid="324" x="756" y="253" width="48" height="48"/>
+  <object id="34" gid="327" x="235" y="348" width="64" height="64"/>
+  <object id="35" gid="328" x="783" y="477" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="6" name="gameObjects">
   <object id="14" gid="203" x="669.604" y="382.899" width="32" height="32"/>

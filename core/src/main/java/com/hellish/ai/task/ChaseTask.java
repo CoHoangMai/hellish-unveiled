@@ -10,13 +10,12 @@ public class ChaseTask extends Action{
 	@Override
 	public Status execute() {
 		if(getStatus() != Status.RUNNING) {
-			//getObject().animation(AnimationType.WALK);
+			getObject().animation(AnimationType.WALK);
 			return Status.RUNNING;
 		}
 
 		getObject().checkTargetStillNearby();
 		getObject().moveToTarget();
-		getObject().animation(AnimationType.WALK);
 		if(getObject().inTargetRange(range)) {
 			return Status.SUCCEEDED;
 		}

@@ -155,6 +155,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.speedScaling = 1.5f;
 				builder.physicsScaling = new Vector2(0.2f, 0.44f);
 				builder.physicsOffset = new Vector2(0, -2 * UNIT_SCALE);
+				builder.lifeScaling = 3;
 				builder.attackScaling = 1.25f;
 				builder.attackExtraRange = 0.75f;
 				return new SpawnConfiguration(builder);
@@ -168,12 +169,36 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				return new SpawnConfiguration(builder);
 			} else if (t.equals("Chest")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.CHEST);
-				builder.speedScaling = 0;
 				builder.physicsScaling = new Vector2(0.3f, 0.2f);
 				builder.canAttack = false;
 				builder.lifeScaling = 0;
 				builder.lootable = true;
 				builder.bodyType = BodyType.StaticBody;
+				return new SpawnConfiguration(builder);
+			} else if (t.equals("FlagZombie")) {
+				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.FLAG_ZOMBIE);
+				builder.physicsScaling = new Vector2(0.44f, 0.72f);
+				builder.physicsOffset = new Vector2(0, -6 * UNIT_SCALE);
+				builder.attackScaling = 0.5f;
+				builder.lifeScaling = 0.75f;
+				builder.aiTreePath = "ai/zombie.tree";
+				return new SpawnConfiguration(builder);
+			} else if (t.equals("RunningZombie")) {
+				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.RUNNING_ZOMBIE);
+				builder.speedScaling = 2;
+				builder.physicsScaling = new Vector2(0.48f, 0.72f);
+				builder.attackScaling = 0.5f;
+				builder.lifeScaling = 0.5f;
+				builder.aiTreePath = "ai/zombie.tree";
+				return new SpawnConfiguration(builder);
+			} else if (t.equals("TreeZombie")) {
+				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.TREE_ZOMBIE);
+				builder.speedScaling = 0.75f;
+				builder.physicsScaling = new Vector2(0.4f, 0.78f);
+				builder.physicsOffset = new Vector2(0, -4 * UNIT_SCALE);
+				builder.attackScaling = 0.75f;
+				builder.lifeScaling = 1.25f;
+				builder.aiTreePath = "ai/zombie.tree";
 				return new SpawnConfiguration(builder);
 			} else {
 				throw new IllegalArgumentException("Loại spawn " + t + " không có cài đặt SpawnConfiguration");

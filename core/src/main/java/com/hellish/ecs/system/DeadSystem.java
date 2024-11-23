@@ -4,11 +4,13 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.ComponentManager;
 import com.hellish.ecs.component.DeadComponent;
+import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.event.EntityReviveEvent;
 
@@ -26,6 +28,7 @@ public class DeadSystem extends IteratingSystem{
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		final DeadComponent deadCmp = ECSEngine.deadCmpMapper.get(entity);
+		final ImageComponent imageCmp = ECSEngine.imageCmpMapper.get(entity);
 		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
 		
 		if(aniCmp == null) {
@@ -35,7 +38,11 @@ public class DeadSystem extends IteratingSystem{
 		
 		if(aniCmp.isAnimationFinished()) {
 			if(deadCmp.reviveTime == null) {
-				getEngine().removeEntity(entity);
+				imageCmp.image.addAction(Actions.sequence(
+					Actions.delay(0.5f),
+					Actions.fadeOut(0.75f),
+					Actions.run(() -> getEngine().removeEntity(entity))
+				));
 				return;
 			}		
 			deadCmp.reviveTime -= deltaTime;

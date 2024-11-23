@@ -1,0 +1,25 @@
+#Actions
+import idle:"com.hellish.ai.task.IdleTask"
+import wander:"com.hellish.ai.task.WanderTask"
+import chase:"com.hellish.ai.task.ChaseTask"
+import damage:"com.hellish.ai.task.DamageTask"
+
+#Conditions
+import isEnemyNearby?:"com.hellish.ai.condition.IsEnemyNearby"
+import canAttack?:"com.hellish.ai.condition.CanAttack"
+
+subtree name:"damage"
+  sequence
+    (isEnemyNearby?) (canAttack? range:0) damage
+    wait seconds:"uniform,0.75,1.25"
+    
+subtree name:"chase"
+  sequence
+    (isEnemyNearby?) chase range:0
+    
+root
+  selector
+    $damage
+    $chase
+    (random success:0.25) idle duration:"uniform,2.0,3.5"
+    wander range:2.0
