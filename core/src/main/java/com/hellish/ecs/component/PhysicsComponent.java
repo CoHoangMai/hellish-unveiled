@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import com.hellish.ecs.component.SpawnComponent.SpawnConfiguration;
+import com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration;
 
 public class PhysicsComponent implements Component, Poolable{
 	public Body body;
@@ -86,7 +86,7 @@ public class PhysicsComponent implements Component, Poolable{
 		return physicsCmp;
 	}
 
-	public static PhysicsComponent physicsCmpFromShape2D(World world, int x, int y, MapObject mapObj) {
+	public static PhysicsComponent physicsCmpFromShape2D(World world, float x, float y, MapObject mapObj) {
 		Shape2D shape = null;
 		
 		if (mapObj instanceof RectangleMapObject) {

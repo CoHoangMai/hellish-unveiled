@@ -153,16 +153,16 @@ public class GameScreen extends AbstractScreen<Table>{
 		if (isMovementKey(key)) {
 			switch (key) {
 				case UP:
-					playerSin = 1;
+					playerSin = manager.isKeyPressed(GameKeys.DOWN) ? 0 : 1;
 			 		break;
 			 	case DOWN:
-			 		playerSin = -1;
+			 		playerSin = manager.isKeyPressed(GameKeys.UP) ? 0 : -1;
 			 		break;
 			 	case RIGHT:
-			 		playerCos = 1;
+			 		playerCos = manager.isKeyPressed(GameKeys.LEFT) ? 0 : 1;
 			 		break;
 			 	case LEFT:
-			 		playerCos = -1;
+			 		playerCos = manager.isKeyPressed(GameKeys.RIGHT) ? 0 : -1;
 			 		break;
 			 	default:
 			 		return;

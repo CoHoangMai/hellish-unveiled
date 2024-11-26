@@ -93,7 +93,7 @@ public class AnimationSystem extends IteratingSystem {
 		final Array<AtlasRegion> atlasRegions = atlas.findRegions(directionAtlasKey);
 		if (atlasRegions.size == 0) {
 			//Nếu không có animation có hướng thì thử animation không có hướng
-			Gdx.app.debug(TAG, "Không có " + directionAtlasKey);
+			//Gdx.app.debug(TAG, "Không có " + directionAtlasKey);
 			noDirectionCache.put(directionAtlasKey, true);
 			
 			if(animationCache.containsKey(noDirectionAtlasKey)) {

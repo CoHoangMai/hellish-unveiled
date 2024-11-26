@@ -1,9 +1,9 @@
 package com.hellish.ecs.system;
 
 import static com.hellish.Main.UNIT_SCALE;
-import static com.hellish.ecs.component.SpawnComponent.SpawnConfiguration.DEFAULT_SPEED;
-import static com.hellish.ecs.component.SpawnComponent.SpawnConfiguration.DEFAULT_ATTACK_DAMAGE;
-import static com.hellish.ecs.component.SpawnComponent.SpawnConfiguration.DEFAULT_LIFE;
+import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_SPEED;
+import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_ATTACK_DAMAGE;
+import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_LIFE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,13 +42,13 @@ import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
-import com.hellish.ecs.component.SpawnComponent;
+import com.hellish.ecs.component.EntitySpawnComponent;
 import com.hellish.event.MapChangeEvent;
 import com.hellish.ecs.component.AnimationComponent.AnimationModel;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.CollisionComponent;
-import com.hellish.ecs.component.SpawnComponent.SpawnConfiguration;
+import com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration;
 import com.hellish.ecs.component.StateComponent;
 
 public class EntitySpawnSystem extends IteratingSystem implements EventListener{
@@ -61,7 +61,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	private final Map<AnimationModel, Vector2> cachedSizes;
 
 	public EntitySpawnSystem(final Main context) {
-		super(Family.all(SpawnComponent.class).get());
+		super(Family.all(EntitySpawnComponent.class).get());
 		
 		world = context.getWorld();
 		assetManager = context.getAssetManager();
@@ -71,12 +71,13 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
-		final SpawnComponent spawnCmp = ECSEngine.spawnCmpMapper.get(entity);
+		final EntitySpawnComponent spawnCmp = ECSEngine.entitySpawnCmpMapper.get(entity);
 		final SpawnConfiguration cfg = spawnCfg(spawnCmp.type);
 		final Vector2 relativeSize = size(cfg.model); 
 		
 		final Entity spawnedEntity = getEngine().createEntity();
 		
+		//Thành phần Image
 		final ImageComponent imageCmp = getEngine().createComponent(ImageComponent.class);
 		imageCmp.image = new FlipImage();
 		imageCmp.image.setPosition(spawnCmp.location.x, spawnCmp.location.y);
@@ -84,6 +85,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		imageCmp.image.setScaling(Scaling.fill);
 		spawnedEntity.add(imageCmp);
 		
+		//Thành phần Physics
 		final PhysicsComponent physicsCmp = PhysicsComponent.physicsCmpFromImgandCfg(world, imageCmp.image, cfg);
 		spawnedEntity.add(physicsCmp);
 		
@@ -93,11 +95,13 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			spawnedEntity.add(moveCmp);
 		}
 		
+		//Thành phần Animation
 		final AnimationComponent aniCmp = getEngine().createComponent(AnimationComponent.class);
 		aniCmp.mode = Animation.PlayMode.LOOP;
 		aniCmp.nextAnimation(cfg.model, AnimationType.IDLE);
 		spawnedEntity.add(aniCmp);
 		
+		//Thành phần Attack (cho thứ biết tấn công)
 		if(cfg.canAttack) {
 			final AttackComponent attackCmp = new AttackComponent();
 			attackCmp.maxDelay = cfg.attackDelay;
@@ -106,12 +110,14 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			spawnedEntity.add(attackCmp);
 		}
 		
+		//Thành phần Life (cho thứ có HP)
 		if(cfg.lifeScaling > 0) {
 			final LifeComponent lifeCmp = new LifeComponent();
 			lifeCmp.max = DEFAULT_LIFE * cfg.lifeScaling;
 			spawnedEntity.add(lifeCmp);
 		}
 		
+		//Thành phần Player, State và Inventory (cho nhân vật người chơi)
 		if(spawnCmp.type.equals("Player")) {
 			spawnedEntity.add(new PlayerComponent());
 			spawnedEntity.add(new StateComponent());
@@ -124,14 +130,17 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			spawnedEntity.add(itemCmp);
 		}
 		
+		//Thành phần Loot (cho đồ loot được)
 		if(cfg.lootable) {
 			spawnedEntity.add(new LootComponent());
 		}
 		
+		//Thành phần Collision (nếu entity không static thì thêm để spawn những collision entity xung quanh)
 		if (cfg.bodyType != BodyType.StaticBody) {
 			spawnedEntity.add(new CollisionComponent());
 		}
 		
+		//Thành phần AI (cho enemy)
 		if(!cfg.aiTreePath.isBlank()) {
 			final AiComponent aiCmp = new AiComponent();
 			aiCmp.treePath = cfg.aiTreePath;
@@ -167,14 +176,6 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.attackExtraRange = 0.1f;
 				builder.aiTreePath = "ai/wolf.tree";
 				return new SpawnConfiguration(builder);
-			} else if (t.equals("Chest")) {
-				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.CHEST);
-				builder.physicsScaling = new Vector2(0.3f, 0.2f);
-				builder.canAttack = false;
-				builder.lifeScaling = 0;
-				builder.lootable = true;
-				builder.bodyType = BodyType.StaticBody;
-				return new SpawnConfiguration(builder);
 			} else if (t.equals("FlagZombie")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.FLAG_ZOMBIE);
 				builder.physicsScaling = new Vector2(0.44f, 0.72f);
@@ -200,6 +201,15 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.lifeScaling = 1.25f;
 				builder.aiTreePath = "ai/zombie.tree";
 				return new SpawnConfiguration(builder);
+			} else if (t.equals("Chest")) {
+				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.CHEST);
+				builder.physicsScaling = new Vector2(0.25f, 0.1f);
+				builder.physicsOffset = new Vector2(0, -3 * UNIT_SCALE);
+				builder.canAttack = false;
+				builder.lifeScaling = 0;
+				builder.lootable = true;
+				builder.bodyType = BodyType.StaticBody;
+				return new SpawnConfiguration(builder);
 			} else {
 				throw new IllegalArgumentException("Loại spawn " + t + " không có cài đặt SpawnConfiguration");
 			}
@@ -222,13 +232,13 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	public boolean handle(Event event) {
 		if (event instanceof MapChangeEvent) {
 			final MapChangeEvent mapChangeEvent = (MapChangeEvent) event;
-			MapLayer entityLayer = mapChangeEvent.getMap().getTiledMap().getLayers().get("entities");
+			MapLayer entityLayer = mapChangeEvent.getTiledMap().getLayers().get("entities");
 			if (entityLayer == null) {
 				return false;
 			}
 			for (MapObject mapObj : entityLayer.getObjects()) {
 				if (! (mapObj instanceof TiledMapTileMapObject)) {
-					Gdx.app.log(TAG, "GameObject kiểu " + mapObj + " không được hỗ trợ trong layer 'entities'.");
+					Gdx.app.log(TAG, "GameObject kiểu " + mapObj + " trong layer 'entities' không được hỗ trợ.");
 					continue;
 				}
 				TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
@@ -237,7 +247,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 					throw new GdxRuntimeException("MapObject " + mapObj + " trong layer 'entities' không có property Class");
 				}
 				Entity entity = getEngine().createEntity();
-				SpawnComponent spawnComponent = new SpawnComponent();
+				EntitySpawnComponent spawnComponent = new EntitySpawnComponent();
 				spawnComponent.type = type;
 				spawnComponent.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
 				entity.add(spawnComponent);
@@ -247,5 +257,4 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		}
 		return false;
 	}
-			
 }

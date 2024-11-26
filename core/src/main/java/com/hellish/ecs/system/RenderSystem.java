@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -46,7 +47,6 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		entitiesArray.add(entity);
-		
 	}
 	
 	@Override
@@ -74,16 +74,27 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 	    	if(imageCmpMapper.get(entity).image.getParent() == null) {
 				gameStage.addActor(imageCmpMapper.get(entity).image);
 			}
+	    	
+	    	boolean isPlayer = ECSEngine.playerCmpMapper.has(entity);
+	    	if(isPlayer) {
+	    		for(Entity otherEntity : entitiesArray) {
+	    			if(entity != otherEntity && ECSEngine.terrainCmpMapper.has(otherEntity)) {
+	    				ImageComponent thisImageCmp = ECSEngine.imageCmpMapper.get(entity);
+	    				ImageComponent otherImageCmp = ECSEngine.imageCmpMapper.get(otherEntity);
+	    				if(isEntityObscured(thisImageCmp, otherImageCmp)) {
+	    					otherImageCmp.image.setColor(1f, 1f, 1f, 0.5f);
+	    				} else {
+	    					otherImageCmp.image.setColor(1f, 1f, 1f, 1f); 
+	    				}
+	    			}
+	    		}
+	    	}
+	    	
 	    	imageCmpMapper.get(entity).image.toFront();
 	    }
 
 		gameStage.act(deltaTime);
 		gameStage.draw();
-		
-		//Nếu không remove thì image luôn hiện lên phía trước mọi layer
-		for (Entity entity : entitiesArray) {
-			gameStage.getRoot().removeActor(imageCmpMapper.get(entity).image);
-		}
 		
 		if(!foregroundLayers.isEmpty()) {
 			gameStage.getBatch().setColor(Color.WHITE);
@@ -108,7 +119,7 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 			backgroundLayers.clear();
 			foregroundLayers.clear();
 			
-			mapChangeEvent.getMap().getTiledMap().getLayers().forEach(layer -> {
+			mapChangeEvent.getTiledMap().getLayers().forEach(layer -> {
 				if (layer instanceof TiledMapTileLayer) {
 					TiledMapTileLayer tiledLayer = (TiledMapTileLayer) layer;
 					if(tiledLayer.getName().startsWith("fgd_")) {
@@ -121,6 +132,30 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 			return true;	
 		}
 		return false;
+	}
+	
+	 public boolean isEntityObscured(ImageComponent thisImageComponent, ImageComponent otherImageComponent) {
+		 int comparison = thisImageComponent.compareTo(otherImageComponent);
+		 
+		 if(comparison > 0) {
+			 return false;
+		 }
+		 
+		 Rectangle thisBoundingBox = new Rectangle(
+			thisImageComponent.image.getX(),
+			thisImageComponent.image.getY(),
+			thisImageComponent.image.getWidth(),
+			thisImageComponent.image.getHeight()
+		);
+		 
+		 Rectangle otherBoundingBox = new Rectangle(
+			otherImageComponent.image.getX(),
+			otherImageComponent.image.getY(),
+			otherImageComponent.image.getWidth(),
+			otherImageComponent.image.getHeight()
+		);
+		 
+		 return thisBoundingBox.overlaps(otherBoundingBox);
 	}
 	
 	@Override

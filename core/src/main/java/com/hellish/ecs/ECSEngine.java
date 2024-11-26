@@ -16,7 +16,7 @@ import com.hellish.ecs.component.FloatingTextComponent;
 import com.hellish.ecs.component.ParticleEffectComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
-import com.hellish.ecs.component.SpawnComponent;
+import com.hellish.ecs.component.EntitySpawnComponent;
 import com.hellish.ecs.component.StateComponent;
 import com.hellish.ecs.component.TiledComponent;
 import com.hellish.ecs.component.ImageComponent;
@@ -38,6 +38,7 @@ import com.hellish.ecs.system.ParticleEffectSystem;
 import com.hellish.ecs.system.PhysicsSystem;
 import com.hellish.ecs.system.RenderSystem;
 import com.hellish.ecs.system.StateSystem;
+import com.hellish.ecs.system.TerrainSpawnSystem;
 import com.hellish.ecs.component.AiComponent;
 import com.hellish.ecs.component.AiComponent.AiComponentListener;
 import com.hellish.ecs.component.FloatingTextComponent.FloatingTextComponentListener;
@@ -49,13 +50,17 @@ import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent.PhysicsComponentListener;
 import com.hellish.ecs.component.StateComponent.StateComponentListener;
+import com.hellish.ecs.component.TerrainComponent;
+import com.hellish.ecs.component.TerrainSpawnComponent;
 
 public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<PlayerComponent> playerCmpMapper = ComponentMapper.getFor(PlayerComponent.class);
 	public static final ComponentMapper<AnimationComponent> aniCmpMapper = ComponentMapper.getFor(AnimationComponent.class);
 	public static final ComponentMapper<ParticleEffectComponent> peCmpMapper = ComponentMapper.getFor(ParticleEffectComponent.class);
 	public static final ComponentMapper<ImageComponent> imageCmpMapper = ComponentMapper.getFor(ImageComponent.class);
-	public static final ComponentMapper<SpawnComponent> spawnCmpMapper = ComponentMapper.getFor(SpawnComponent.class); 
+	public static final ComponentMapper<TerrainComponent> terrainCmpMapper = ComponentMapper.getFor(TerrainComponent.class);
+	public static final ComponentMapper<EntitySpawnComponent> entitySpawnCmpMapper = ComponentMapper.getFor(EntitySpawnComponent.class); 
+	public static final ComponentMapper<TerrainSpawnComponent> terrainSpawnCmpMapper = ComponentMapper.getFor(TerrainSpawnComponent.class);
 	public static final ComponentMapper<PhysicsComponent> physicsCmpMapper = ComponentMapper.getFor(PhysicsComponent.class); 
 	public static final ComponentMapper<MoveComponent> moveCmpMapper = ComponentMapper.getFor(MoveComponent.class);
 	public static final ComponentMapper<TiledComponent> tiledCmpMapper = ComponentMapper.getFor(TiledComponent.class);
@@ -86,7 +91,8 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		componentManager.addComponentListener(new FloatingTextComponentListener(uiStage));
 		componentManager.addComponentListener(new StateComponentListener());
 		componentManager.addComponentListener(new AiComponentListener());
-		
+
+		addSystem(new TerrainSpawnSystem());
 		addSystem(new EntitySpawnSystem(context));
 		addSystem(new CollisionSpawnSystem(context));
 		addSystem(new CollisionDespawnSystem(context));

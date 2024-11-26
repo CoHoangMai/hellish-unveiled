@@ -7,11 +7,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.hellish.ecs.component.AnimationComponent.AnimationModel;
 
-public class SpawnComponent implements Component, Poolable{
+public class EntitySpawnComponent implements Component, Poolable{
 	public String type;
 	public Vector2 location;
 	
-	public SpawnComponent() {
+	public EntitySpawnComponent() {
 		type = "";
 		location = new Vector2(0, 0);
 	}

@@ -20,8 +20,8 @@ public class MapManager {
 	private final Stage gameStage;
 	
 	private MapType currentMapType;
-	private Map currentMap;
-	private final EnumMap<MapType, Map> mapCache;
+	private TiledMap currentMap;
+	private final EnumMap<MapType, TiledMap> mapCache;
 
 	public MapManager(final Main context) {
 		currentMapType = null;
@@ -29,24 +29,19 @@ public class MapManager {
 		gameStage = context.getGameStage();
 		ecsEngine = context.getECSEngine();
 		assetManager = context.getAssetManager();
-		mapCache = new EnumMap<MapType, Map>(MapType.class);
+		mapCache = new EnumMap<MapType, TiledMap>(MapType.class);
 	}
 	
 	public void setMap(final MapType type) {
 		if(currentMapType == type) {
 			return;
 		}
-		if(currentMap != null) {
-			//world.getBodies(bodies);
-			//destroyCollisionAreas();
-			//destroyGameObjects();
-		}
 		
 		currentMap = mapCache.get(type);
 		if(currentMap == null) {
 			Gdx.app.debug(TAG, "Tạo map mới " + type);
 			final TiledMap tiledMap = assetManager.get(type.getFilePath(), TiledMap.class);
-			currentMap = new Map(tiledMap);
+			currentMap = tiledMap;
 			mapCache.put(type, currentMap);
 		}
 		Gdx.app.debug(TAG, "Map hiện tại: " + type);
@@ -61,7 +56,7 @@ public class MapManager {
 		gameStage.getRoot().fire(mapChangeEvent);
 	}
 	
-	public Map getCurrentMap() {
+	public TiledMap getCurrentMap() {
 		return currentMap;
 	}	
 }

@@ -1,6 +1,7 @@
 package com.hellish.actor;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable;
 
@@ -9,6 +10,10 @@ public class FlipImage extends Image{
 	
 	public FlipImage() {
 		super();
+	}
+	
+	public FlipImage(TextureRegion region) {
+		super(region);
 	}
 	
 	public boolean isFlipX() {

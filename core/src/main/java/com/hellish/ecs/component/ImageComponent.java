@@ -8,7 +8,18 @@ import com.hellish.actor.FlipImage;
 
 public class ImageComponent implements Component, Poolable, Comparable<ImageComponent>{
 	public FlipImage image;
-	public int layer = 0;
+	public int layer;
+	
+	public ImageComponent() {
+		image = null;
+		layer = 0;
+	}
+
+	@Override
+	public void reset() {
+		image = null;
+		layer = 0;
+	}
 
 	@Override
 	public int compareTo(ImageComponent other) {
@@ -24,12 +35,6 @@ public class ImageComponent implements Component, Poolable, Comparable<ImageComp
 				return Float.compare(other.image.getX(), this.image.getX());
 			}
 		}
-	}
-
-	@Override
-	public void reset() {
-		image = null;
-		layer = 0;
 	}
 	
 	public static class ImageComponentListener implements ComponentListener<ImageComponent>{

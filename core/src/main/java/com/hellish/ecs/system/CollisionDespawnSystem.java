@@ -20,10 +20,14 @@ public class CollisionDespawnSystem extends IteratingSystem{
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		final TiledComponent tiledCmp = ECSEngine.tiledCmpMapper.get(entity);
-		if(tiledCmp.nearbyEntities.isEmpty()) {
-			gameStage.getRoot().fire(new CollisionDespawnEvent(tiledCmp.cell));
+		if(tiledCmp!= null && tiledCmp.nearbyEntities.isEmpty()) {
+			if(tiledCmp.cell != null) {
+				gameStage.getRoot().fire(new CollisionDespawnEvent(tiledCmp.cell));
+			}
+			if(tiledCmp.object != null) {
+				gameStage.getRoot().fire(new CollisionDespawnEvent(tiledCmp.object));
+			}
 			getEngine().removeEntity(entity);
 		}
 	}
-
 }
