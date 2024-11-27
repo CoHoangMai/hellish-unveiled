@@ -45,7 +45,10 @@ public class InventorySystem extends IteratingSystem{
 	private Entity spawnItem(ItemType itemType, int slotIdx) {
 		Entity newItem = getEngine().createEntity();
 		
-		ItemComponent itemCmp = new ItemComponent(itemType, slotIdx, false);
+		ItemComponent itemCmp = getEngine().createComponent(ItemComponent.class);
+		itemCmp.itemType = itemType;
+		itemCmp.slotIdx = slotIdx;
+		itemCmp.equipped = false;
 		newItem.add(itemCmp);	
 
 		getEngine().addEntity(newItem);

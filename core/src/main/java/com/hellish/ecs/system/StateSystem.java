@@ -7,7 +7,6 @@ import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.StateComponent;
 
 public class StateSystem extends IteratingSystem{
-
 	public StateSystem() {
 		super(Family.all(StateComponent.class).get());
 	}
@@ -22,5 +21,4 @@ public class StateSystem extends IteratingSystem{
 		
 		stateCmp.stateMachine.update();
 	}
-
 }

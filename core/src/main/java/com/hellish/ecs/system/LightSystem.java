@@ -8,12 +8,10 @@ public class LightSystem extends IteratingSystem{
 
 	public LightSystem(Family family) {
 		super(family);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
-		// TODO Auto-generated method stub
 		
 	}
 

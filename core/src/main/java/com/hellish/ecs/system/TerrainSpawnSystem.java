@@ -66,7 +66,7 @@ public class TerrainSpawnSystem extends IteratingSystem implements EventListener
 				}
 				TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
 				Entity entity = getEngine().createEntity();
-				TerrainSpawnComponent spawnCmp = new TerrainSpawnComponent();
+				TerrainSpawnComponent spawnCmp = getEngine().createComponent(TerrainSpawnComponent.class);
 				spawnCmp.textureRegion = tiledMapObj.getTextureRegion();
 				spawnCmp.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
 				entity.add(spawnCmp);

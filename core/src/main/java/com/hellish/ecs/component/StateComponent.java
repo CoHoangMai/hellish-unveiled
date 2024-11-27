@@ -11,11 +11,17 @@ import com.hellish.ai.EntityState;
 
 public class StateComponent implements Component, Poolable{
 	public EntityState nextState = DefaultState.IDLE;
-	public DefaultStateMachine<AiEntity, EntityState> stateMachine = new DefaultStateMachine<AiEntity, EntityState>();
+	public DefaultStateMachine<AiEntity, EntityState> stateMachine;
+	
+	public StateComponent() {
+		nextState = DefaultState.IDLE;
+		stateMachine = new DefaultStateMachine<AiEntity, EntityState>();
+	}
 	
 	@Override
 	public void reset() {
-		
+		nextState = DefaultState.IDLE;
+		stateMachine.changeState(nextState);
 	}
 	
 	public static class StateComponentListener implements ComponentListener<StateComponent> {

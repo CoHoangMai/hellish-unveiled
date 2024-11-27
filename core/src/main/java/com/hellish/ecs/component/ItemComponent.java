@@ -8,17 +8,17 @@ public class ItemComponent implements Component, Poolable{
 	public int slotIdx;
 	public boolean equipped;
 	
-	public ItemComponent(ItemType itemType, int slotIdx, boolean equipped) {
-        this.itemType = itemType;
-        this.slotIdx = slotIdx;
-        this.equipped = equipped;
+	public ItemComponent() {
+		itemType = ItemType.UNDEFINED;
+		slotIdx = -1;
+		equipped = false; 
     }
 
 	@Override
 	public void reset() {
-		this.itemType = ItemType.UNDEFINED;
-		this.slotIdx = -1;
-		this.equipped = false;  
+		itemType = ItemType.UNDEFINED;
+		slotIdx = -1;
+		equipped = false;  
 	}
 	
 	public enum ItemCategory{

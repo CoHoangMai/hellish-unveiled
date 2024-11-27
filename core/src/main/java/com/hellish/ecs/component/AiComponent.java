@@ -20,7 +20,8 @@ public class AiComponent implements Component, Poolable{
 	public AiComponent() {
 		nearbyEntities = new HashSet<>();
 		treePath = "";
-		
+		behaviorTree = null;
+		target = null;
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class AiComponent implements Component, Poolable{
 		nearbyEntities.clear();
 		treePath = "";
 		behaviorTree = null;
-		
+		target = null;
 	}
 	
 	public static class AiComponentListener implements ComponentListener<AiComponent> {

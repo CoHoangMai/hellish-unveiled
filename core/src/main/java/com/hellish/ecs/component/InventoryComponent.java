@@ -8,8 +8,13 @@ import com.hellish.ecs.component.ItemComponent.ItemType;
 
 public class InventoryComponent implements Component, Poolable{
 	public static final int INVENTORY_CAPACITY = 18;
-	public final Array<Entity> items = new Array<>();
-	public final Array<ItemType> itemsToAdd = new Array<>();
+	public final Array<Entity> items;
+	public final Array<ItemType> itemsToAdd;
+	
+	public InventoryComponent() {
+		items = new Array<Entity>();
+		itemsToAdd = new Array<ItemType>();
+	}
 
 	@Override
 	public void reset() {

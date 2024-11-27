@@ -19,7 +19,7 @@ public class EntitySpawnComponent implements Component, Poolable{
 	@Override
 	public void reset() {
 		type = "";
-		location = new Vector2(0, 0);
+		location.set(0, 0);
 	}
 	
 	public static class SpawnConfiguration {

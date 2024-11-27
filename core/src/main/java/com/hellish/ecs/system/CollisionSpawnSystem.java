@@ -64,11 +64,11 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 
 				processedCells.add(cell);
 		    	for(MapObject mapObj : cell.getTile().getObjects()) {
-		    		Entity collisionEntity = new Entity();
+		    		Entity collisionEntity = getEngine().createEntity();
 		    		
-		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(world, x, y, mapObj));
+		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(getEngine(), world, x, y, mapObj));
 		    		
-		    		TiledComponent tiledCmp = new TiledComponent();
+		    		TiledComponent tiledCmp = getEngine().createComponent(TiledComponent.class);
 		    		tiledCmp.cell = cell;
 		    		tiledCmp.nearbyEntities.add(entity);
 		    		
@@ -95,14 +95,12 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 				processedObjects.add(terrainObject);
 				
 				for(MapObject mapObj : terrainObject.getTile().getObjects()) {
-		    		Entity collisionEntity = new Entity();
+		    		Entity collisionEntity = getEngine().createEntity();
 		    			
 		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(
-		    			world,
-		    			terrainObjX,
-		    			terrainObjY, 
-		    			mapObj
-		    		));
+		    			getEngine(), world,
+		    			terrainObjX, terrainObjY, 
+		    			mapObj ));
 		    		
 		    		TiledComponent tiledCmp = getEngine().createComponent(TiledComponent.class);
 		    		tiledCmp.nearbyEntities.add(entity);
@@ -135,8 +133,8 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 			//Tạo biên cho map
 			int mapWidth = tiledLayers.get(0).getWidth();
 			int mapHeight = tiledLayers.get(0).getHeight();
-			Entity entity = new Entity();
-			PhysicsComponent physicsCmp = new PhysicsComponent();
+			Entity entity = getEngine().createEntity();
+			PhysicsComponent physicsCmp = getEngine().createComponent(PhysicsComponent.class);
 			physicsCmp.body = world.createBody(new BodyDef() {{
 			    type = BodyDef.BodyType.StaticBody;
 			    position.set(0f, 0f);

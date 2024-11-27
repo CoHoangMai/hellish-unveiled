@@ -13,14 +13,17 @@ import com.hellish.ecs.component.FloatingTextComponent;
 public class FloatingTextSystem extends IteratingSystem{
 	private final Stage gameStage;
 	private final Stage uiStage;
-	private final Vector2 uiLocation = new Vector2();
-	private final Vector2 uiTarget = new Vector2();
+	private final Vector2 uiLocation;
+	private final Vector2 uiTarget;
 	
 	public FloatingTextSystem(final Main context) {
 		super(Family.all(FloatingTextComponent.class).get());
 		
 		gameStage = context.getGameStage();
 		uiStage = context.getUIStage();
+		
+		uiLocation = new Vector2();
+		uiTarget = new Vector2();
 	}
 
 	@Override

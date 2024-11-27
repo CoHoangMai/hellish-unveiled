@@ -181,5 +181,4 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		
 	}
-
 }

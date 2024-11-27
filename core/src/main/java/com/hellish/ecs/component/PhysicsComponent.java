@@ -5,6 +5,7 @@ import static com.hellish.ecs.system.CollisionSpawnSystem.SPAWN_AREA_SIZE;
 import static com.hellish.ecs.system.EntitySpawnSystem.HIT_BOX_SENSOR;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -31,24 +32,31 @@ public class PhysicsComponent implements Component, Poolable{
 	public Vector2 size = new Vector2();
 	public Vector2 offset = new Vector2();
 	public Vector2 prevPosition = new Vector2();
+	
+	public PhysicsComponent() {
+		body = null;
+		impulse = new Vector2();
+		size = new Vector2();
+		offset = new Vector2();
+		prevPosition = new Vector2();
+	}
 
 	@Override
 	public void reset() {
-		//TODO thêm thuộc tính body
+		body = null;
 		impulse.set(0, 0);
 		size.set(0, 0);
 		offset.set(0, 0);
 		prevPosition.set(0, 0);		
 	}
 	
-	public static PhysicsComponent physicsCmpFromImgandCfg(World world, Image image, SpawnConfiguration cfg) {
-		//TODO xem có reuse được BODY_DEF VÀ FIXTURE_DEF của Main không
+	public static PhysicsComponent physicsCmpFromImgandCfg(Engine engine, World world, Image image, SpawnConfiguration cfg) {
 		float x = image.getX();
 		float y = image.getY();
 		float w = image.getWidth() * cfg.physicsScaling.x;
 		float h = image.getHeight() * cfg.physicsScaling.y;
 		
-		PhysicsComponent physicsCmp = new PhysicsComponent();
+		PhysicsComponent physicsCmp = engine.createComponent(PhysicsComponent.class);
 		
 		physicsCmp.offset.set(cfg.physicsOffset);
 		physicsCmp.size.set(w, h);
@@ -86,7 +94,7 @@ public class PhysicsComponent implements Component, Poolable{
 		return physicsCmp;
 	}
 
-	public static PhysicsComponent physicsCmpFromShape2D(World world, float x, float y, MapObject mapObj) {
+	public static PhysicsComponent physicsCmpFromShape2D(Engine engine, World world, float x, float y, MapObject mapObj) {
 		Shape2D shape = null;
 		
 		if (mapObj instanceof RectangleMapObject) {
@@ -101,7 +109,7 @@ public class PhysicsComponent implements Component, Poolable{
         final float bodyW = rectangle.width * UNIT_SCALE;
         final float bodyH = rectangle.height * UNIT_SCALE;
 		
-		PhysicsComponent physicsCmp = new PhysicsComponent();
+		PhysicsComponent physicsCmp = engine.createComponent(PhysicsComponent.class);
 		physicsCmp.body = world.createBody(new BodyDef() {{
 			type = BodyDef.BodyType.StaticBody;
 			position.set(bodyX, bodyY);

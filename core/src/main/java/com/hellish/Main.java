@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ai.GdxAI;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -65,6 +66,8 @@ public class Main extends Game implements EventListener{
 	private ECSEngine ecsEngine;
 	
 	private boolean paused;
+	
+	FPSLogger fpsLogger = new FPSLogger();
 	
 	@Override
 	public void create() {
@@ -193,6 +196,7 @@ public class Main extends Game implements EventListener{
 		ecsEngine.update(deltaTime);
 
 		super.render();
+		fpsLogger.log();
 	}
 	
 	@Override

@@ -86,11 +86,13 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		spawnedEntity.add(imageCmp);
 		
 		//Thành phần Physics
-		final PhysicsComponent physicsCmp = PhysicsComponent.physicsCmpFromImgandCfg(world, imageCmp.image, cfg);
+		final PhysicsComponent physicsCmp = PhysicsComponent.physicsCmpFromImgandCfg(
+				getEngine(), world, imageCmp.image, cfg);
 		spawnedEntity.add(physicsCmp);
 		
+		//Thành phần Move nếu nó có chuyển động
 		if (cfg.speedScaling > 0) {
-			final MoveComponent moveCmp = new MoveComponent();
+			final MoveComponent moveCmp = getEngine().createComponent(MoveComponent.class);
 			moveCmp.speed = DEFAULT_SPEED * cfg.speedScaling;
 			spawnedEntity.add(moveCmp);
 		}
@@ -103,7 +105,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		
 		//Thành phần Attack (cho thứ biết tấn công)
 		if(cfg.canAttack) {
-			final AttackComponent attackCmp = new AttackComponent();
+			final AttackComponent attackCmp = getEngine().createComponent(AttackComponent.class);
 			attackCmp.maxDelay = cfg.attackDelay;
 			attackCmp.damage = Math.round(DEFAULT_ATTACK_DAMAGE * cfg.attackScaling);
 			attackCmp.extraRange = cfg.attackExtraRange;
@@ -112,17 +114,17 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		
 		//Thành phần Life (cho thứ có HP)
 		if(cfg.lifeScaling > 0) {
-			final LifeComponent lifeCmp = new LifeComponent();
+			final LifeComponent lifeCmp = getEngine().createComponent(LifeComponent.class);
 			lifeCmp.max = DEFAULT_LIFE * cfg.lifeScaling;
 			spawnedEntity.add(lifeCmp);
 		}
 		
 		//Thành phần Player, State và Inventory (cho nhân vật người chơi)
 		if(spawnCmp.type.equals("Player")) {
-			spawnedEntity.add(new PlayerComponent());
-			spawnedEntity.add(new StateComponent());
+			spawnedEntity.add(getEngine().createComponent(PlayerComponent.class));
+			spawnedEntity.add(getEngine().createComponent(StateComponent.class));
 			
-			InventoryComponent itemCmp = new InventoryComponent();
+			InventoryComponent itemCmp = getEngine().createComponent(InventoryComponent.class);
 			itemCmp.itemsToAdd.add(ItemType.SWORD);
 			itemCmp.itemsToAdd.add(ItemType.BIG_SWORD);
 			itemCmp.itemsToAdd.add(ItemType.HELMET);
@@ -132,23 +134,24 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		
 		//Thành phần Loot (cho đồ loot được)
 		if(cfg.lootable) {
-			spawnedEntity.add(new LootComponent());
+			spawnedEntity.add(getEngine().createComponent(LootComponent.class));
 		}
 		
 		//Thành phần Collision (nếu entity không static thì thêm để spawn những collision entity xung quanh)
 		if (cfg.bodyType != BodyType.StaticBody) {
-			spawnedEntity.add(new CollisionComponent());
+			spawnedEntity.add(getEngine().createComponent(CollisionComponent.class));
 		}
 		
 		//Thành phần AI (cho enemy)
 		if(!cfg.aiTreePath.isBlank()) {
-			final AiComponent aiCmp = new AiComponent();
+			final AiComponent aiCmp = getEngine().createComponent(AiComponent.class);
 			aiCmp.treePath = cfg.aiTreePath;
 			spawnedEntity.add(aiCmp);
 			
 			CircleShape circleShape = new CircleShape();
 			circleShape.setRadius(4);
 			Fixture fixture = physicsCmp.body.createFixture(circleShape, 0);
+			circleShape.dispose();
 			fixture.setUserData(AI_SENSOR);
 			fixture.setSensor(true);
 		}
@@ -162,24 +165,24 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			if(t.equals("Player")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.PLAYER);
 				builder.speedScaling = 1.5f;
-				builder.physicsScaling = new Vector2(0.2f, 0.44f);
-				builder.physicsOffset = new Vector2(0, -2 * UNIT_SCALE);
+				builder.physicsScaling.set(0.2f, 0.44f);
+				builder.physicsOffset.set(0, -2 * UNIT_SCALE);
 				builder.lifeScaling = 3;
 				builder.attackScaling = 1.25f;
 				builder.attackExtraRange = 0.75f;
 				return new SpawnConfiguration(builder);
 			} else if (t.equals("Wolf")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.WOLF);
-				builder.physicsScaling = new Vector2(0.4f, 0.4f);
-				builder.physicsOffset = new Vector2(0, -5 * UNIT_SCALE);
+				builder.physicsScaling.set(0.4f, 0.4f);
+				builder.physicsOffset.set(0, -5 * UNIT_SCALE);
 				builder.lifeScaling = 0.75f;
 				builder.attackExtraRange = 0.1f;
 				builder.aiTreePath = "ai/wolf.tree";
 				return new SpawnConfiguration(builder);
 			} else if (t.equals("FlagZombie")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.FLAG_ZOMBIE);
-				builder.physicsScaling = new Vector2(0.44f, 0.72f);
-				builder.physicsOffset = new Vector2(0, -6 * UNIT_SCALE);
+				builder.physicsScaling.set(0.44f, 0.72f);
+				builder.physicsOffset.set(0, -6 * UNIT_SCALE);
 				builder.attackScaling = 0.5f;
 				builder.lifeScaling = 0.75f;
 				builder.aiTreePath = "ai/zombie.tree";
@@ -187,7 +190,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			} else if (t.equals("RunningZombie")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.RUNNING_ZOMBIE);
 				builder.speedScaling = 2;
-				builder.physicsScaling = new Vector2(0.48f, 0.72f);
+				builder.physicsScaling.set(0.48f, 0.72f);
 				builder.attackScaling = 0.5f;
 				builder.lifeScaling = 0.5f;
 				builder.aiTreePath = "ai/zombie.tree";
@@ -195,16 +198,16 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			} else if (t.equals("TreeZombie")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.TREE_ZOMBIE);
 				builder.speedScaling = 0.75f;
-				builder.physicsScaling = new Vector2(0.4f, 0.78f);
-				builder.physicsOffset = new Vector2(0, -4 * UNIT_SCALE);
+				builder.physicsScaling.set(0.4f, 0.78f);
+				builder.physicsOffset.set(0, -4 * UNIT_SCALE);
 				builder.attackScaling = 0.75f;
 				builder.lifeScaling = 1.25f;
 				builder.aiTreePath = "ai/zombie.tree";
 				return new SpawnConfiguration(builder);
 			} else if (t.equals("Chest")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.CHEST);
-				builder.physicsScaling = new Vector2(0.25f, 0.1f);
-				builder.physicsOffset = new Vector2(0, -3 * UNIT_SCALE);
+				builder.physicsScaling.set(0.25f, 0.1f);
+				builder.physicsOffset.set(0, -3 * UNIT_SCALE);
 				builder.canAttack = false;
 				builder.lifeScaling = 0;
 				builder.lootable = true;
@@ -247,7 +250,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 					throw new GdxRuntimeException("MapObject " + mapObj + " trong layer 'entities' không có property Class");
 				}
 				Entity entity = getEngine().createEntity();
-				EntitySpawnComponent spawnComponent = new EntitySpawnComponent();
+				EntitySpawnComponent spawnComponent = getEngine().createComponent(EntitySpawnComponent.class);
 				spawnComponent.type = type;
 				spawnComponent.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
 				entity.add(spawnComponent);

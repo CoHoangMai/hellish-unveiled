@@ -7,9 +7,12 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 public class LootComponent implements Component, Poolable{
 	public Entity interactEntity;
 	
+	public LootComponent() {
+		interactEntity = null;
+	}
+	
 	@Override
 	public void reset() {
 		interactEntity = null;
 	}
-
 }

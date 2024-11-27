@@ -35,5 +35,6 @@ public class MoveComponent implements Component, Poolable{
 		cosine = 0;
 		rooted = false;
 		slow = false;
+		direction = Direction.DOWN;
 	}
 }

@@ -66,7 +66,7 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 				aniCmp.nextAnimation(AnimationType.DIE);
 				aniCmp.mode = PlayMode.NORMAL;
 			}
-			final DeadComponent deadCmp = new DeadComponent();
+			final DeadComponent deadCmp = getEngine().createComponent(DeadComponent.class);
 			entity.add(deadCmp);
 			if (ECSEngine.playerCmpMapper.has(entity)) {
 				deadCmp.reviveTime = 7f;
@@ -78,12 +78,12 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 	}
 	
 	private void floatingText(String text, Vector2 entityPosition, Vector2 entitySize) {
-		final FloatingTextComponent floatTxtCmp = new FloatingTextComponent();
+		final FloatingTextComponent floatTxtCmp = getEngine().createComponent(FloatingTextComponent.class);
 		floatTxtCmp.txtLocation.set(entityPosition.x, entityPosition.y - entitySize.y * 0.5f);
 		floatTxtCmp.lifeSpan = 0.75f;
 		floatTxtCmp.label = new Label(text, floatTxtFntStyle);
 		
-		getEngine().addEntity(new Entity().add(floatTxtCmp));
+		getEngine().addEntity(getEngine().createEntity().add(floatTxtCmp));
 	}
 	
 	@Override
