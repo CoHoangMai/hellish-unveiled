@@ -2,15 +2,30 @@ package com.hellish.event;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.utils.Pool;
 
 public class EntityTakeDamageEvent extends Event{
-	private final Entity entity;
+	public static final Pool<EntityTakeDamageEvent> pool = new Pool<EntityTakeDamageEvent>() {
+        @Override
+        protected EntityTakeDamageEvent newObject() {
+            return new EntityTakeDamageEvent();
+        }
+    };
+    
+	private Entity entity;
 	
-	public EntityTakeDamageEvent(Entity entity) {
+	public EntityTakeDamageEvent set(Entity entity) {
 		this.entity = entity;
+		return this;
 	}
 	
 	public Entity getEntity() {
 		return entity;
+	}
+	
+	@Override
+	public void reset() {
+		super.reset();
+		entity = null;
 	}
 }

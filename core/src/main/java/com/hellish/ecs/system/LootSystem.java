@@ -33,7 +33,10 @@ public class LootSystem extends IteratingSystem{
 		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
 		aniCmp.nextAnimation(AnimationType.OPEN);
 		aniCmp.mode = Animation.PlayMode.NORMAL;
-		stage.getRoot().fire(new EntityLootEvent());
+		
+		EntityLootEvent lootEvent = EntityLootEvent.pool.obtain();
+		stage.getRoot().fire(lootEvent);
+		EntityLootEvent.pool.free(lootEvent);
 		
 		entity.getComponents().forEach(component -> {
 			componentManager.notifyComponentRemoved(entity, lootCmp);

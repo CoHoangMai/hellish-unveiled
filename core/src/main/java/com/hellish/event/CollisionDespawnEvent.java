@@ -3,19 +3,24 @@ package com.hellish.event;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.utils.Pool;
 
 public class CollisionDespawnEvent extends Event{
-	//Tạm dùng chung cho cả 2 loại cell và map object
-	public final Cell cell;
-	public final TiledMapTileMapObject terrainObject;
+	public static final Pool<CollisionDespawnEvent> pool = new Pool<CollisionDespawnEvent>() {
+        @Override
+        protected CollisionDespawnEvent newObject() {
+            return new CollisionDespawnEvent();
+        }
+    };
 	
-	public CollisionDespawnEvent(Cell cell) {
-		this.cell = cell;
-		this.terrainObject = null;
-	}
+    //Tạm dùng chung cho cả 2 loại cell và map object
+	public Cell cell;
+	public TiledMapTileMapObject terrainObject;
 	
-	public CollisionDespawnEvent(TiledMapTileMapObject terrainObject) {
-		this.terrainObject = terrainObject;
-		this.cell = null;
+	@Override
+	public void reset() {
+		super.reset();
+		cell = null;
+		terrainObject = null;
 	}
 }

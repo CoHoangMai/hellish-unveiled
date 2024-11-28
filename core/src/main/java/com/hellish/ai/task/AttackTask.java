@@ -11,7 +11,9 @@ public class AttackTask extends Action{
 			getObject().startAttack();
 			getObject().stopMovement();
 			getObject().animation(AnimationType.ATTACK, PlayMode.NORMAL, true);
-			getObject().fireEvent(new EntityAggroEvent(getObject().entity));
+			EntityAggroEvent aggroEvent = EntityAggroEvent.pool.obtain().set(getObject().entity);
+			getObject().fireEvent(aggroEvent);
+			EntityAggroEvent.pool.free(aggroEvent);
 			return Status.RUNNING;
 		}
 		

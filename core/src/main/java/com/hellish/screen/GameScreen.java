@@ -182,7 +182,15 @@ public class GameScreen extends AbstractScreen<Table>{
 				}
 		 } else if (key == GameKeys.PAUSE) {
 			 paused = !paused;
-			 gameStage.getRoot().fire(paused ? new GamePauseEvent() : new GameResumeEvent());
+			 if(paused) {
+				 GamePauseEvent event = GamePauseEvent.pool.obtain();
+				 gameStage.getRoot().fire(event);
+				 GamePauseEvent.pool.free(event);
+			 } else {
+				 GameResumeEvent event = GameResumeEvent.pool.obtain();
+				 gameStage.getRoot().fire(event);
+				 GameResumeEvent.pool.free(event);
+			 }
 		 }
 	}
 

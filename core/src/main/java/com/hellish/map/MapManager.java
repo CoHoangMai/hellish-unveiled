@@ -51,9 +51,10 @@ public class MapManager {
 				gameStage.addListener((EventListener) system);
 			}
 		}
-		//NOTE: không dùng Pooling nên phần này đang không tối ưu
-		MapChangeEvent mapChangeEvent = new MapChangeEvent(currentMap);
+		
+		MapChangeEvent mapChangeEvent = MapChangeEvent.pool.obtain().set(currentMap);
 		gameStage.getRoot().fire(mapChangeEvent);
+		MapChangeEvent.pool.free(mapChangeEvent);
 	}
 	
 	public TiledMap getCurrentMap() {

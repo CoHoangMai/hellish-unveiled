@@ -47,7 +47,7 @@ public class PhysicsComponent implements Component, Poolable{
 		impulse.set(0, 0);
 		size.set(0, 0);
 		offset.set(0, 0);
-		prevPosition.set(0, 0);		
+		prevPosition.set(0, 0);
 	}
 	
 	public static PhysicsComponent physicsCmpFromImgandCfg(Engine engine, World world, Image image, SpawnConfiguration cfg) {

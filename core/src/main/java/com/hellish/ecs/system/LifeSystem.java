@@ -55,7 +55,11 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 		if (lifeCmp.takeDamage > 0) {
 			final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
 			lifeCmp.life -= (int)lifeCmp.takeDamage;
-			stage.getRoot().fire(new EntityTakeDamageEvent(entity));
+			
+			EntityTakeDamageEvent takeDamageEvent = EntityTakeDamageEvent.pool.obtain().set(entity);
+			stage.getRoot().fire(takeDamageEvent);
+			EntityTakeDamageEvent.pool.free(takeDamageEvent);
+			
 			floatingText(Integer.toString((int) lifeCmp.takeDamage), physicsCmp.body.getPosition(), physicsCmp.size);
 			lifeCmp.takeDamage = 0;
 		}

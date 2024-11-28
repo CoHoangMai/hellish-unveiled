@@ -37,7 +37,9 @@ public class InventorySystem extends IteratingSystem{
 			
 			Entity newItem = spawnItem(itemType, slotIdx);
 			inventory.items.add(newItem);
-			stage.getRoot().fire(new EntityAddItemEvent(entity, newItem));
+			EntityAddItemEvent addItemEvent = EntityAddItemEvent.pool.obtain().set(entity, newItem);
+			stage.getRoot().fire(addItemEvent);
+			EntityAddItemEvent.pool.free(addItemEvent);
 		}
 		inventory.itemsToAdd.clear();
 	}

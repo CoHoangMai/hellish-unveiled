@@ -50,7 +50,10 @@ public class DeadSystem extends IteratingSystem{
 				final LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(entity);
 				lifeCmp.life = lifeCmp.max;
 				System.out.println("...Nhưng đam mê trêu chó là không thể từ bỏ!!!");
-				stage.getRoot().fire(new EntityReviveEvent(entity));
+				
+				EntityReviveEvent event = EntityReviveEvent.pool.obtain().set(entity);
+				stage.getRoot().fire(event);
+				EntityReviveEvent.pool.free(event);
 				
 				entity.getComponents().forEach(component -> {
 					componentManager.notifyComponentRemoved(entity, deadCmp);
