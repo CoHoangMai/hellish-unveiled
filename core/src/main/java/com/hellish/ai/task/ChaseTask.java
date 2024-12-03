@@ -1,6 +1,8 @@
 package com.hellish.ai.task;
 
+import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
+import com.hellish.ai.AiEntity;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
 
 public class ChaseTask extends Action{
@@ -22,5 +24,15 @@ public class ChaseTask extends Action{
 
 		return Status.RUNNING;
 	}
-
+	
+	@Override
+	public void end() {
+		getObject().seekSteerer.stopPursuing();
+	}
+	
+	@Override
+	public Task<AiEntity> copyTo(Task<AiEntity> task){
+		((ChaseTask)task).range = range;
+		return task;
+	}
 }

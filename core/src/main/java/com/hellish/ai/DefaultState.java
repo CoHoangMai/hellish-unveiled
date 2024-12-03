@@ -7,104 +7,104 @@ import com.hellish.ecs.component.AnimationComponent.AnimationType;
 public enum DefaultState implements EntityState{
 	IDLE{
 		@Override
-		public void enter(AiEntity aiEntity) {
-			aiEntity.enableGlobalState(true);
-			aiEntity.animation(AnimationType.IDLE);
+		public void enter(StateEntity stateEntity) {
+			stateEntity.enableGlobalState(true);
+			stateEntity.animation(AnimationType.IDLE);
 		}
 		
 		@Override
-		public void update(AiEntity aiEntity) {
-			if(aiEntity.wantsToAttack()) {
-				aiEntity.state(ATTACK);
-			} else if (aiEntity.wantsToMove()) {
-				aiEntity.state(WALK);
+		public void update(StateEntity stateEntity) {
+			if(stateEntity.wantsToAttack()) {
+				stateEntity.state(ATTACK);
+			} else if (stateEntity.wantsToMove()) {
+				stateEntity.state(WALK);
 			}
 		}
 	},
 	
 	WALK{
 		@Override
-		public void enter(AiEntity aiEntity) {
-			aiEntity.animation(AnimationType.WALK);
+		public void enter(StateEntity stateEntity) {
+			stateEntity.animation(AnimationType.WALK);
 		}
 		
 		@Override
-		public void update(AiEntity aiEntity) {
-			if(aiEntity.wantsToAttack()) {
-				aiEntity.state(ATTACK);
-			} else if (!aiEntity.wantsToMove()) {
-				aiEntity.state(IDLE);
+		public void update(StateEntity stateEntity) {
+			if(stateEntity.wantsToAttack()) {
+				stateEntity.state(ATTACK);
+			} else if (!stateEntity.wantsToMove()) {
+				stateEntity.state(IDLE);
 			}
 		}
 	}, 
 	
 	ATTACK{
 		@Override
-		public void enter(AiEntity aiEntity) {
-			aiEntity.animation(AnimationType.ATTACK, Animation.PlayMode.NORMAL);
-			aiEntity.root(true);
-			aiEntity.startAttack();
+		public void enter(StateEntity stateEntity) {
+			stateEntity.animation(AnimationType.ATTACK, Animation.PlayMode.NORMAL);
+			stateEntity.root(true);
+			stateEntity.startAttack();
 		}
 		
 		@Override
-		public void update(AiEntity aiEntity) {
-			if(aiEntity.attackCmp().isReady() && !aiEntity.attackCmp().doAttack) {
-				aiEntity.changeToPreviousState();
-			} else if (aiEntity.attackCmp().isReady()) {
-				aiEntity.animation(AnimationType.ATTACK, Animation.PlayMode.NORMAL, true);
-				aiEntity.startAttack();
+		public void update(StateEntity stateEntity) {
+			if(stateEntity.attackCmp().isReady() && !stateEntity.attackCmp().doAttack) {
+				stateEntity.changeToPreviousState();
+			} else if (stateEntity.attackCmp().isReady()) {
+				stateEntity.animation(AnimationType.ATTACK, Animation.PlayMode.NORMAL, true);
+				stateEntity.startAttack();
 			}
 		}
 		
 		@Override
-		public void exit(AiEntity aiEntity) {
-			aiEntity.root(false);
+		public void exit(StateEntity stateEntity) {
+			stateEntity.root(false);
 		}
 	}, 
 	
 	DIE{
 		@Override
-		public void enter(AiEntity aiEntity) {
-			aiEntity.root(true);
+		public void enter(StateEntity stateEntity) {
+			stateEntity.root(true);
 			
 		}
 		
 		@Override
-		public void update(AiEntity aiEntity) {
-			if(!aiEntity.isDead()) {
-				aiEntity.state(RESSURECT);
+		public void update(StateEntity stateEntity) {
+			if(!stateEntity.isDead()) {
+				stateEntity.state(RESSURECT);
 			}
 		}
 	}, 
 	
 	RESSURECT{
 		@Override
-		public void enter(AiEntity aiEntity) {
-			aiEntity.enableGlobalState(true);
-			aiEntity.animation(AnimationType.DIE, PlayMode.REVERSED, true);
+		public void enter(StateEntity stateEntity) {
+			stateEntity.enableGlobalState(true);
+			stateEntity.animation(AnimationType.DIE, PlayMode.REVERSED, true);
 		}
 		
 		@Override
-		public void update(AiEntity aiEntity) {
-			if(aiEntity.isAnimationFinished()) {
-				aiEntity.state(IDLE);
-				aiEntity.root(false);
+		public void update(StateEntity stateEntity) {
+			if(stateEntity.isAnimationFinished()) {
+				stateEntity.state(IDLE);
+				stateEntity.root(false);
 			}
 		}
 	};
 
 	@Override
-	public void enter(AiEntity aiEntity) {
+	public void enter(StateEntity stateEntity) {
 		
 	}
 
 	@Override
-	public void update(AiEntity aiEntity) {
+	public void update(StateEntity stateEntity) {
 		
 	}
 
 	@Override
-	public void exit(AiEntity aiEntity) {
+	public void exit(StateEntity stateEntity) {
 		
 	}
 }

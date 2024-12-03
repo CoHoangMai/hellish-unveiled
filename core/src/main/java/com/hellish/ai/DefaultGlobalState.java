@@ -4,21 +4,20 @@ public enum DefaultGlobalState implements EntityState{
 	CHECK_ALIVE;
 
 	@Override
-	public void enter(AiEntity aiEntity) {
+	public void enter(StateEntity stateEntity) {
 		
 	}
 
 	@Override
-	public void update(AiEntity aiEntity) {
-		if(aiEntity.isDead()) {
-			aiEntity.enableGlobalState(false);
-			aiEntity.state(DefaultState.DIE, true);
+	public void update(StateEntity stateEntity) {
+		if(stateEntity.isDead()) {
+			stateEntity.enableGlobalState(false);
+			stateEntity.state(DefaultState.DIE, true);
 		}
 	}
 
 	@Override
-	public void exit(AiEntity aiEntity) {
+	public void exit(StateEntity stateEntity) {
 		
 	}
-
 }

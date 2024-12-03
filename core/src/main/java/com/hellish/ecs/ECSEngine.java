@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
 import com.hellish.Main;
@@ -38,6 +39,7 @@ import com.hellish.ecs.system.ParticleEffectSystem;
 import com.hellish.ecs.system.PhysicsSystem;
 import com.hellish.ecs.system.RenderSystem;
 import com.hellish.ecs.system.StateSystem;
+import com.hellish.ecs.system.SteeringSystem;
 import com.hellish.ecs.system.TerrainSpawnSystem;
 import com.hellish.ecs.component.AiComponent;
 import com.hellish.ecs.component.AiComponent.AiComponentListener;
@@ -77,6 +79,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 	
 	private final Stage gameStage;
 	private final Stage uiStage;
+	private final World world;
 	private final ComponentManager componentManager;
 	
 	public ECSEngine(final Main context) {
@@ -84,6 +87,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		
 		gameStage = context.getGameStage();	
 		uiStage = context.getUIStage();
+		world = context.getWorld();
 		
 		componentManager = context.getComponentManager();
 		componentManager.addComponentListener(new ImageComponentListener(gameStage));
@@ -104,6 +108,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addSystem(new PhysicsSystem(context));
 		addSystem(new AnimationSystem(context));
 		addSystem(new AttackSystem(context));
+		addSystem(new SteeringSystem());
 		addSystem(new StateSystem());
 		addSystem(new AiSystem());
 		addSystem(new CameraSystem(context));
@@ -118,7 +123,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		super.addEntity(entity);
 		
 		entity.getComponents().forEach(component -> {
-			componentManager.notifyComponentAdded(entity, component, gameStage);
+			componentManager.notifyComponentAdded(entity, component, gameStage, world);
 		});
 	}
 	

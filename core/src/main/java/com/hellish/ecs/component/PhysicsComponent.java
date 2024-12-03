@@ -7,6 +7,9 @@ import static com.hellish.ecs.system.EntitySpawnSystem.HIT_BOX_SENSOR;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.ai.steer.Steerable;
+import com.badlogic.gdx.ai.steer.SteeringAcceleration;
+import com.badlogic.gdx.ai.utils.Location;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
@@ -24,14 +27,36 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.hellish.ai.steer.Box2dLocation;
+import com.hellish.ai.steer.SteeringUtils;
+import com.hellish.ai.steer.steerer.Steerer;
 import com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration;
 
-public class PhysicsComponent implements Component, Poolable{
+public class PhysicsComponent implements Component, Poolable, Steerable<Vector2> {
 	public Body body;
-	public Vector2 impulse = new Vector2();
-	public Vector2 size = new Vector2();
-	public Vector2 offset = new Vector2();
-	public Vector2 prevPosition = new Vector2();
+	
+	public Vector2 impulse;
+	public Vector2 size;
+	public Vector2 offset;
+	public Vector2 prevPosition;
+	
+	//Những thứ về Steering
+	public Steerer currentSteerer;
+	
+	public final SteeringAcceleration<Vector2> steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
+	
+	public boolean isSteering;
+	
+	private float boundingRadius;
+	private boolean tagged;
+
+	private float maxLinearSpeed = 1;
+	private float maxLinearAcceleration = 15;
+	private float maxAngularSpeed = 0;
+	private float maxAngularAcceleration = 0;
+	
+	public boolean wasSteering = false;
+
 	
 	public PhysicsComponent() {
 		body = null;
@@ -39,6 +64,8 @@ public class PhysicsComponent implements Component, Poolable{
 		size = new Vector2();
 		offset = new Vector2();
 		prevPosition = new Vector2();
+		
+		boundingRadius = 0;
 	}
 
 	@Override
@@ -48,6 +75,8 @@ public class PhysicsComponent implements Component, Poolable{
 		size.set(0, 0);
 		offset.set(0, 0);
 		prevPosition.set(0, 0);
+		
+		boundingRadius = 0;
 	}
 	
 	public static PhysicsComponent physicsCmpFromImgandCfg(Engine engine, World world, Image image, SpawnConfiguration cfg) {
@@ -87,6 +116,9 @@ public class PhysicsComponent implements Component, Poolable{
 		    collisionBoxShape.setAsBox(w * 0.5f, collH * 0.5f, collOffset, 0);
 		    
 		    physicsCmp.body.createFixture(collisionBoxShape, 0.0f);
+		    
+		    //Không hiểu vì sao nhưng mà cứ thế đã...
+		    physicsCmp.boundingRadius = (collH + w) / 4;
 
 		    collisionBoxShape.dispose();
 		}
@@ -138,10 +170,10 @@ public class PhysicsComponent implements Component, Poolable{
 		
 		return physicsCmp;
 	}
-	
+
 	public static class PhysicsComponentListener implements ComponentListener<PhysicsComponent> {
 		@Override
-		public void onComponentAdded(Entity entity, PhysicsComponent component, Stage stage) {
+		public void onComponentAdded(Entity entity, PhysicsComponent component, Stage stage, World world) {
 			component.body.setUserData(entity);
 		}
 
@@ -151,6 +183,138 @@ public class PhysicsComponent implements Component, Poolable{
 			body.getWorld().destroyBody(body);
 			body.setUserData(null);
 		}
+	}
+
+	public void startSteering() {
+		wasSteering = true;
+		if(currentSteerer != null) {
+			currentSteerer.startSteering();
+		}
+	}
+
+	public void stopSteering(boolean clearLinearVelocity) {
+		wasSteering = false;
+		body.setAngularVelocity(0);
 		
+		if(currentSteerer != null) {
+			clearLinearVelocity = currentSteerer.stopSteering();
+		}
+		
+		currentSteerer = null;
+		steeringOutput.setZero();
+		if(clearLinearVelocity) {
+			body.setLinearVelocity(Vector2.Zero);
+		}
+	}
+
+	public void applySteering(SteeringAcceleration<Vector2> steeringOutput, float deltaTime) {
+		//Cập nhật vận tốc
+		body.setLinearVelocity(body.getLinearVelocity().mulAdd(steeringOutput.linear, deltaTime)
+				.limit(getMaxLinearSpeed()));
+	}
+
+	@Override
+	public Vector2 getPosition() {
+		return body.getPosition();
+	}
+
+	@Override
+	public float getOrientation() {
+		return body.getAngle();
+	}
+
+	@Override
+	public void setOrientation(float orientation) {
+		body.setTransform(getPosition(), orientation);
+	}
+
+	@Override
+	public float vectorToAngle(Vector2 vector) {
+		return SteeringUtils.vectorToAngle(vector);
+	}
+
+	@Override
+	public Vector2 angleToVector(Vector2 outVector, float angle) {
+		return SteeringUtils.angleToVector(outVector, angle);
+	}
+
+	@Override
+	public Location<Vector2> newLocation() {
+		return new Box2dLocation();
+	}
+
+	@Override
+	public float getZeroLinearSpeedThreshold() {
+		return 0.001f;
+	}
+
+	@Override
+	public void setZeroLinearSpeedThreshold(float value) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public float getMaxLinearSpeed() {
+		return maxLinearSpeed;
+	}
+
+	@Override
+	public void setMaxLinearSpeed(float maxLinearSpeed) {
+		this.maxLinearSpeed = maxLinearSpeed;
+	}
+
+	@Override
+	public float getMaxLinearAcceleration() {
+		return maxLinearAcceleration;
+	}
+
+	@Override
+	public void setMaxLinearAcceleration(float maxLinearAcceleration) {
+		this.maxLinearAcceleration = maxLinearAcceleration;
+	}
+
+	@Override
+	public float getMaxAngularSpeed() {
+		return maxAngularSpeed;
+	}
+
+	@Override
+	public void setMaxAngularSpeed(float maxAngularSpeed) {
+		this.maxAngularSpeed = maxAngularSpeed;
+	}
+
+	@Override
+	public float getMaxAngularAcceleration() {
+		return maxAngularAcceleration;
+	}
+
+	@Override
+	public void setMaxAngularAcceleration(float maxAngularAcceleration) {
+		this.maxAngularAcceleration = maxAngularAcceleration;
+	}
+
+	@Override
+	public Vector2 getLinearVelocity() {
+		return body.getLinearVelocity();
+	}
+
+	@Override
+	public float getAngularVelocity() {
+		return body.getAngularVelocity();
+	}
+
+	@Override
+	public float getBoundingRadius() {
+		return boundingRadius;
+	}
+
+	@Override
+	public boolean isTagged() {
+		return tagged;
+	}
+
+	@Override
+	public void setTagged(boolean tagged) {
+		this.tagged = tagged;
 	}
 }

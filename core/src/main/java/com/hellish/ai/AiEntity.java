@@ -2,41 +2,43 @@ package com.hellish.ai;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.hellish.ai.steer.steerer.PursueSteerer;
+import com.hellish.ai.steer.steerer.WanderSteerer;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AiComponent;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.ImageComponent;
-import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent;
-import com.hellish.ecs.component.StateComponent;
 
+//Loại dành cho các nhân vật khác ngoài con HUST
 public class AiEntity {
 	public static final Rectangle TMP_RECT1 = new Rectangle();
 	public static final Rectangle TMP_RECT2 = new Rectangle();
 
 	public final Entity entity;
 	
+	private final Stage stage;
+	
 	private final AnimationComponent aniCmp;
 	private final ImageComponent imageCmp;
 	private final PhysicsComponent physicsCmp;
 	private final MoveComponent moveCmp;
 	private final AttackComponent attackCmp;
-	private final LifeComponent lifeCmp;
 
-	private StateComponent stateCmp;
 	private final AiComponent aiCmp;
 	
-	private final Stage stage;
+	public final WanderSteerer wanderSteerer;
+	public final PursueSteerer seekSteerer;
 	
-	public AiEntity(Entity entity, Stage stage) {
+	public AiEntity(Entity entity, Stage stage, World world) {
 		this.entity = entity;
 		this.stage = stage;
 		
@@ -44,27 +46,11 @@ public class AiEntity {
 		moveCmp = ECSEngine.moveCmpMapper.get(entity);
 		attackCmp = ECSEngine.attackCmpMapper.get(entity);
 		aniCmp = ECSEngine.aniCmpMapper.get(entity);
-		lifeCmp = ECSEngine.lifeCmpMapper.get(entity);
 		imageCmp = ECSEngine.imageCmpMapper.get(entity);
-		if(lifeCmp != null) {
-			stateCmp = ECSEngine.stateCmpMapper.get(entity);
-			if(stateCmp != null) {
-				stateCmp.stateMachine.setGlobalState(DefaultGlobalState.CHECK_ALIVE);
-			}
-		}
 		aiCmp = ECSEngine.aiCmpMapper.get(entity);
-	}
-	
-	public AttackComponent attackCmp() {
-		return attackCmp;
-	}
-	
-	public boolean wantsToMove() {
-		return moveCmp != null && !(moveCmp.sine == 0 && moveCmp.cosine == 0);
-	}
-	
-	public boolean wantsToAttack() {
-		return attackCmp != null && attackCmp.doAttack;
+		
+		wanderSteerer = new WanderSteerer(physicsCmp, world);
+		seekSteerer = new PursueSteerer(physicsCmp, world);
 	}
 	
 	public boolean isAnimationFinished() {
@@ -87,37 +73,6 @@ public class AiEntity {
 		animation(type, mode, false);
 	}
 	
-	public void state(EntityState newState, boolean changeImmediate) {
-		if(stateCmp != null) {
-			stateCmp.nextState = newState;
-			if(changeImmediate) {
-				stateCmp.stateMachine.changeState(newState);
-			}
-		}
-	}
-	public void state(EntityState newState) {
-		state(newState, false);
-	}
-	
-	public void changeToPreviousState() {
-		stateCmp.nextState = stateCmp.stateMachine.getPreviousState();
-	}
-	
-	public void enableGlobalState(boolean enable) {
-		if(enable) {
-			stateCmp.stateMachine.setGlobalState(DefaultGlobalState.CHECK_ALIVE);
-		} else {
-			stateCmp.stateMachine.setGlobalState(null);
-		}
-	}
-	
-	public void root(boolean root) {
-		moveCmp.rooted = root;
-	}
-	
-	public boolean isDead() {
-		return lifeCmp.isDead();
-	}
 	
 	public void startAttack() {
 		attackCmp.doAttack = true;
@@ -183,22 +138,14 @@ public class AiEntity {
 		return TMP_RECT1.overlaps(TMP_RECT2);
 	}
 	
-	public void moveToPosition(Vector2 target) {
-		float targetX = target.x, targetY = target.y;
-		//TODO Check vị trí đích có khả thi không
-		float sourceX = getPosition().x, sourceY = getPosition().y;
-		float radian = MathUtils.atan2(targetY - sourceY, targetX - sourceX);
-		moveCmp.cosine = MathUtils.cos(radian);
-		moveCmp.sine = MathUtils.sin(radian);
-	}
-	
 	public void moveToTarget() {
 		if(aiCmp.target == null) {
 			moveCmp.cosine = 0;
 			moveCmp.sine = 0;
 			return;
 		}
-		moveToPosition(ECSEngine.physicsCmpMapper.get(aiCmp.target).body.getPosition());
+		seekSteerer.setTarget(ECSEngine.physicsCmpMapper.get(aiCmp.target));
+		seekSteerer.startPursuing();
 	}
 
 	public void stopMovement() {
@@ -222,6 +169,7 @@ public class AiEntity {
 	public void checkTargetStillNearby() {
 		if(!aiCmp.nearbyEntities.contains(aiCmp.target)) {
 			aiCmp.target = null;
+			seekSteerer.stopPursuing();
 		}
 	}
 

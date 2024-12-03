@@ -22,4 +22,4 @@ root
     $damage
     $chase
     (random success:0.25) idle duration:"uniform,2.0,3.5"
-    wander range:2.0
+    wander duration:"uniform,2.5,4.0"

@@ -2,6 +2,7 @@ package com.hellish.ecs.component;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.hellish.actor.FlipImage;
@@ -45,7 +46,7 @@ public class ImageComponent implements Component, Poolable, Comparable<ImageComp
         }
 
 		@Override
-		public void onComponentAdded(Entity entity, ImageComponent component, Stage stage) {
+		public void onComponentAdded(Entity entity, ImageComponent component, Stage stage, World world) {
 			stage.addActor(component.image);
 		}
 

@@ -18,6 +18,8 @@ public class MoveSystem extends IteratingSystem{
 	protected void processEntity(Entity entity, float deltaTime) {
 		final MoveComponent moveCmp = ECSEngine.moveCmpMapper.get(entity);
 		final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
+		
+		//Tính xung lực (rồi chỉ áp dụng cho mỗi player ở trong physicsSystem thôi)
 		float mass = physicsCmp.body.getMass();
 		float velX = physicsCmp.body.getLinearVelocity().x;
 		float velY = physicsCmp.body.getLinearVelocity().y;
@@ -31,7 +33,6 @@ public class MoveSystem extends IteratingSystem{
 		if(moveCmp.direction != getDirection(moveCmp)) {
 			moveCmp.direction = getDirection(moveCmp);
 		}
-		
 		
 		physicsCmp.impulse.set(
 				moveCmp.speed * speedFactor * moveCmp.cosine - velX, 

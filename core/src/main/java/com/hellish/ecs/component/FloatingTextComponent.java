@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -42,7 +43,7 @@ public class FloatingTextComponent implements Component, Poolable{
 		}
 		
 		@Override
-		public void onComponentAdded(Entity entity, FloatingTextComponent component, Stage stage) {
+		public void onComponentAdded(Entity entity, FloatingTextComponent component, Stage stage, World world) {
 			component.label.addAction(Actions.fadeOut(component.lifeSpan, Interpolation.pow3OutInverse));
 			uiStage.addActor(component.label);
 			

@@ -21,5 +21,5 @@ root
   selector
     $attack
     $chase
-    (random success:0.25) idle duration:"uniform,2.0,3.5"
-    wander range:2.0
+    (random success:0.25) idle duration:"uniform,1.5,3.0"
+    wander duration:"uniform,2.0,3.5"

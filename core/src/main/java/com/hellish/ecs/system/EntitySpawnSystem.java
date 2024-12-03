@@ -88,6 +88,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		//Thành phần Physics
 		final PhysicsComponent physicsCmp = PhysicsComponent.physicsCmpFromImgandCfg(
 				getEngine(), world, imageCmp.image, cfg);
+
 		spawnedEntity.add(physicsCmp);
 		
 		//Thành phần Move nếu nó có chuyển động
@@ -142,7 +143,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			spawnedEntity.add(getEngine().createComponent(CollisionComponent.class));
 		}
 		
-		//Thành phần AI (cho enemy)
+		//Thành phần AI và Steerable(cho enemy)
 		if(!cfg.aiTreePath.isBlank()) {
 			final AiComponent aiCmp = getEngine().createComponent(AiComponent.class);
 			aiCmp.treePath = cfg.aiTreePath;

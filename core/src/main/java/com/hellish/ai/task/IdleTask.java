@@ -21,9 +21,11 @@ public class IdleTask extends Action{
 		}
 		
 		currentDuration -= GdxAI.getTimepiece().getDeltaTime();
+		
 		if(getObject().hasNearbyEnemy() || currentDuration <= 0) {
 			return Status.SUCCEEDED;
 		}	
+		
 		return Status.RUNNING;
 	}
 	

@@ -1,37 +1,30 @@
 package com.hellish.ai.task;
 
+import com.badlogic.gdx.ai.GdxAI;
 import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.ai.utils.random.FloatDistribution;
 import com.hellish.ai.AiEntity;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
 
 public class WanderTask extends Action{
 	@TaskAttribute(required = true)
-	public float range;
-	
-	private final Vector2 startPos = new Vector2();
-	private final Vector2 targetPos = new Vector2();
+	public FloatDistribution duration;
+	public float currentDuration;
 
 	@Override
 	public Status execute() {
 		if(getStatus() != Status.RUNNING) {
-			if(startPos.isZero()) {
-				startPos.set(getObject().getPosition());
-			}
-			targetPos.set(startPos);
-			targetPos.x += MathUtils.random(-range, range);
-			targetPos.y += MathUtils.random(-range, range);
-			getObject().moveToPosition(targetPos);
 			getObject().moveSlowly(true);
 			getObject().animation(AnimationType.WALK);
+			getObject().wanderSteerer.startWandering();
+			currentDuration = (duration != null) ? duration.nextFloat() : 1;
+			return Status.RUNNING;
 		}
 		
-		if(getObject().inRange(0, targetPos)) {
-			getObject().stopMovement();
-			return Status.SUCCEEDED;
-		} else if(getObject().hasNearbyEnemy()) {
+		currentDuration -= GdxAI.getTimepiece().getDeltaTime();
+		
+		if(getObject().hasNearbyEnemy() || currentDuration <= 0) {
 			return Status.SUCCEEDED;
 		}
 		
@@ -41,11 +34,12 @@ public class WanderTask extends Action{
 	@Override
 	public void end() {
 		getObject().moveSlowly(false);
+		getObject().wanderSteerer.stopWandering();
 	}
 	
 	@Override
 	public Task<AiEntity> copyTo(Task<AiEntity> task){
-		((WanderTask)task).range = range;
+		((WanderTask)task).duration = duration;
 		return task;
 	}
 }

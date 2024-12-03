@@ -23,15 +23,12 @@ import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.TiledComponent;
 
-import java.util.logging.Logger;
-
 public class PhysicsSystem extends IteratingSystem implements ContactListener{
 	private final World world;
 	
 	private static final float TIME_STEP = 1/60f;
 	private float accumulator;
-	private static final Logger LOG = Logger.getLogger(PhysicsSystem.class.getName());
-	
+
 	public PhysicsSystem(final Main context) {
 		super(Family.all(PhysicsComponent.class, ImageComponent.class).get());
 		
@@ -43,7 +40,6 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 	@Override
 	public void update(float deltaTime) {
 		if(world.getAutoClearForces()) {
-			LOG.severe("AutoClearForces được đặt thành false để đảm bảo physic step chính xác.");
 			world.setAutoClearForces(false);
 		}  
 		super.update(deltaTime);
@@ -66,12 +62,14 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 	protected void processEntity(Entity entity, float deltaTime) {
 		final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
 		
-		if(!physicsCmp.impulse.isZero()) {
+		//Làm tạm cho player
+		//TODO xử lý thứ này cho hợp lý hơn
+		if(!physicsCmp.impulse.isZero() && ECSEngine.playerCmpMapper.has(entity)) {
 			physicsCmp.body.applyLinearImpulse(physicsCmp.impulse, physicsCmp.body.getWorldCenter(), true);
 			physicsCmp.impulse.setZero();
 		}
 	}
-	
+
 	public void render(final float alpha) {
 		for (Entity entity : getEntities()) {
 			final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);

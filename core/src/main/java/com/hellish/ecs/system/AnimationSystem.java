@@ -6,7 +6,7 @@ import java.util.Map;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
+//import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -112,7 +112,7 @@ public class AnimationSystem extends IteratingSystem {
             
             Animation<TextureRegionDrawable> animation = new Animation<>(DEFAULT_FRAME_DURATION, drawableRegions);
             animationCache.put(noDirectionAtlasKey, animation);
-    		Gdx.app.debug(TAG, "Tạo animation mới loại " + noDirectionAtlasKey);
+    		//Gdx.app.debug(TAG, "Tạo animation mới loại " + noDirectionAtlasKey);
             return animation;
 		}
 		
@@ -123,7 +123,7 @@ public class AnimationSystem extends IteratingSystem {
 		
 		Animation<TextureRegionDrawable> animation = new Animation<>(DEFAULT_FRAME_DURATION, drawableRegions);
         animationCache.put(directionAtlasKey, animation);
-		Gdx.app.debug(TAG, "Tạo animation mới loại " + directionAtlasKey);
+		//Gdx.app.debug(TAG, "Tạo animation mới loại " + directionAtlasKey);
         return animation;
 	}
 }
