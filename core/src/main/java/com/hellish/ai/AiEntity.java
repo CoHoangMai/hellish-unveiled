@@ -15,7 +15,6 @@ import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.ImageComponent;
-import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 
 //Loại dành cho các nhân vật khác ngoài con HUST
@@ -30,27 +29,25 @@ public class AiEntity {
 	private final AnimationComponent aniCmp;
 	private final ImageComponent imageCmp;
 	private final PhysicsComponent physicsCmp;
-	private final MoveComponent moveCmp;
 	private final AttackComponent attackCmp;
 
 	private final AiComponent aiCmp;
 	
 	public final WanderSteerer wanderSteerer;
-	public final PursueSteerer seekSteerer;
+	public final PursueSteerer pursueSteerer;
 	
 	public AiEntity(Entity entity, Stage stage, World world) {
 		this.entity = entity;
 		this.stage = stage;
 		
 		physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
-		moveCmp = ECSEngine.moveCmpMapper.get(entity);
 		attackCmp = ECSEngine.attackCmpMapper.get(entity);
 		aniCmp = ECSEngine.aniCmpMapper.get(entity);
 		imageCmp = ECSEngine.imageCmpMapper.get(entity);
 		aiCmp = ECSEngine.aiCmpMapper.get(entity);
 		
 		wanderSteerer = new WanderSteerer(physicsCmp, world);
-		seekSteerer = new PursueSteerer(physicsCmp, world);
+		pursueSteerer = new PursueSteerer(physicsCmp, world);
 	}
 	
 	public boolean isAnimationFinished() {
@@ -140,21 +137,14 @@ public class AiEntity {
 	
 	public void moveToTarget() {
 		if(aiCmp.target == null) {
-			moveCmp.cosine = 0;
-			moveCmp.sine = 0;
 			return;
 		}
-		seekSteerer.setTarget(ECSEngine.physicsCmpMapper.get(aiCmp.target));
-		seekSteerer.startPursuing();
-	}
-
-	public void stopMovement() {
-		moveCmp.cosine = 0;
-		moveCmp.sine = 0;
+		pursueSteerer.setTarget(ECSEngine.physicsCmpMapper.get(aiCmp.target));
+		pursueSteerer.startPursuing();
 	}
 
 	public void moveSlowly(boolean slowed) {
-		moveCmp.slow = slowed;
+		physicsCmp.slow = slowed;
 	}
 
 	public boolean hasNearbyEnemy() {
@@ -166,11 +156,13 @@ public class AiEntity {
 		return aiCmp.target != null;
 	}
 	
-	public void checkTargetStillNearby() {
+	public boolean checkTargetStillNearby() {
 		if(!aiCmp.nearbyEntities.contains(aiCmp.target)) {
 			aiCmp.target = null;
-			seekSteerer.stopPursuing();
+			pursueSteerer.stopPursuing();
+			return false;
 		}
+		return true;
 	}
 
 	public boolean canAttack(float range) {

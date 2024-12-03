@@ -2,6 +2,7 @@ package com.hellish.ecs.component;
 
 import static com.hellish.Main.UNIT_SCALE;
 import static com.hellish.ecs.system.CollisionSpawnSystem.SPAWN_AREA_SIZE;
+import static com.hellish.ecs.system.EntitySpawnSystem.COLLISION_BOX;
 import static com.hellish.ecs.system.EntitySpawnSystem.HIT_BOX_SENSOR;
 
 import com.badlogic.ashley.core.Component;
@@ -51,11 +52,15 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 	private boolean tagged;
 
 	private float maxLinearSpeed = 1;
-	private float maxLinearAcceleration = 15;
+	private float maxLinearAcceleration = 8;
 	private float maxAngularSpeed = 0;
 	private float maxAngularAcceleration = 0;
 	
 	public boolean wasSteering = false;
+	
+	private Vector2 collisionOffset;
+
+	public boolean slow;
 
 	
 	public PhysicsComponent() {
@@ -66,6 +71,8 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		prevPosition = new Vector2();
 		
 		boundingRadius = 0;
+		
+		collisionOffset = new Vector2();
 	}
 
 	@Override
@@ -110,15 +117,14 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		if (cfg.bodyType != BodyType.StaticBody) {
 			//collision box
 		    float collH = h * 0.3f;
-		    Vector2 collOffset = new Vector2(0, - h * 0.5f + collH * 0.5f);
+		    physicsCmp.collisionOffset.set(0, - h * 0.5f + collH * 0.5f);
 		    
 		    PolygonShape collisionBoxShape = new PolygonShape();
-		    collisionBoxShape.setAsBox(w * 0.5f, collH * 0.5f, collOffset, 0);
+		    collisionBoxShape.setAsBox(w * 0.5f, collH * 0.5f, physicsCmp.collisionOffset, 0);
 		    
-		    physicsCmp.body.createFixture(collisionBoxShape, 0.0f);
-		    
-		    //Không hiểu vì sao nhưng mà cứ thế đã...
-		    physicsCmp.boundingRadius = (collH + w) / 4;
+		    Fixture collisionFixture = physicsCmp.body.createFixture(collisionBoxShape, 0.0f);
+		    collisionFixture.setUserData(COLLISION_BOX);    
+		    physicsCmp.boundingRadius = Math.max(w, collH);
 
 		    collisionBoxShape.dispose();
 		}
@@ -142,6 +148,10 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
         final float bodyH = rectangle.height * UNIT_SCALE;
 		
 		PhysicsComponent physicsCmp = engine.createComponent(PhysicsComponent.class);
+		
+		//Khá là lỗi tbh
+	    physicsCmp.boundingRadius = Math.max(bodyW, bodyH);
+	    
 		physicsCmp.body = world.createBody(new BodyDef() {{
 			type = BodyDef.BodyType.StaticBody;
 			position.set(bodyX, bodyY);
@@ -157,7 +167,8 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		    new Vector2(0f, bodyH),
 		    new Vector2(0f, 0f)
 		});
-		physicsCmp.body.createFixture(loopShape, 0.0f);
+		Fixture collisionFixture = physicsCmp.body.createFixture(loopShape, 0.0f);
+		collisionFixture.setUserData(COLLISION_BOX);    
 		loopShape.dispose();
 
 		FixtureDef spawnAreaFixDef = new FixtureDef();
@@ -215,7 +226,7 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 
 	@Override
 	public Vector2 getPosition() {
-		return body.getPosition();
+		return body.getPosition().cpy().add(collisionOffset);
 	}
 
 	@Override

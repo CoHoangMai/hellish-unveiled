@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.hellish.ecs.component.PhysicsComponent;
 
-public class WanderSteerer extends CollisionAvoidanceSteererBase{
+public class WanderSteerer extends RaycastObstacleAvoidanceSteererBase{
 	private final Wander<Vector2> wanderSB;
 	
 	private boolean keepWandering;
@@ -18,7 +18,7 @@ public class WanderSteerer extends CollisionAvoidanceSteererBase{
 		this.wanderSB = new Wander<Vector2>(steerable);
 		this.wanderSB.setWanderOffset(0)
 					.setWanderOrientation(0)
-					.setWanderRadius(1)
+					.setWanderRadius(0.2f)
 					.setWanderRate(MathUtils.PI2 * 4);
 		
 		this.prioritySteering.add(wanderSB);

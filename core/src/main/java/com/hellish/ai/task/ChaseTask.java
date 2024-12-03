@@ -27,7 +27,7 @@ public class ChaseTask extends Action{
 	
 	@Override
 	public void end() {
-		getObject().seekSteerer.stopPursuing();
+		getObject().pursueSteerer.stopPursuing();
 	}
 	
 	@Override

@@ -62,9 +62,8 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 	protected void processEntity(Entity entity, float deltaTime) {
 		final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
 		
-		//Làm tạm cho player
-		//TODO xử lý thứ này cho hợp lý hơn
-		if(!physicsCmp.impulse.isZero() && ECSEngine.playerCmpMapper.has(entity)) {
+		//Chỉ có player mới có impulse nhận từ input
+		if(!physicsCmp.impulse.isZero()) {
 			physicsCmp.body.applyLinearImpulse(physicsCmp.impulse, physicsCmp.body.getWorldCenter(), true);
 			physicsCmp.impulse.setZero();
 		}

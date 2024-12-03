@@ -53,6 +53,7 @@ import com.hellish.ecs.component.StateComponent;
 
 public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	public static final String TAG = EntitySpawnSystem.class.getSimpleName();
+	public static final String COLLISION_BOX = "CollisionBox";
 	public static final String HIT_BOX_SENSOR = "HitBoxSensor";
 	public static final String AI_SENSOR = "AiSensor";
 	private final World world;
@@ -91,13 +92,6 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 
 		spawnedEntity.add(physicsCmp);
 		
-		//Thành phần Move nếu nó có chuyển động
-		if (cfg.speedScaling > 0) {
-			final MoveComponent moveCmp = getEngine().createComponent(MoveComponent.class);
-			moveCmp.speed = DEFAULT_SPEED * cfg.speedScaling;
-			spawnedEntity.add(moveCmp);
-		}
-		
 		//Thành phần Animation
 		final AnimationComponent aniCmp = getEngine().createComponent(AnimationComponent.class);
 		aniCmp.mode = Animation.PlayMode.LOOP;
@@ -120,10 +114,14 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			spawnedEntity.add(lifeCmp);
 		}
 		
-		//Thành phần Player, State và Inventory (cho nhân vật người chơi)
+		//Thành phần Player, State, Inventory và Move (cho nhân vật người chơi)
 		if(spawnCmp.type.equals("Player")) {
 			spawnedEntity.add(getEngine().createComponent(PlayerComponent.class));
 			spawnedEntity.add(getEngine().createComponent(StateComponent.class));
+			
+			MoveComponent moveCmp = getEngine().createComponent(MoveComponent.class);
+			moveCmp.speed = DEFAULT_SPEED * cfg.speedScaling;
+			spawnedEntity.add(moveCmp);
 			
 			InventoryComponent itemCmp = getEngine().createComponent(InventoryComponent.class);
 			itemCmp.itemsToAdd.add(ItemType.SWORD);
@@ -143,7 +141,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			spawnedEntity.add(getEngine().createComponent(CollisionComponent.class));
 		}
 		
-		//Thành phần AI và Steerable(cho enemy)
+		//Thành phần AI(cho enemy)
 		if(!cfg.aiTreePath.isBlank()) {
 			final AiComponent aiCmp = getEngine().createComponent(AiComponent.class);
 			aiCmp.treePath = cfg.aiTreePath;

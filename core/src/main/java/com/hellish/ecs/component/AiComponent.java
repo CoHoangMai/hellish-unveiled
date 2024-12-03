@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.hellish.ai.AiEntity;
+import com.hellish.ecs.system.DebugSystem;
 
 public class AiComponent implements Component, Poolable{
 	public HashSet<Entity> nearbyEntities;
@@ -38,10 +39,12 @@ public class AiComponent implements Component, Poolable{
 		@Override
 		public void onComponentAdded(Entity entity, AiComponent component, Stage stage, World world) {
 			if(component.treePath != null && !component.treePath.isEmpty()) {
+				AiEntity aiEntity = new AiEntity(entity, stage, world);
 				component.behaviorTree = bTreeParser.parse(
 					Gdx.files.internal(component.treePath), 
-					new AiEntity(entity, stage, world)
+					aiEntity
 				);
+				DebugSystem.aiEntities.add(aiEntity);
 			}
 		}
 

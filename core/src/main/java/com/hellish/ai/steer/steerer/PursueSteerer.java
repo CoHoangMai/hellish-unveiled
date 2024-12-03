@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.hellish.ecs.component.PhysicsComponent;
 
-public class PursueSteerer extends CollisionAvoidanceSteererBase{
+public class PursueSteerer extends RaycastObstacleAvoidanceSteererBase{
 	final Pursue<Vector2> pursueSB;
 	
 	boolean keepPursuing;

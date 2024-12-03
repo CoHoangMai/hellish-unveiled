@@ -1,5 +1,6 @@
 package com.hellish.ecs.system;
 
+import static com.hellish.ecs.system.EntitySpawnSystem.COLLISION_BOX;
 import static com.hellish.Main.UNIT_SCALE;
 
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -149,7 +151,8 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 			    new Vector2(0f, mapHeight),
 			    new Vector2(0f, 0f)
 			});
-			physicsCmp.body.createFixture(loopShape, 0.0f);
+			Fixture fixture = physicsCmp.body.createFixture(loopShape, 0.0f);
+			fixture.setUserData(COLLISION_BOX);
 			loopShape.dispose();
 			entity.add(physicsCmp);
 			getEngine().addEntity(entity);

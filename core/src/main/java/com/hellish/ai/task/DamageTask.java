@@ -14,7 +14,6 @@ public class DamageTask extends Action{
 		}
 		
 		if(getObject().isAnimationFinished()) {
-			getObject().stopMovement();
 			return Status.SUCCEEDED;
 		}
 		return Status.RUNNING;
