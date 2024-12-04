@@ -21,7 +21,7 @@ public abstract class RaycastObstacleAvoidanceSteererBase extends Steerer{
 		
 		RaycastCollisionDetector<Vector2> raycastCollisionDetector = new Box2dRaycastCollisionDetector(world);
 		CentralRayWithWhiskersConfiguration<Vector2> rayConfiguration = 
-				new CentralRayWithWhiskersConfiguration<Vector2>(steerable, 2, 1.4f, 60 * MathUtils.degreesToRadians);
+				new CentralRayWithWhiskersConfiguration<Vector2>(steerable, 2, 1, 60 * MathUtils.degreesToRadians);
 		this.obstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector2>(steerable, rayConfiguration, raycastCollisionDetector, 0.5f);
 		
 		this.prioritySteering = new PrioritySteering<Vector2>(steerable, 0.001f).add(obstacleAvoidanceSB);

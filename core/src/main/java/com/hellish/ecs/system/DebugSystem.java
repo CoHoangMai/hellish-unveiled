@@ -64,14 +64,14 @@ public class DebugSystem extends EntitySystem{
 	
 	 private void drawRay(RaycastObstacleAvoidanceSteererBase steerer) {
 	        CentralRayWithWhiskersConfiguration<Vector2> rayConfig = steerer.getRayConfiguration();
-	        Ray<Vector2>[] rays = rayConfig.getRays(); // Giả sử phương thức này trả về các ray
+	        Ray<Vector2>[] rays = rayConfig.getRays();
 	        
 	        for (Ray<Vector2> ray : rays) {
 	            Vector2 start = ray.start;
 	            Vector2 end = ray.end;
 
-	            shapeRenderer.setColor(1, 0, 0, 1);  // Màu đỏ cho raycast
-	            shapeRenderer.line(start, end);  // Vẽ đường ray
+	            shapeRenderer.setColor(1, 0, 0, 1);
+	            shapeRenderer.line(start, end);
 	        }
 	    }
 	

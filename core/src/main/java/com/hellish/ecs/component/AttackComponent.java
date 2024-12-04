@@ -13,7 +13,7 @@ public class AttackComponent implements Component, Poolable{
 	public float delay;
 	public float maxDelay;
 	public float extraRange;
-	public AttackState state;
+	private AttackState state;
 	
 	public AttackComponent() {
 		doAttack = false;
@@ -32,6 +32,14 @@ public class AttackComponent implements Component, Poolable{
 		maxDelay = 0;
 		extraRange = 0;
 		state = AttackState.READY;
+	}
+	
+	public AttackState getState() {
+		return state;
+	}
+	
+	public void setState(AttackState state) {
+		this.state = state;
 	}
 
 	public boolean isReady() {

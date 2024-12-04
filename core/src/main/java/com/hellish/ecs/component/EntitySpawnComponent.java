@@ -25,6 +25,7 @@ public class EntitySpawnComponent implements Component, Poolable{
 	public static class SpawnConfiguration {
 		public final AnimationModel model;	
 		public final float speedScaling;
+		public final float accelerationScaling;
 		public final boolean canAttack;
 		public final float attackScaling;
 		public final float attackDelay;
@@ -36,13 +37,15 @@ public class EntitySpawnComponent implements Component, Poolable{
 		public final Vector2 physicsOffset;
 		public final BodyType bodyType;
 		
-		public static final float DEFAULT_SPEED = 3;
+		public static final float DEFAULT_MAX_SPEED = 3;
+		public static final float DEFAULT_MAX_ACCELERATION = 24;
 		public static final float DEFAULT_ATTACK_DAMAGE = 5;
 		public static final int DEFAULT_LIFE = 15;
 		
 		public SpawnConfiguration(Builder builder) {
 			this.model = builder.model;
 			this.speedScaling = builder.speedScaling;
+			this.accelerationScaling = builder.accelerationScaling;
 			this.canAttack = builder.canAttack;
 			this.attackScaling = builder.attackScaling;
 			this.attackDelay = builder.attackDelay;
@@ -58,7 +61,10 @@ public class EntitySpawnComponent implements Component, Poolable{
 		public static class Builder {
 			//Cố chấp để hết public cho đơn giản
 			public AnimationModel model;
+			
 			public float speedScaling = 1;
+			public float accelerationScaling = 1;
+			
 			public boolean canAttack = true;
 			public float attackScaling = 1;
 			public float attackDelay = 0.2f;

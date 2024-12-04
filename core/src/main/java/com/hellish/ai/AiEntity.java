@@ -143,7 +143,7 @@ public class AiEntity {
 		pursueSteerer.startPursuing();
 	}
 
-	public void moveSlowly(boolean slowed) {
+	public void doesMoveSlowly(boolean slowed) {
 		physicsCmp.slow = slowed;
 	}
 

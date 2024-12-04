@@ -21,6 +21,7 @@ import com.hellish.ecs.component.AiComponent;
 import com.hellish.ecs.component.CollisionComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.PhysicsComponent;
+import com.hellish.ecs.component.PhysicsComponent.Direction;
 import com.hellish.ecs.component.TiledComponent;
 
 public class PhysicsSystem extends IteratingSystem implements ContactListener{
@@ -67,6 +68,27 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 			physicsCmp.body.applyLinearImpulse(physicsCmp.impulse, physicsCmp.body.getWorldCenter(), true);
 			physicsCmp.impulse.setZero();
 		}
+		
+		//Tính toán phương hướng
+		Vector2 velocity = physicsCmp.body.getLinearVelocity();
+		if(velocity.len() != 0) {
+			physicsCmp.direction = getDirection(velocity.nor());
+		}
+	}
+	
+	private Direction getDirection(Vector2 normalizedVelocity) {
+		float angle = normalizedVelocity.angleDeg();
+		
+		if(angle >= 315 || angle <= 45) {
+			return Direction.RIGHT;
+		}
+		if(angle >= 135 && angle <= 225) {
+			return Direction.LEFT;
+		}
+		if(angle > 225 && angle < 315) {
+			return Direction.DOWN;
+		}
+		return Direction.UP;
 	}
 
 	public void render(final float alpha) {
@@ -82,7 +104,12 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 		
 			imageCmp.image.setPosition(
 				MathUtils.lerp(prevX, bodyX, alpha) - imageCmp.image.getWidth() * 0.5f - offset.x,
-				MathUtils.lerp(prevY, bodyY, alpha) - imageCmp.image.getHeight() * 0.5f - offset.y);   
+				MathUtils.lerp(prevY, bodyY, alpha) - imageCmp.image.getHeight() * 0.5f - offset.y); 
+			
+			float xVelocity = physicsCmp.body.getLinearVelocity().x;
+			if(xVelocity != 0) {
+				imageCmp.image.setFlipX(xVelocity > 0);
+			}
 		}
 	}
 	

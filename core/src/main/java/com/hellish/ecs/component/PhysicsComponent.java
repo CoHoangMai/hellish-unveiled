@@ -34,6 +34,14 @@ import com.hellish.ai.steer.steerer.Steerer;
 import com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration;
 
 public class PhysicsComponent implements Component, Poolable, Steerable<Vector2> {
+	public enum Direction {
+		UP, DOWN, LEFT, RIGHT;
+		
+		public String getDirection() {
+			return this.name().toLowerCase();
+		}
+	}
+	
 	public Body body;
 	
 	public Vector2 impulse;
@@ -43,25 +51,22 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 	
 	//Những thứ về Steering
 	public Steerer currentSteerer;
-	
-	public final SteeringAcceleration<Vector2> steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
-	
-	public boolean isSteering;
+	public SteeringAcceleration<Vector2> steeringOutput;
 	
 	private float boundingRadius;
 	private boolean tagged;
 
-	private float maxLinearSpeed = 1;
-	private float maxLinearAcceleration = 8;
-	private float maxAngularSpeed = 0;
-	private float maxAngularAcceleration = 0;
-	
-	public boolean wasSteering = false;
+	private float maxLinearSpeed;
+	private float maxLinearAcceleration;
+	private float maxAngularSpeed;
+	private float maxAngularAcceleration;
+
+	public boolean isSteering;
+	public boolean wasSteering;
+	public boolean slow;
 	
 	private Vector2 collisionOffset;
-
-	public boolean slow;
-
+	public Direction direction;
 	
 	public PhysicsComponent() {
 		body = null;
@@ -70,9 +75,23 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		offset = new Vector2();
 		prevPosition = new Vector2();
 		
+		currentSteerer = null;
+		steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
+		
 		boundingRadius = 0;
+		tagged = false;
+		
+		maxLinearSpeed = 0;
+		maxLinearAcceleration = 0;
+		maxAngularSpeed = 0;
+		maxAngularAcceleration = 0;
+		
+		isSteering = false;
+		wasSteering = false;
+		slow = false;
 		
 		collisionOffset = new Vector2();
+		direction = Direction.DOWN;
 	}
 
 	@Override
@@ -83,7 +102,23 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		offset.set(0, 0);
 		prevPosition.set(0, 0);
 		
+		currentSteerer = null;
+		steeringOutput.setZero();
+		
 		boundingRadius = 0;
+		tagged = false;
+		
+		maxLinearSpeed = 0;
+		maxLinearAcceleration = 0;
+		maxAngularSpeed = 0;
+		maxAngularAcceleration = 0;
+		
+		isSteering = false;
+		wasSteering = false;
+		slow = false;
+		
+		collisionOffset.set(0, 0);
+		direction = Direction.DOWN;
 	}
 	
 	public static PhysicsComponent physicsCmpFromImgandCfg(Engine engine, World world, Image image, SpawnConfiguration cfg) {
@@ -266,7 +301,7 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 
 	@Override
 	public float getMaxLinearSpeed() {
-		return maxLinearSpeed;
+		return slow ? maxLinearSpeed * 0.3f : maxLinearSpeed;
 	}
 
 	@Override
@@ -276,7 +311,7 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 
 	@Override
 	public float getMaxLinearAcceleration() {
-		return maxLinearAcceleration;
+		return slow ? maxLinearAcceleration * 0.3f : maxLinearAcceleration;
 	}
 
 	@Override

@@ -1,7 +1,8 @@
 package com.hellish.ecs.system;
 
 import static com.hellish.Main.UNIT_SCALE;
-import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_SPEED;
+import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_MAX_SPEED;
+import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_MAX_ACCELERATION;
 import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_ATTACK_DAMAGE;
 import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_LIFE;
 
@@ -89,6 +90,14 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		//Thành phần Physics
 		final PhysicsComponent physicsCmp = PhysicsComponent.physicsCmpFromImgandCfg(
 				getEngine(), world, imageCmp.image, cfg);
+		
+		if(cfg.speedScaling > 0) {
+			//Điều chỉnh cho các thông tin liên quan đến steering behavior
+			//Thực ra player cũng bị thêm thông tin nhưng vì không phải AiEntity nên steerer luôn null
+			//TODO xử lý hợp lý hơn
+			physicsCmp.setMaxLinearSpeed(DEFAULT_MAX_SPEED * cfg.speedScaling);
+			physicsCmp.setMaxLinearAcceleration(DEFAULT_MAX_ACCELERATION * cfg.accelerationScaling);
+		}
 
 		spawnedEntity.add(physicsCmp);
 		
@@ -120,7 +129,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			spawnedEntity.add(getEngine().createComponent(StateComponent.class));
 			
 			MoveComponent moveCmp = getEngine().createComponent(MoveComponent.class);
-			moveCmp.speed = DEFAULT_SPEED * cfg.speedScaling;
+			moveCmp.speed = DEFAULT_MAX_SPEED * cfg.speedScaling;
 			spawnedEntity.add(moveCmp);
 			
 			InventoryComponent itemCmp = getEngine().createComponent(InventoryComponent.class);

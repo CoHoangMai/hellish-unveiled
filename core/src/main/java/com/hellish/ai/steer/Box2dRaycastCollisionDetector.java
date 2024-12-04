@@ -53,7 +53,7 @@ public class Box2dRaycastCollisionDetector implements RaycastCollisionDetector<V
 		public float reportRayFixture (Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
 			//Chỉ xét những collision box và không phải của player
 			Entity entity = (Entity) fixture.getBody().getUserData();
-			if(fixture.getUserData() != null && fixture.getUserData().equals(COLLISION_BOX)
+			if(fixture.getUserData() != null && fixture.getUserData() == COLLISION_BOX
 					&& !ECSEngine.playerCmpMapper.has(entity)) {
 				if (outputCollision != null) outputCollision.set(point, normal);
 				collided = true;

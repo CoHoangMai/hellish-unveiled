@@ -15,7 +15,7 @@ public class WanderTask extends Action{
 	@Override
 	public Status execute() {
 		if(getStatus() != Status.RUNNING) {
-			getObject().moveSlowly(true);
+			getObject().doesMoveSlowly(true);
 			getObject().animation(AnimationType.WALK);
 			getObject().wanderSteerer.startWandering();
 			currentDuration = (duration != null) ? duration.nextFloat() : 1;
@@ -33,7 +33,7 @@ public class WanderTask extends Action{
 	
 	@Override
 	public void end() {
-		getObject().moveSlowly(false);
+		getObject().doesMoveSlowly(false);
 		getObject().wanderSteerer.stopWandering();
 	}
 	

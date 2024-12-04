@@ -20,7 +20,7 @@ import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.LifeComponent;
-import com.hellish.ecs.component.MoveComponent;
+import com.hellish.ecs.component.PhysicsComponent;
 
 public class AnimationSystem extends IteratingSystem {
 	public static final String TAG = AnimationSystem.class.getSimpleName();
@@ -42,11 +42,11 @@ public class AnimationSystem extends IteratingSystem {
 	protected void processEntity(Entity entity, float deltaTime) {
 		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
 		final ImageComponent imgCmp = ECSEngine.imageCmpMapper.get(entity);
-		final MoveComponent moveCmp = ECSEngine.moveCmpMapper.get(entity);
+		final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
 		final LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(entity);
 		
-		if(moveCmp != null && aniCmp.currentDirectionKey != aniCmp.getDirectionKey(moveCmp.direction)) {
-			aniCmp.nextDirectionKey = aniCmp.getDirectionKey(moveCmp.direction);
+		if(aniCmp.currentDirectionKey != aniCmp.getDirectionKey(physicsCmp.direction)) {
+			aniCmp.nextDirectionKey = aniCmp.getDirectionKey(physicsCmp.direction);
 		}
 		
 		if(lifeCmp != null && lifeCmp.isInjured != aniCmp.currentInjuredStatus) {
