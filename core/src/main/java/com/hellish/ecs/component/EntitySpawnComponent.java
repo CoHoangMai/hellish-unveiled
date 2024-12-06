@@ -36,6 +36,7 @@ public class EntitySpawnComponent implements Component, Poolable{
 		public final Vector2 physicsScaling;
 		public final Vector2 physicsOffset;
 		public final BodyType bodyType;
+		public final Boolean hasLight;
 		
 		public static final float DEFAULT_MAX_SPEED = 3;
 		public static final float DEFAULT_MAX_ACCELERATION = 24;
@@ -56,6 +57,7 @@ public class EntitySpawnComponent implements Component, Poolable{
 			this.physicsScaling = builder.physicsScaling;
 			this.physicsOffset = builder.physicsOffset;
 			this.bodyType = builder.bodyType;
+			this.hasLight = builder.hasLight;
 		}
 		
 		public static class Builder {
@@ -75,7 +77,8 @@ public class EntitySpawnComponent implements Component, Poolable{
 			public Vector2 physicsScaling = new Vector2(1, 1);
 			public Vector2 physicsOffset = new Vector2(0, 0);
 			public BodyType bodyType = BodyType.DynamicBody;
-			
+			public Boolean hasLight = false;
+
 			public Builder(AnimationModel model) {
 				if (model == null) {
 					throw new GdxRuntimeException("AnimationModel không thể là null");

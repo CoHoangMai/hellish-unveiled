@@ -33,7 +33,7 @@ import com.hellish.event.MapChangeEvent;
 
 public class CollisionSpawnSystem extends IteratingSystem implements EventListener{
 	public static final String TAG = CollisionSpawnSystem.class.getSimpleName();
-	public static final int SPAWN_AREA_SIZE = 3;
+	public static final int SPAWN_AREA_SIZE = 7;
 	final private World world;
 	final private Array<TiledMapTileLayer> tiledLayers;	
 	final private Array<TiledMapTileMapObject> terrainObjects;

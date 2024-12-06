@@ -93,7 +93,7 @@ public class Main extends Game implements EventListener{
 		componentManager = new ComponentManager();
 		
 		//ECS
-		ecsEngine = new ECSEngine(this);
+		ecsEngine = new ECSEngine(this, rayHandler);
 		
 		//input
 		inputManager = new InputManager(this);

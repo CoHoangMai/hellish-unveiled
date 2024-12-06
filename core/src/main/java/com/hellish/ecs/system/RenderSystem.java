@@ -3,6 +3,7 @@ package com.hellish.ecs.system;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import box2dLight.RayHandler;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -22,6 +23,7 @@ import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.event.MapChangeEvent;
 
+
 import static com.hellish.Main.UNIT_SCALE;
 	
 public class RenderSystem extends IteratingSystem implements Disposable, EventListener{
@@ -32,8 +34,9 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 	private final ArrayList<TiledMapTileLayer> foregroundLayers;
 	private final OrthogonalTiledMapRenderer mapRenderer;
 	private final OrthographicCamera orthoCam;
+	private final RayHandler rayHandler;
 
-	public RenderSystem(final Main context) {
+	public RenderSystem(final Main context, RayHandler rayHandler) {
 		super(Family.all(ImageComponent.class).get());
 		gameStage = context.getGameStage();
 		uiStage = context.getUIStage();
@@ -42,6 +45,7 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 		foregroundLayers = new ArrayList<>();
 		orthoCam = (OrthographicCamera)gameStage.getCamera();
 		mapRenderer = new OrthogonalTiledMapRenderer(null, UNIT_SCALE, gameStage.getBatch());
+		this.rayHandler = rayHandler;
 	}
 
 	@Override
@@ -49,6 +53,7 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 		entitiesArray.add(entity);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void update(float deltaTime) {
 		entitiesArray.clear();
@@ -95,6 +100,8 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 
 		gameStage.act(deltaTime);
 		gameStage.draw();
+
+		
 		
 		if(!foregroundLayers.isEmpty()) {
 			gameStage.getBatch().setColor(Color.WHITE);
@@ -106,10 +113,18 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 			gameStage.getBatch().end();
 		}
 		
+		rayHandler.setCombinedMatrix(orthoCam.combined);
+		rayHandler.update();
+		rayHandler.render();
+
 		uiStage.getViewport().apply();
 		uiStage.act(deltaTime);
 		uiStage.draw();
+
+
+		
 	}
+
 
 	@Override
 	public boolean handle(Event event) {
