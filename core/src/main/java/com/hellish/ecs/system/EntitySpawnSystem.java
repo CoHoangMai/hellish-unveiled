@@ -5,6 +5,9 @@ import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.
 import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_MAX_ACCELERATION;
 import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_ATTACK_DAMAGE;
 import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_LIFE;
+import static com.hellish.ecs.component.LightComponent.ENEMY_BIT;
+import static com.hellish.ecs.component.LightComponent.ENVIRONMENT_BIT;
+import static com.hellish.ecs.component.LightComponent.PLAYER_BIT;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +43,7 @@ import com.hellish.ecs.component.InventoryComponent;
 import com.hellish.ecs.component.ItemComponent.ItemType;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.LightComponent;
+import com.hellish.ecs.component.LightComponent.ClosedFloatingPointRange;
 import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent;
@@ -53,7 +57,6 @@ import box2dLight.RayHandler;
 import com.hellish.ecs.component.AnimationComponent.AnimationModel;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
 import com.hellish.ecs.component.AttackComponent;
-import com.hellish.ecs.component.ClosedFloatingPointRange;
 import com.hellish.ecs.component.CollisionComponent;
 import com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration;
 import com.hellish.ecs.component.StateComponent;
@@ -71,9 +74,9 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	
 	
 
-	public EntitySpawnSystem(final Main context, RayHandler rayHandler) {
+	public EntitySpawnSystem(final Main context) {
 		super(Family.all(EntitySpawnComponent.class).get());
-		this.rayHandler = rayHandler;
+		rayHandler = context.getRayHandler();
 		world = context.getWorld();
 		assetManager = context.getAssetManager();
 		cachedSpawnCfgs = new HashMap<>();
@@ -100,9 +103,6 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		final PhysicsComponent physicsCmp = PhysicsComponent.physicsCmpFromImgandCfg(
 				getEngine(), world, imageCmp.image, cfg);
 		
-		
-
-
 		if(cfg.speedScaling > 0) {
 			//Điều chỉnh cho các thông tin liên quan đến steering behavior
 			//Thực ra player cũng bị thêm thông tin nhưng vì không phải AiEntity nên steerer luôn null
@@ -113,11 +113,11 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 
 		spawnedEntity.add(physicsCmp);
 		
+		//Thành phần Light
 		if (cfg.hasLight) {
-    		LightComponent lightComponent = new LightComponent();
+    		LightComponent lightComponent = getEngine().createComponent(LightComponent.class);
     		lightComponent.distance = new ClosedFloatingPointRange(5f, 6.5f);
-    		lightComponent.light = new PointLight(rayHandler, 64, LightComponent.lightColor, lightComponent.distance.getEnd(), 0f, 0f);
-
+    		lightComponent.light = new PointLight(rayHandler, 64, LightComponent.LIGHT_COLOR, lightComponent.distance.getEnd(), 0f, 0f);
     		lightComponent.light.attachToBody(physicsCmp.body);
     		spawnedEntity.add(lightComponent);
 		}
@@ -200,6 +200,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.attackScaling = 1.25f;
 				builder.attackExtraRange = 0.75f;
 				builder.hasLight = true;
+				builder.physicsCategory = PLAYER_BIT;
 				return new SpawnConfiguration(builder);
 			} else if (t.equals("Wolf")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.WOLF);
@@ -209,6 +210,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.attackExtraRange = 0.1f;
 				builder.aiTreePath = "ai/wolf.tree";
 				builder.hasLight = true;
+				builder.physicsCategory = ENEMY_BIT;
 				return new SpawnConfiguration(builder);
 			} else if (t.equals("FlagZombie")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.FLAG_ZOMBIE);
@@ -218,6 +220,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.lifeScaling = 0.75f;
 				builder.aiTreePath = "ai/zombie.tree";
 				builder.hasLight = true;
+				builder.physicsCategory = ENEMY_BIT;
 				return new SpawnConfiguration(builder);
 			} else if (t.equals("RunningZombie")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.RUNNING_ZOMBIE);
@@ -227,6 +230,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.lifeScaling = 0.5f;
 				builder.aiTreePath = "ai/zombie.tree";
 				builder.hasLight = true;
+				builder.physicsCategory = ENEMY_BIT;
 				return new SpawnConfiguration(builder);
 			} else if (t.equals("TreeZombie")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.TREE_ZOMBIE);
@@ -237,6 +241,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.lifeScaling = 1.25f;
 				builder.aiTreePath = "ai/zombie.tree";
 				builder.hasLight = true;
+				builder.physicsCategory = ENEMY_BIT;
 				return new SpawnConfiguration(builder);
 			} else if (t.equals("Chest")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.CHEST);
@@ -247,6 +252,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.lootable = true;
 				builder.bodyType = BodyType.StaticBody;
 				builder.hasLight = true;
+				builder.physicsCategory = ENVIRONMENT_BIT;
 				return new SpawnConfiguration(builder);
 			} else {
 				throw new IllegalArgumentException("Loại spawn " + t + " không có cài đặt SpawnConfiguration");

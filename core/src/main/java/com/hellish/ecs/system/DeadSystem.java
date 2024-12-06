@@ -3,6 +3,7 @@ package com.hellish.ecs.system;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.hellish.Main;
@@ -12,6 +13,7 @@ import com.hellish.ecs.component.ComponentManager;
 import com.hellish.ecs.component.DeadComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.LifeComponent;
+import com.hellish.ecs.component.LightComponent;
 import com.hellish.event.EntityReviveEvent;
 
 public class DeadSystem extends IteratingSystem{
@@ -30,6 +32,7 @@ public class DeadSystem extends IteratingSystem{
 		final DeadComponent deadCmp = ECSEngine.deadCmpMapper.get(entity);
 		final ImageComponent imageCmp = ECSEngine.imageCmpMapper.get(entity);
 		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
+		final LightComponent lightCmp = ECSEngine.lightCmpMapper.get(entity);
 		
 		if(aniCmp == null) {
 			getEngine().removeEntity(entity);
@@ -43,6 +46,16 @@ public class DeadSystem extends IteratingSystem{
 					Actions.fadeOut(0.75f),
 					Actions.run(() -> getEngine().removeEntity(entity))
 				));
+				
+				//Rage, rage against the dying of the light.
+				if(lightCmp != null) {
+					Color lightColor = lightCmp.light.getColor();
+					if(lightColor.a > 0) {
+						lightColor.a = Math.max(0, lightColor.a - 1.5f * deltaTime);
+						lightCmp.light.setColor(lightColor);
+					}
+				}
+				
 				return;
 			}		
 			deadCmp.reviveTime -= deltaTime;

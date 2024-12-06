@@ -1,6 +1,7 @@
 package com.hellish.ecs.component;
 
 import static com.hellish.Main.UNIT_SCALE;
+import static com.hellish.ecs.component.LightComponent.ENVIRONMENT_BIT;
 import static com.hellish.ecs.system.CollisionSpawnSystem.SPAWN_AREA_SIZE;
 import static com.hellish.ecs.system.EntitySpawnSystem.COLLISION_BOX;
 import static com.hellish.ecs.system.EntitySpawnSystem.HIT_BOX_SENSOR;
@@ -147,6 +148,7 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		fixtureDef.shape = pShape;
 		Fixture fixture = physicsCmp.body.createFixture(fixtureDef);
 		fixture.setUserData(HIT_BOX_SENSOR);
+		fixture.getFilterData().categoryBits = cfg.physicsCategory;
 		pShape.dispose();
 		
 		if (cfg.bodyType != BodyType.StaticBody) {
@@ -158,7 +160,10 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		    collisionBoxShape.setAsBox(w * 0.5f, collH * 0.5f, physicsCmp.collisionOffset, 0);
 		    
 		    Fixture collisionFixture = physicsCmp.body.createFixture(collisionBoxShape, 0.0f);
-		    collisionFixture.setUserData(COLLISION_BOX);    
+		    collisionFixture.setUserData(COLLISION_BOX); 
+		    collisionFixture.getFilterData().categoryBits = cfg.physicsCategory;
+		    
+		    //lỗi đấy lmao
 		    physicsCmp.boundingRadius = Math.max(w, collH);
 
 		    collisionBoxShape.dispose();
@@ -203,6 +208,7 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		    new Vector2(0f, 0f)
 		});
 		Fixture collisionFixture = physicsCmp.body.createFixture(loopShape, 0.0f);
+		collisionFixture.getFilterData().categoryBits = ENVIRONMENT_BIT;
 		collisionFixture.setUserData(COLLISION_BOX);    
 		loopShape.dispose();
 
