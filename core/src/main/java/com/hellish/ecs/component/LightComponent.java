@@ -1,13 +1,13 @@
 package com.hellish.ecs.component;
 
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import com.badlogic.ashley.core.Component;
 
 import box2dLight.Light;
-import com.badlogic.ashley.core.Entity;
 
 
 
@@ -62,7 +62,7 @@ public class LightComponent implements Component, Poolable{
     public static final short b2dPlayer = 2;
     public static final short b2dSlime = 4;
     public static final short b2dEnvironment = 8;
-    public static final Color lightColor = new Color(1f, 1f, 1f, 0.7f);
+    public static final Color lightColor = Color.BLACK;
 
     public static class LightComponentListener implements ComponentListener<LightComponent> {
         @Override
