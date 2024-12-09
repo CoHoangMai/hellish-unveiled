@@ -1,11 +1,14 @@
 package com.hellish.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader.ParticleEffectParameter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -23,11 +26,15 @@ public class LoadingScreen extends AbstractScreen<Table> {
 	private final AssetManager assetManager;
 	private LoadingView loadingView;
 	private boolean isMusicLoaded;
+	OrthographicCamera camera;
+    SpriteBatch batch;
 	
 	public LoadingScreen(final Main context) {
 		super(context);
 		
 		this.assetManager = context.getAssetManager();
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch = new SpriteBatch();
 		
 		assetManager.load("characters_and_effects/char_and_effect.atlas", TextureAtlas.class);
 		assetManager.load("characters_and_effects/gameObjects.atlas", TextureAtlas.class);
@@ -55,6 +62,17 @@ public class LoadingScreen extends AbstractScreen<Table> {
 
 	@Override
 	public void render(float delta) {
+
+		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        loadingView.backgroundSprite.draw(batch);
+        batch.end();
+
+		assetManager.update();
+    	uiStage.act(delta);
+    	uiStage.draw();
+
 		assetManager.update();
 		if(!isMusicLoaded && assetManager.isLoaded(AudioType.INTRO.getFilePath())) {
 			isMusicLoaded = true;
@@ -106,7 +124,7 @@ public class LoadingScreen extends AbstractScreen<Table> {
 	public void keyPressed(InputManager manager, GameKeys key) {
 		if (assetManager.getProgress() >= 1) {
 			audioManager.playAudio(AudioType.SELECT);
-			context.setScreen(ScreenType.GAME);
+			context.setScreen(ScreenType.MAIN_MENU);
 		}
 	}
 
