@@ -39,7 +39,7 @@ public class GuideView extends Table{
         dimOverlay = createDimOverlay();
         this.addActor(dimOverlay);
         // Tạo nút
-        goBackButton = createButton("go_back_button.png");
+        goBackButton = createButton("go_back_small_button.png");
         // Thêm guide
         guideImage = new Image(new Texture("guide_image.png"));
 
