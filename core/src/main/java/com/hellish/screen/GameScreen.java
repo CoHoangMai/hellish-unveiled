@@ -128,7 +128,7 @@ public class GameScreen extends AbstractScreen<Table>{
         invView.setVisible(false);
         views.add(invView);
         
-        PauseView pauseView = new PauseView(Scene2DSkin.defaultSkin);
+        PauseView pauseView = new PauseView(Scene2DSkin.defaultSkin, context);
         pauseView.setVisible(false);
         views.add(pauseView);
         

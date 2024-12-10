@@ -2,20 +2,35 @@ package com.hellish.ui.view;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.hellish.Main;
+import com.hellish.audio.AudioManager;
+import com.hellish.audio.AudioType;
+import com.hellish.screen.ScreenType;
 import com.hellish.ui.Scene2DSkin.Labels;
 
 public class PauseView extends Table{
 	private static final String PIXMAP_KEY = "pauseTexture";
-	
-	public PauseView(Skin skin) {
+	private final ImageButton goBackButton;
+    private final ImageButton settingButton;
+    private final ImageButton restartButton;
+    private final ImageButton continueButton;
+	private final AudioManager audioManager;
+	public PauseView(Skin skin, final Main context) {
 		super(skin);
 		setFillParent(true);
+		audioManager = context.getAudioManager();
+		//GameScreen gameScreen = new GameScreen(context);
+		this.top();
 		
 		if(!skin.has(PIXMAP_KEY, TextureRegionDrawable.class)) {
             Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -29,6 +44,56 @@ public class PauseView extends Table{
 		
 		Label pauseLabel = new Label("[RED]Xì tóp", skin.get(Labels.LARGE.getSkinKey(), LabelStyle.class));
 		pauseLabel.setAlignment(Align.center);
-		add(pauseLabel).expand().fill();
+		add(pauseLabel).expandX().center().padTop(50).row();
+		// Tạo các nút
+		goBackButton = createButton("go_back_small_button.png");
+        settingButton = createButton("setting_small_button.png");
+        restartButton = createButton("restart_small_button.png");
+        continueButton = createButton("continue_small_button.png");
+		// Bố trí các nút
+		Table bottomTable = new Table();
+        bottomTable.add(goBackButton).size(20, 20).pad(10); // Nút đầu tiên
+        bottomTable.add(settingButton).size(20, 20).pad(10); // Nút thứ hai
+        bottomTable.add(restartButton).size(20, 20).pad(10); // Nút thứ ba
+        bottomTable.add(continueButton).size(20, 20).pad(10); // Nút thứ tư
+		this.add(bottomTable); // Đặt các nút ở dưới cùng
+		//Tạo event cho nút
+        goBackButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				context.setScreen(ScreenType.MAIN_MENU); // Khởi động lại màn hình Gam
+            }
+        });
+
+        restartButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				context.setScreen(ScreenType.GAME); // Chuyển đến GameScreen mới
+			}
+		});
 	}
+
+	private ImageButton createButton(String texturePath) {
+        Texture texture = new Texture(texturePath);
+        TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
+        ImageButton button = new ImageButton(drawable);
+        button.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                button.setSize(25, 25);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                button.setSize(20, 20);
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                audioManager.playAudio(AudioType.SELECT);
+            }
+        });
+        return button;
+
+    }
 }
