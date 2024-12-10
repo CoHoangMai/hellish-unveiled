@@ -8,27 +8,28 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
-import com.hellish.ui.view.MainMenuView;
+import com.hellish.ui.view.GuideView;
 
-public class MainMenuScreen extends AbstractScreen<MainMenuView> {
+public class GuideScreen extends AbstractScreen<Table>{
 
     private final Skin skin;
-    private MainMenuView mainMenuView;
+    private GuideView guideView;
     private final AssetManager assetManager;
     private boolean isMusicLoaded;
     OrthographicCamera camera;
-    SpriteBatch batch; // Skin để sử dụng cho MainMenuView
+    SpriteBatch batch;
 
-    public MainMenuScreen(final Main context) {
+    public GuideScreen(final Main context) {
         super(context);
         assetManager = context.getAssetManager();
         this.skin = context.getSkin(); // Lấy skin từ ngữ cảnh
-        mainMenuView = new MainMenuView(context.getSkin(), context);
+        guideView = new GuideView(context.getSkin(), context);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch = new SpriteBatch();
         isMusicLoaded = false;
@@ -42,10 +43,10 @@ public class MainMenuScreen extends AbstractScreen<MainMenuView> {
     }
 
     @Override
-    protected Array<MainMenuView> getScreenViews(final Main context) {
-        Array<MainMenuView> views = new Array<>();
-        MainMenuView mainMenuView = new MainMenuView(skin, context);
-        views.add(mainMenuView);
+    protected Array getScreenViews(final Main context) {
+        Array<GuideView> views = new Array<>();
+        GuideView guideView = new GuideView(skin, context);
+        views.add(guideView);
         return views;
     }
 
@@ -55,7 +56,7 @@ public class MainMenuScreen extends AbstractScreen<MainMenuView> {
         
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        mainMenuView.backgroundSprite.draw(batch);
+        guideView.backgroundSprite.draw(batch);
         batch.end();
 
         // Vẽ UI hoặc các thành phần khác
@@ -71,23 +72,28 @@ public class MainMenuScreen extends AbstractScreen<MainMenuView> {
     }
 
     @Override
-    public void dispose() {
-
-    }
-
-    @Override
     public void pause() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void resume() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-	public void keyPressed(InputManager manager, GameKeys key) {
-	}
+    public void dispose() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void keyPressed(InputManager manager, GameKeys key) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     @Override
     public void keyUp(InputManager manager, GameKeys key) {
-      }
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
 }
