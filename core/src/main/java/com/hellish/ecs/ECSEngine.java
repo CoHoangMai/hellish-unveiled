@@ -121,13 +121,8 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addSystem(new AiSystem());
 		addSystem(new CameraSystem(context));
 		addSystem(new FloatingTextSystem(context));
-<<<<<<< HEAD
-		addSystem(new RenderSystem(context, rayHandler));
-		//addSystem(new DebugSystem(context));
-=======
 		addSystem(new RenderSystem(context));
-		addSystem(new DebugSystem(context));
->>>>>>> 9fe06e1255ea57f159d16505d4625d12d636f152
+		//addSystem(new DebugSystem(context));
 		addSystem(new ParticleEffectSystem(context));
 		
 	}
