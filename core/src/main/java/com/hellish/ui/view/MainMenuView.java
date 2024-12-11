@@ -52,7 +52,7 @@ public class MainMenuView extends Table {
         startButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                context.setScreen(ScreenType.DAILOG); // Chuyển đến màn hình Game
+                context.setScreen(ScreenType.GAME); // Chuyển đến màn hình Game
             }
         });
 
