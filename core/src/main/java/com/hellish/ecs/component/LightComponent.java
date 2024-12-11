@@ -1,38 +1,36 @@
 package com.hellish.ecs.component;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 import box2dLight.Light;
 
-
-
-
 public class LightComponent implements Component, Poolable{
-    public ClosedFloatingPointRange distance = new ClosedFloatingPointRange(2f, 3.5f);
-    private float distanceTime = 0f;
-    private int distanceDirection = -1;
+    public static final short PLAYER_BIT = 1 << 0; // = 2
+    public static final short ENEMY_BIT = 1 << 1; // = 4
+    public static final short ENVIRONMENT_BIT = 1 << 2; // = 8
+    public static final Color LIGHT_COLOR = new Color(1f, 1f, 1f, 0.7f);
+    
+    public ClosedFloatingPointRange distance;
+    private float distanceTime;
+    private int distanceDirection;
     public Light light;
-
-    public Light getLight() {
-        return light;
+    
+    public LightComponent() {
+    	distance = new ClosedFloatingPointRange(2, 3.5f);
+    	distanceTime = 0;
+    	distanceDirection = -1;
+    	light = null;
     }
-
-    public void setLight(Light light) {
-        this.light = light;
-    }
-
+    
     @Override
     public void reset() {
-        // Reset the light to its default state
-        if (light != null) {
-            light.remove(); // Example: Remove light from rendering
-        }
-        light = null; // Reset light reference
+    	distance = null;
+    	distanceTime = 0;
+    	distanceDirection = -1;
+    	light.remove();
+        light = null;
     }
 
     public float[] getDistance() {
@@ -58,23 +56,43 @@ public class LightComponent implements Component, Poolable{
     public void setDistanceDirection(int distanceDirection) {
         this.distanceDirection = distanceDirection;
     }
-
-    public static final short b2dPlayer = 2;
-    public static final short b2dSlime = 4;
-    public static final short b2dEnvironment = 8;
-    public static final Color lightColor = Color.BLACK;
-
-    public static class LightComponentListener implements ComponentListener<LightComponent> {
-        @Override
-        public void onComponentAdded(Entity entity, LightComponent component, Stage stage, World world) {
-            // Handle component addition if needed
-        }
     
+    public static class ClosedFloatingPointRange {
+        private final float start;
+        private final float end;
+
+        public ClosedFloatingPointRange(float start, float end) {
+            if (start > end) {
+                throw new IllegalArgumentException("Start must be less than or equal to end");
+            }
+            this.start = start;
+            this.end = end;
+        }
+
+        public float getStart() {
+            return start;
+        }
+
+        public float getEnd() {
+            return end;
+        }
+
+        public boolean contains(float value) {
+            return value >= start && value <= end;
+        }
+
+        public float clamp(float value) {
+            if (value < start) return start;
+            if (value > end) return end;
+            return value;
+        }
+
         @Override
-        public void onComponentRemoved(Entity entity, LightComponent component) {
-            // Cleanup when the component is removed
-            component.getLight().remove();
+        public String toString() {
+            return "ClosedFloatingPointRange{" +
+                   "start=" + start +
+                   ", end=" + end +
+                   '}';
         }
     }
-
 }

@@ -1,5 +1,8 @@
 package com.hellish;
 
+import static com.hellish.ecs.component.LightComponent.ENVIRONMENT_BIT;
+import static com.hellish.ecs.component.LightComponent.PLAYER_BIT;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -33,6 +36,7 @@ import com.hellish.screen.GameScreen;
 import com.hellish.screen.ScreenType;
 import com.hellish.ui.Scene2DSkin;
 
+import box2dLight.Light;
 import box2dLight.RayHandler;
 
 import java.util.EnumMap;
@@ -74,8 +78,11 @@ public class Main extends Game implements EventListener{
 		//box2d
 		Box2D.init();
 		world = new World(new Vector2(0, 0), true);
+		
+		//rayHandler
 		rayHandler = new RayHandler(world);
-		rayHandler.setAmbientLight(0.05f, 0.05f, 0.4f, 0.2f);
+		RayHandler.useDiffuseLight(true);
+		Light.setGlobalContactFilter(PLAYER_BIT, (short) 1, ENVIRONMENT_BIT);
 		
 		//assetManager
 		assetManager = new AssetManager();
@@ -93,7 +100,7 @@ public class Main extends Game implements EventListener{
 		componentManager = new ComponentManager();
 		
 		//ECS
-		ecsEngine = new ECSEngine(this, rayHandler);
+		ecsEngine = new ECSEngine(this);
 		
 		//input
 		inputManager = new InputManager(this);

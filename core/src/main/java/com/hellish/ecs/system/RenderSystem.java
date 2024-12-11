@@ -36,7 +36,7 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 	private final OrthographicCamera orthoCam;
 	private final RayHandler rayHandler;
 
-	public RenderSystem(final Main context, RayHandler rayHandler) {
+	public RenderSystem(final Main context) {
 		super(Family.all(ImageComponent.class).get());
 		gameStage = context.getGameStage();
 		uiStage = context.getUIStage();
@@ -45,7 +45,7 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 		foregroundLayers = new ArrayList<>();
 		orthoCam = (OrthographicCamera)gameStage.getCamera();
 		mapRenderer = new OrthogonalTiledMapRenderer(null, UNIT_SCALE, gameStage.getBatch());
-		this.rayHandler = rayHandler;
+		rayHandler = context.getRayHandler();
 	}
 
 	@Override
@@ -119,10 +119,7 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 
 		uiStage.getViewport().apply();
 		uiStage.act(deltaTime);
-		uiStage.draw();
-
-
-		
+		uiStage.draw();		
 	}
 
 

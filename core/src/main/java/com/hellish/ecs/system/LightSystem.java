@@ -1,6 +1,5 @@
 package com.hellish.ecs.system;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -10,27 +9,29 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import box2dLight.RayHandler;
+
+import com.hellish.Main;
+import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.LightComponent;
 
 public class LightSystem extends IteratingSystem {
-    private final ComponentMapper<LightComponent> lightCmps = ComponentMapper.getFor(LightComponent.class);
+    private static final Interpolation distanceInterpolation = Interpolation.smoother;
+	private static final Color dayLightColor = Color.WHITE;
+    private static final Color nightLightColor = Color.ROYAL;
+    
     private final RayHandler rayHandler;
 
     private float ambientTransitionTime = 1f;
     private Color ambientColor = new Color(1f, 1f, 1f, 1f);
-    private Color ambientFrom = ambientColor;
-    private Color ambientTo = Color.CLEAR;
+    private Color ambientFrom = dayLightColor;
+    private Color ambientTo = nightLightColor;
     
+    private boolean isNight = false;
 
-    private static Interpolation distanceInterpolation = Interpolation.smoother;
-	private static Color dayLightColor = Color.BLACK;
-    private static Color nightLightColor = new Color(0f, 0f, 0f, 0.0f);
-
-
-    public LightSystem(RayHandler rayHandler) {
+    public LightSystem(final Main context) {
         super(Family.all(LightComponent.class).get());
-        this.rayHandler = rayHandler;
-        ambientColor.set(Color.BLACK); // Đặt ánh sáng ambient nhẹ
+        rayHandler = context.getRayHandler();
+        ambientColor.set(dayLightColor); // Tạm mặc định là ban ngày
         rayHandler.setAmbientLight(ambientColor);
     }
 
@@ -39,15 +40,17 @@ public class LightSystem extends IteratingSystem {
         super.update(deltaTime);
 
         // Ambient light transition logic
-        if (Gdx.input.isKeyJustPressed(Input.Keys.N) && ambientTransitionTime == 1f) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.N) && ambientTransitionTime == 1f && !isNight) {
             ambientTransitionTime = 0f;
             ambientTo = nightLightColor;
-            ambientFrom = ambientColor;
+            ambientFrom = dayLightColor;
+            isNight = true;
             System.out.println("Night");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.D) && ambientTransitionTime == 1f) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.D) && ambientTransitionTime == 1f && isNight) {
             ambientTransitionTime = 0f;
             ambientTo = dayLightColor;
-            ambientFrom = ambientColor;
+            ambientFrom = nightLightColor;
+            isNight = false;
             System.out.println("Day");
         }
 
@@ -65,12 +68,12 @@ public class LightSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        LightComponent lightCmp = lightCmps.get(entity);
+        LightComponent lightCmp = ECSEngine.lightCmpMapper.get(entity);
 
         float[] distance = lightCmp.getDistance();
         float time = lightCmp.getDistanceTime();
         float direction = lightCmp.getDistanceDirection();
-        box2dLight.Light b2dLight = lightCmp.getLight();
+        box2dLight.Light b2dLight = lightCmp.light;
 
         // Update light distance time
         lightCmp.setDistanceTime(MathUtils.clamp(time + direction * deltaTime, 0f, 1f));
