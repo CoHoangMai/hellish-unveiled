@@ -82,7 +82,10 @@ public class Scene2DSkin{
 	    INVENTORY_SLOT_HELMET("inv_slot_helmet"),
 	    INVENTORY_SLOT_WEAPON("inv_slot_weapon"),
 	    INVENTORY_SLOT_ARMOR("inv_slot_armor"),
-	    INVENTORY_SLOT_BOOTS("inv_slot_boots");
+	    INVENTORY_SLOT_BOOTS("inv_slot_boots"),
+		
+		LOADING_BACKGROUND("main_bgd"),
+		DIALOG_BACKGROUND("dialog_bgd");
 
 	    private final String atlasKey;
 

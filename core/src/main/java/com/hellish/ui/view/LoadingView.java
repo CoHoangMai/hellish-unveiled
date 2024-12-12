@@ -1,8 +1,5 @@
 package com.hellish.ui.view;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
@@ -13,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.hellish.ui.Scene2DSkin.Buttons;
+import com.hellish.ui.Scene2DSkin.Drawables;
 import com.hellish.ui.Scene2DSkin.ProgressBars;
 
 public class LoadingView extends Table{
@@ -20,20 +18,15 @@ public class LoadingView extends Table{
 	private final TextButton pressAnyKeyButton;
 	private final TextButton txtButton;
 	private final TextButton tempButton;
-	public final Sprite backgroundSprite;
 	
 	public LoadingView(Skin skin) {
 		super(skin);
 		setFillParent(true);
 
-		Texture backgroundTexture = new Texture("background.png");
-        backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundSprite.setPosition(-(Gdx.graphics.getWidth()/2), -(Gdx.graphics.getHeight()/2));
+		setBackground(Drawables.LOADING_BACKGROUND.getAtlasKey());
 		
 		progressBar = new ProgressBar(0, 1, 0.01f, false,
 				getSkin().get(ProgressBars.LOADING.getSkinKey(), ProgressBarStyle.class));
-		
 		
 		txtButton = new TextButton("", skin.get(Buttons.TEXT_BUTTON.getSkinKey(), TextButtonStyle.class));
 		txtButton.getLabel().setWrap(true);
@@ -58,7 +51,6 @@ public class LoadingView extends Table{
 		add(tempButton).expand().fill().row();
 		add(txtButton).expandX().fillX().bottom().pad(10).row();
     	add(stack).expand().fill().center().pad(10);
-
 	}
 	
 	public void setProgress(final float progress) {

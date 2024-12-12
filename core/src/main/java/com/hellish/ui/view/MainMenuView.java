@@ -2,7 +2,6 @@ package com.hellish.ui.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -15,6 +14,7 @@ import com.hellish.Main;
 import com.hellish.audio.AudioManager;
 import com.hellish.audio.AudioType;
 import com.hellish.screen.ScreenType;
+import com.hellish.ui.Scene2DSkin.Drawables;
 
 public class MainMenuView extends Table {
     
@@ -22,7 +22,6 @@ public class MainMenuView extends Table {
     private final ImageButton settingButton;
     private final ImageButton guideButton;
     private final ImageButton quitButton;
-    public final Sprite backgroundSprite;
     private final AudioManager audioManager;
     // Hình nền sẽ được vẽ vào đây
     
@@ -30,12 +29,9 @@ public class MainMenuView extends Table {
         super(skin);
         setFillParent(true);
         audioManager = context.getAudioManager();
-        // Tải hình nền
-        Texture backgroundTexture = new Texture("background.png");
-        backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundSprite.setPosition(-(Gdx.graphics.getWidth()/2), -(Gdx.graphics.getHeight()/2));
         
+        setBackground(Drawables.LOADING_BACKGROUND.getAtlasKey());
+       
         // Tạo các nút
         startButton = createButton("start_button.png");
         settingButton = createButton("setting_button.png");

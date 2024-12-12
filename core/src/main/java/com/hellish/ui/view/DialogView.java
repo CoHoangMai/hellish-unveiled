@@ -3,9 +3,7 @@ package com.hellish.ui.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -17,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hellish.Main;
 import com.hellish.audio.AudioManager;
 import com.hellish.audio.AudioType;
+import com.hellish.ui.Scene2DSkin.Drawables;
 
 public class DialogView extends Table {
     
@@ -26,7 +25,6 @@ public class DialogView extends Table {
     private ImageButton mailButton;
     private Image currentImage;
     private int currentImageIndex;
-    public final Sprite backgroundSprite;
     private final AudioManager audioManager;
 
     public DialogView(Skin skin, final Main context) {
@@ -34,10 +32,7 @@ public class DialogView extends Table {
         setFillParent(true);
         audioManager = context.getAudioManager();
 
-        Texture backgroundTexture = new Texture("background_dialog.png");
-        backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundSprite.setPosition(-(Gdx.graphics.getWidth()/2), -(Gdx.graphics.getHeight()/2));
+        setBackground(Drawables.DIALOG_BACKGROUND.getAtlasKey());
 
         imagesBefore = new ArrayList<>();
         imagesBefore.add(new Texture("dialog/01_before.png"));  // Thêm các hình ảnh vào đây
@@ -68,7 +63,7 @@ public class DialogView extends Table {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Thay đổi hình ảnh khi click chuột
-                changeImage();
+                //changeImage();
                 audioManager.playAudio(AudioType.SELECT);
             }
         });
@@ -77,7 +72,7 @@ public class DialogView extends Table {
         this.add(currentImage).size(200,50).padTop(10);
     }
     
-    private void changeImage() {
+    /*private void changeImage() {
         currentImageIndex++;
         if (currentImageIndex < imagesBefore.size()) currentImage.setDrawable(new TextureRegionDrawable(imagesBefore.get(currentImageIndex)));
         // Cập nhật chỉ số hình ảnh hiện tại
@@ -86,7 +81,7 @@ public class DialogView extends Table {
 
         // Cập nhật Image trong UI
         currentImage.setDrawable(new TextureRegionDrawable(images.get(currentImageIndex)));
-    }
+    }*/
 
     private ImageButton createButton(String texturePath) {
         Texture texture = new Texture(texturePath);
@@ -109,6 +104,5 @@ public class DialogView extends Table {
             }
         });
         return button;
-
     }
 }
