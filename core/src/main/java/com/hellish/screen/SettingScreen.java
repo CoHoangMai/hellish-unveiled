@@ -14,22 +14,22 @@ import com.hellish.Main;
 import com.hellish.audio.AudioType;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
-import com.hellish.ui.view.DialogView;
+import com.hellish.ui.view.SettingView;
 
-public class DialogScreen extends AbstractScreen<Table>{
+public class SettingScreen extends AbstractScreen<Table>{
 
     private final Skin skin;
-    private final DialogView dialogView;
+    private final SettingView settingView;
     private final AssetManager assetManager;
     private boolean isMusicLoaded;
     OrthographicCamera camera;
     SpriteBatch batch;
 
-    public DialogScreen(final Main context) {
+    public SettingScreen(final Main context) {
         super(context);
         assetManager = context.getAssetManager();
         this.skin = context.getSkin(); // Lấy skin từ ngữ cảnh
-        dialogView = new DialogView(context.getSkin(), context);
+        settingView = new SettingView(context.getSkin(), context);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch = new SpriteBatch();
         isMusicLoaded = false;
@@ -43,12 +43,20 @@ public class DialogScreen extends AbstractScreen<Table>{
     }
 
     @Override
+    protected Array getScreenViews(final Main context) {
+        Array<SettingView> views = new Array<>();
+        SettingView settingView = new SettingView(skin, context);
+        views.add(settingView);
+        return views;
+    }
+
+    @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        dialogView.backgroundSprite.draw(batch);
+        settingView.backgroundSprite.draw(batch);
         batch.end();
 
         // Vẽ UI hoặc các thành phần khác
@@ -65,40 +73,27 @@ public class DialogScreen extends AbstractScreen<Table>{
 
     @Override
     public void pause() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'pause'");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void resume() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'resume'");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void dispose() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dispose'");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void keyPressed(InputManager manager, GameKeys key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'keyPressed'");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void keyUp(InputManager manager, GameKeys key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'keyUp'");
-    }
-
-    @Override
-    protected Array getScreenViews(Main context) {
-        Array<DialogView> views = new Array<>();
-        DialogView dialogView = new DialogView(skin, context);
-        views.add(dialogView);
-        return views;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

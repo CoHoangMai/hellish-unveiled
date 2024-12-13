@@ -46,10 +46,10 @@ public class PauseView extends Table{
 		pauseLabel.setAlignment(Align.center);
 		add(pauseLabel).expandX().center().padTop(50).row();
 		// Tạo các nút
-		goBackButton = createButton("go_back_small_button.png");
-        settingButton = createButton("setting_small_button.png");
-        restartButton = createButton("restart_small_button.png");
-        continueButton = createButton("continue_small_button.png");
+		goBackButton = createButton("ui/button/go_back_small_button.png");
+        settingButton = createButton("ui/button/setting_small_button.png");
+        restartButton = createButton("ui/button/restart_small_button.png");
+        continueButton = createButton("ui/button/continue_small_button.png");
 		// Bố trí các nút
 		Table bottomTable = new Table();
         bottomTable.add(goBackButton).size(20, 20).pad(10); // Nút đầu tiên
@@ -61,14 +61,21 @@ public class PauseView extends Table{
         goBackButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				context.setScreen(ScreenType.MAIN_MENU); // Khởi động lại màn hình Gam
+				context.setScreen(ScreenType.MAIN_MENU);
             }
         });
 
         restartButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				context.setScreen(ScreenType.GAME); // Chuyển đến GameScreen mới
+				context.setScreen(ScreenType.GAME);
+			}
+		});
+
+        settingButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				context.setScreen(ScreenType.SETTING);
 			}
 		});
 	}

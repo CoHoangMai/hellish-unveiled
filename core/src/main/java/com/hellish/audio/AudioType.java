@@ -7,7 +7,7 @@ public enum AudioType {
 	
 	private final String filePath;
 	private final boolean isMusic;
-	private final float volume;
+	private float volume;
 	
 	AudioType(String filePath, boolean isMusic, float volume) {
 		this.filePath = filePath;
@@ -25,5 +25,9 @@ public enum AudioType {
 	
 	public float getVolume() {
 		return volume;
+	}
+
+	public void setVolume(float volume) {
+		this.volume = volume;
 	}
 }

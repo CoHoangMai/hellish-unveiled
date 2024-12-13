@@ -42,4 +42,42 @@ public class AudioManager {
 			currentMusicType = null;
 		}
 	}
+
+	public void setMusicVolume(float volume) {
+		for (AudioType type : AudioType.values()) {
+			if (type.isMusic()) {
+				type.setVolume(volume);
+			}
+		}
+		if (currentMusic != null) {
+			currentMusic.setVolume(volume);
+		}
+	}
+
+	public float getMusicVolume() {
+		for (AudioType type : AudioType.values()) {
+            if (type.isMusic()) {
+                return type.getVolume();
+            }
+        }
+				return 0;
+	}
+	
+
+	public void setSFXVolume(float volume) {
+        for (AudioType type : AudioType.values()) {
+            if (!type.isMusic()) {
+                type.setVolume(volume);
+            }
+        }
+    }
+
+	public float getSFXVolume() {
+		for (AudioType type : AudioType.values()) {
+            if (!type.isMusic()) {
+                return type.getVolume();
+            }
+        }
+				return 0;
+	}
 }

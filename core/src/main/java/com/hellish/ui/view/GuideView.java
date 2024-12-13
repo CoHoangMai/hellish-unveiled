@@ -17,6 +17,7 @@ import com.hellish.Main;
 import com.hellish.audio.AudioManager;
 import com.hellish.audio.AudioType;
 import com.hellish.screen.ScreenType;
+import com.hellish.ui.Scene2DSkin.ImageDrawables;
 
 public class GuideView extends Table{
     
@@ -31,7 +32,7 @@ public class GuideView extends Table{
         setFillParent(true);
         audioManager = context.getAudioManager();
         // Tải hình nền
-        Texture backgroundTexture = new Texture("background_guide.png");
+        Texture backgroundTexture = new Texture("ui/background/background_guide.png");
         backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         backgroundSprite.setPosition(-(Gdx.graphics.getWidth()/2), -(Gdx.graphics.getHeight()/2));
@@ -39,9 +40,9 @@ public class GuideView extends Table{
         dimOverlay = createDimOverlay();
         this.addActor(dimOverlay);
         // Tạo nút
-        goBackButton = createButton("go_back_small_button.png");
+        goBackButton = createButton(ImageDrawables.SMALL_BUTTON_QUIT);
         // Thêm guide
-        guideImage = new Image(new Texture("guide_image.png"));
+        guideImage = new Image(new Texture("dialog/guide.png"));
 
         this.top(); // Đặt bảng chính để định vị từ trên xuống
 
@@ -54,7 +55,7 @@ public class GuideView extends Table{
         centerTable.add(guideImage).size(200, 150).padBottom(50);
 
         // Thêm các bảng con vào bảng chính
-        this.add(topTable).expandX().top().right().padTop(4).row(); // Hàng đầu tiên với nút ở góc trên cùng bên phải
+        this.add(topTable).expandX().top().right().padTop(10).padRight(10).row(); // Hàng đầu tiên với nút ở góc trên cùng bên phải
         this.add(centerTable).expand().padBottom(100); // Hàng thứ hai với ảnh ở giữa
         
         //Tạo event cho nút
@@ -66,19 +67,19 @@ public class GuideView extends Table{
         });
     }
 
-    private ImageButton createButton(String texturePath) {
-        Texture texture = new Texture(texturePath);
+    private ImageButton createButton(ImageDrawables image) {
+        Texture texture = new Texture(image.getFileName());
         TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
         ImageButton button = new ImageButton(drawable);
         button.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                button.setSize(25,25);
+                button.setSize(25, 25);
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                button.setSize(20,20);
+                button.setSize(20, 20);
             }
 
             @Override

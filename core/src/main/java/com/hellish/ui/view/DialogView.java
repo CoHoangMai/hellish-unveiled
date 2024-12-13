@@ -8,25 +8,31 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hellish.Main;
 import com.hellish.audio.AudioManager;
 import com.hellish.audio.AudioType;
+import com.hellish.screen.ScreenType;
+import com.hellish.ui.Scene2DSkin.ImageDrawables;
 
 public class DialogView extends Table {
-    
-    private List<Texture> imagesBefore;
-    private List<Texture> imagesAfter;
-    private List<Texture> mail;
-    private ImageButton mailButton;
+
+    private final List<Texture> imagesBefore;
+    private final List<Texture> imagesAfter;
+    private final List<Texture> mail;
+    private final ImageButton mailButton;
+    private final ImageButton startButton;
     private Image currentImage;
     private int currentImageIndex;
     public final Sprite backgroundSprite;
+    private final Stack stack; // Sử dụng Stack
     private final AudioManager audioManager;
 
     public DialogView(Skin skin, final Main context) {
@@ -34,19 +40,25 @@ public class DialogView extends Table {
         setFillParent(true);
         audioManager = context.getAudioManager();
 
-        Texture backgroundTexture = new Texture("background_dialog.png");
+        Texture backgroundTexture = new Texture("ui/background/background_dialog.png");
         backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         backgroundSprite.setPosition(-(Gdx.graphics.getWidth()/2), -(Gdx.graphics.getHeight()/2));
 
+        // Khởi tạo Stack
+        stack = new Stack();
+        this.add(stack).size(200,200).top().row(); // Thêm Stack vào Table
+
+        // Tạo danh sách hình ảnh
         imagesBefore = new ArrayList<>();
-        imagesBefore.add(new Texture("dialog/01_before.png"));  // Thêm các hình ảnh vào đây
+        imagesBefore.add(new Texture("dialog/01_before.png"));
         imagesBefore.add(new Texture("dialog/02_before.png"));
         imagesBefore.add(new Texture("dialog/03_before.png"));
         imagesBefore.add(new Texture("dialog/04_before.png"));
         imagesBefore.add(new Texture("dialog/05_noti.png"));
 
-        mailButton = createButton("dialog/06_noti_mail.png");
+        // Tạo mailButton
+        mailButton = createButton(ImageDrawables.MAIL_BUTTON);
 
         mail = new ArrayList<>();
         mail.add(new Texture("dialog/07_hust_mail.png"));
@@ -59,37 +71,79 @@ public class DialogView extends Table {
         imagesAfter.add(new Texture("dialog/12_after.png"));
         imagesAfter.add(new Texture("dialog/13_after.png"));
 
+        startButton = createButton(ImageDrawables.BIG_BUTTON_PLAY);
 
-        currentImageIndex = 0; // Đặt hình ảnh đầu tiên là hình đang hiển thị
+        currentImageIndex = 0;
+
+        // Hiển thị hình ảnh đầu tiên
         currentImage = new Image(imagesBefore.get(currentImageIndex));
+        Container<Image> imageContainer = new Container<>(currentImage);
+        imageContainer.size(200, 50); // Đặt kích thước cho Container
+        stack.add(imageContainer);
 
-        // Thêm một sự kiện click chuột
+        // Thêm sự kiện click để thay đổi hình ảnh
         this.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Thay đổi hình ảnh khi click chuột
                 changeImage();
                 audioManager.playAudio(AudioType.SELECT);
             }
+
         });
 
-        // Thêm hình ảnh đầu tiên vào UI Stage
-        this.add(currentImage).size(200,50).padTop(10);
+        startButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                context.setScreen(ScreenType.GAME);
+            }
+
+        });
     }
-    
+
     private void changeImage() {
         currentImageIndex++;
-        if (currentImageIndex < imagesBefore.size()) currentImage.setDrawable(new TextureRegionDrawable(imagesBefore.get(currentImageIndex)));
-        // Cập nhật chỉ số hình ảnh hiện tại
-        
-        currentImageIndex = (currentImageIndex + 1) % images.size(); // Chuyển đến hình tiếp theo, nếu hết lại quay lại hình đầu tiên
 
-        // Cập nhật Image trong UI
-        currentImage.setDrawable(new TextureRegionDrawable(images.get(currentImageIndex)));
+        if (currentImageIndex < imagesBefore.size()) {
+            // Thay thế hình ảnh hiện tại
+            currentImage.remove(); // Loại bỏ hình cũ khỏi Stack
+            currentImage = new Image(imagesBefore.get(currentImageIndex));
+            Container<Image> imageContainer = new Container<>(currentImage);
+            imageContainer.size(200, 50); // Đặt kích thước cho Container
+            stack.add(imageContainer);
+            System.out.println("Ảnh " + currentImageIndex);
+        } else if (currentImageIndex == imagesBefore.size()) {
+            // Hiển thị nút mailButton
+            Container<ImageButton> buttonContainer = new Container<>(mailButton);
+            buttonContainer.size(60, 60);
+            buttonContainer.left().bottom().padBottom(20);
+            stack.add(buttonContainer);
+            System.out.println("Button");
+        } else if (currentImageIndex - imagesBefore.size() - 1< mail.size()) {
+            currentImage.remove();
+            mailButton.remove(); // Loại bỏ hình cũ khỏi Stack
+            currentImage = new Image(mail.get(currentImageIndex - imagesBefore.size() - 1));
+            Container<Image> imageContainer = new Container<>(currentImage);
+            imageContainer.size(150, 100); // Đặt kích thước cho Container
+            stack.add(imageContainer);
+            System.out.println("Ảnh " + currentImageIndex);
+        } else if (currentImageIndex - imagesBefore.size() - mail.size() - 1 < imagesAfter.size()) {
+            currentImage.remove(); // Loại bỏ hình cũ khỏi Stack
+            currentImage = new Image(imagesAfter.get(currentImageIndex - imagesBefore.size() - mail.size() - 1));
+            Container<Image> imageContainer = new Container<>(currentImage);
+            imageContainer.size(200, 50); // Đặt kích thước cho Container
+            stack.add(imageContainer);
+            System.out.println("Ảnh " + currentImageIndex);
+        } else {
+            Container<ImageButton> buttonContainer = new Container<>(startButton);
+            buttonContainer.size(60, 60);
+            buttonContainer.center().bottom().padBottom(10);
+            stack.add(buttonContainer);
+            System.out.println("Button");
+        }
     }
 
-    private ImageButton createButton(String texturePath) {
-        Texture texture = new Texture(texturePath);
+    private ImageButton createButton(ImageDrawables image) {
+        Texture texture = new Texture(image.getFileName());
         TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
         ImageButton button = new ImageButton(drawable);
         button.addListener(new ClickListener() {
@@ -109,6 +163,5 @@ public class DialogView extends Table {
             }
         });
         return button;
-
     }
 }

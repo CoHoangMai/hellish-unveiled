@@ -15,6 +15,7 @@ import com.hellish.Main;
 import com.hellish.audio.AudioManager;
 import com.hellish.audio.AudioType;
 import com.hellish.screen.ScreenType;
+import com.hellish.ui.Scene2DSkin.ImageDrawables;
 
 public class MainMenuView extends Table {
     
@@ -31,16 +32,16 @@ public class MainMenuView extends Table {
         setFillParent(true);
         audioManager = context.getAudioManager();
         // Tải hình nền
-        Texture backgroundTexture = new Texture("background.png");
+        Texture backgroundTexture = new Texture("ui/background/background.png");
         backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         backgroundSprite.setPosition(-(Gdx.graphics.getWidth()/2), -(Gdx.graphics.getHeight()/2));
         
         // Tạo các nút
-        startButton = createButton("start_button.png");
-        settingButton = createButton("setting_button.png");
-        guideButton = createButton("guide_button.png");
-        quitButton = createButton("quit_button.png");
+        startButton = createButton(ImageDrawables.BIG_BUTTON_PLAY);
+        settingButton = createButton(ImageDrawables.BIG_BUTTON_SETTING);
+        guideButton = createButton(ImageDrawables.BIG_BUTTON_GUIDE);
+        quitButton = createButton(ImageDrawables.BIG_BUTTON_QUIT);
 
         // Bố trí các nút
         this.bottom().padBottom(10); // Đặt các nút ở dưới cùng
@@ -52,7 +53,7 @@ public class MainMenuView extends Table {
         startButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                context.setScreen(ScreenType.GAME); // Chuyển đến màn hình Game
+                context.setScreen(ScreenType.DAILOG); // Chuyển đến màn hình Game
             }
         });
 
@@ -69,10 +70,17 @@ public class MainMenuView extends Table {
                 context.setScreen(ScreenType.GUIDE); // Chuyển đến màn hình Game
             }
         });
+
+        settingButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                context.setScreen(ScreenType.SETTING); // Chuyển đến màn hình Game
+            }
+        });
     }
 
-    private ImageButton createButton(String texturePath) {
-        Texture texture = new Texture(texturePath);
+    private ImageButton createButton(ImageDrawables image) {
+        Texture texture = new Texture(image.getFileName());
         TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
         ImageButton button = new ImageButton(drawable);
         button.addListener(new ClickListener() {
@@ -92,7 +100,6 @@ public class MainMenuView extends Table {
             }
         });
         return button;
-
     }
 }
 

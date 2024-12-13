@@ -26,7 +26,7 @@ public class LoadingView extends Table{
 		super(skin);
 		setFillParent(true);
 
-		Texture backgroundTexture = new Texture("background.png");
+		Texture backgroundTexture = new Texture("ui/background/background.png");
         backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         backgroundSprite.setPosition(-(Gdx.graphics.getWidth()/2), -(Gdx.graphics.getHeight()/2));
