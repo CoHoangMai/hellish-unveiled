@@ -41,7 +41,7 @@ public class GameScreen extends AbstractScreen<Table>{
 	private final AssetManager assetManager;
 	private final ECSEngine ecsEngine;
 	private boolean isMusicLoaded;
-	private boolean paused;
+	public boolean paused;
 	
 	private float playerSin;
 	private float playerCos;
@@ -52,6 +52,9 @@ public class GameScreen extends AbstractScreen<Table>{
 		
 		assetManager = context.getAssetManager();
 		ecsEngine = context.getECSEngine();
+		for(EntitySystem system : ecsEngine.getSystems()) {
+			system.setProcessing(true);
+		}
 		
 		mapManager = context.getMapManager();
 		mapManager.setMap(MapType.MAP_1);
@@ -110,7 +113,7 @@ public class GameScreen extends AbstractScreen<Table>{
 	public void resume() {
 		pauseWorld(false);
 	}
-
+	
 
 	@Override
 	public void dispose() {

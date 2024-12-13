@@ -44,6 +44,9 @@ public class CameraSystem extends IteratingSystem implements EventListener{
 	public boolean handle(Event event) {
 		if(event instanceof MapChangeEvent) {
 			TiledMap tiledMap = ((MapChangeEvent) event).getTiledMap();
+			if(tiledMap == null) {
+				return false;
+			}
 			TiledMapTileLayer layer = (TiledMapTileLayer)tiledMap.getLayers().get(0);
 			 if (layer != null) {
 		            maxW = layer.getWidth();

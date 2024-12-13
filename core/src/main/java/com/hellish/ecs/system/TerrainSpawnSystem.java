@@ -55,6 +55,9 @@ public class TerrainSpawnSystem extends IteratingSystem implements EventListener
 	public boolean handle(Event event) {
 		if (event instanceof MapChangeEvent) {
 			final MapChangeEvent mapChangeEvent = (MapChangeEvent) event;
+			if(mapChangeEvent.getTiledMap() == null) {
+				return false;
+			}
 			MapLayer terrainLayer = mapChangeEvent.getTiledMap().getLayers().get("terrain");
 			if (terrainLayer == null) {
 				return false;

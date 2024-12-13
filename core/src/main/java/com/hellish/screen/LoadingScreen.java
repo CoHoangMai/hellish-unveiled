@@ -1,21 +1,21 @@
 package com.hellish.screen;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader.ParticleEffectParameter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
+import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.ParticleEffectComponent.ParticleEffectType;
+import com.hellish.ecs.system.RenderSystem;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapType;
@@ -24,23 +24,29 @@ import com.hellish.ui.view.LoadingView;
 
 public class LoadingScreen extends AbstractScreen<Table> {
 	private final AssetManager assetManager;
+	private final ECSEngine ecsEngine;
 	private LoadingView loadingView;
 	private boolean isMusicLoaded;
-	OrthographicCamera camera;
-    SpriteBatch batch;
 	
 	public LoadingScreen(final Main context) {
 		super(context);
 		
+		ecsEngine = context.getECSEngine();
+		for(EntitySystem system : ecsEngine.getSystems()) {
+			if(!(system instanceof RenderSystem)) {
+				system.setProcessing(false);
+			}
+		}
+		
 		this.assetManager = context.getAssetManager();
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch = new SpriteBatch();
 		
 		assetManager.load("characters_and_effects/char_and_effect.atlas", TextureAtlas.class);
 		assetManager.load("characters_and_effects/gameObjects.atlas", TextureAtlas.class);
 
-		for (final MapType maptype : MapType.values()) {
-			assetManager.load(maptype.getFilePath(), TiledMap.class);
+		for (final MapType mapType : MapType.values()) {
+			if(mapType != MapType.NO_MAP) {
+				assetManager.load(mapType.getFilePath(), TiledMap.class);
+			}
 		}
 		
 		
@@ -62,17 +68,6 @@ public class LoadingScreen extends AbstractScreen<Table> {
 
 	@Override
 	public void render(float delta) {
-
-		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-        loadingView.backgroundSprite.draw(batch);
-        batch.end();
-
-		assetManager.update();
-    	uiStage.act(delta);
-    	uiStage.draw();
-
 		assetManager.update();
 		if(!isMusicLoaded && assetManager.isLoaded(AudioType.INTRO.getFilePath())) {
 			isMusicLoaded = true;
@@ -131,6 +126,5 @@ public class LoadingScreen extends AbstractScreen<Table> {
 	@Override
 	public void keyUp(InputManager manager, GameKeys key) {
 		
-	}
-	
+	}	
 }

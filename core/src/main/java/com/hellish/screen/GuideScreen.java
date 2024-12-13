@@ -1,37 +1,35 @@
 package com.hellish.screen;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
+import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.system.RenderSystem;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
+import com.hellish.ui.Scene2DSkin;
 import com.hellish.ui.view.GuideView;
 
 public class GuideScreen extends AbstractScreen<Table>{
-
-    private final Skin skin;
-    private GuideView guideView;
     private final AssetManager assetManager;
+    private final ECSEngine ecsEngine;
     private boolean isMusicLoaded;
-    OrthographicCamera camera;
-    SpriteBatch batch;
 
     public GuideScreen(final Main context) {
         super(context);
         assetManager = context.getAssetManager();
-        this.skin = context.getSkin(); // Lấy skin từ ngữ cảnh
-        guideView = new GuideView(context.getSkin(), context);
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch = new SpriteBatch();
+        ecsEngine = context.getECSEngine();
+		for(EntitySystem system : ecsEngine.getSystems()) {
+			if(!(system instanceof RenderSystem)) {
+				system.setProcessing(false);
+			}
+		}
+		
         isMusicLoaded = false;
 		for (final AudioType audioType : AudioType.values()) {
 		    if (audioType.isMusic()) {
@@ -43,32 +41,19 @@ public class GuideScreen extends AbstractScreen<Table>{
     }
 
     @Override
-    protected Array getScreenViews(final Main context) {
-        Array<GuideView> views = new Array<>();
-        GuideView guideView = new GuideView(skin, context);
+    protected Array<Table> getScreenViews(final Main context) {
+        Array<Table> views = new Array<>();
+        GuideView guideView = new GuideView(Scene2DSkin.defaultSkin, context);
         views.add(guideView);
         return views;
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-        guideView.backgroundSprite.draw(batch);
-        batch.end();
-
-        // Vẽ UI hoặc các thành phần khác
-        
-
         if(!isMusicLoaded && assetManager.isLoaded(AudioType.INTRO.getFilePath())) {
 			isMusicLoaded = true;
 			audioManager.playAudio(AudioType.INTRO);
-		}
-
-        uiStage.act(delta);
-        uiStage.draw();
+		} 
     }
 
     @Override

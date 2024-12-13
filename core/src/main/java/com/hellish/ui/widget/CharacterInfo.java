@@ -5,34 +5,24 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.utils.Scaling;
 import com.hellish.ui.Scene2DSkin.Drawables;
 
 public class CharacterInfo extends WidgetGroup{
-	private final Skin skin;
 	private final Image background;
-    private final Image charBgd;
     private final Image lifeBar;
     private final Image manaBar;
     
-    public CharacterInfo(Drawables charDrawable, Skin skin) {
-    	this.skin = skin;
+    public CharacterInfo(Skin skin) {
     	
     	background = new Image(skin.getDrawable(Drawables.CHAR_INFO_BGD.getAtlasKey()));
     	
     	lifeBar = new Image(skin.getDrawable(Drawables.LIFE_BAR.getAtlasKey()));
-    	lifeBar.setPosition(39, 19);
+    	lifeBar.setPosition(46, 22);
     	
     	manaBar = new Image(skin.getDrawable(Drawables.MANA_BAR.getAtlasKey()));
-    	manaBar.setPosition(39, 8);
-    	
-    	charBgd = new Image(charDrawable == null ? null : skin.getDrawable(charDrawable.getAtlasKey()));
-    	charBgd.setPosition(7.5f, 10);
-    	charBgd.setSize(22, 20);
-        charBgd.setScaling(Scaling.contain);
+    	manaBar.setPosition(46, 11);
     	
     	addActor(background);
-    	addActor(charBgd);
     	addActor(lifeBar);
     	addActor(manaBar);
     }
@@ -45,14 +35,6 @@ public class CharacterInfo extends WidgetGroup{
     @Override
     public float getPrefHeight() {
     	return background.getDrawable().getMinHeight();
-    }
-    
-    public void character(Drawables charDrawable) {
-        if (charDrawable == null) {
-            charBgd.setDrawable(null);
-        } else {
-            charBgd.setDrawable(skin.getDrawable(charDrawable.getAtlasKey()));
-        }
     }
     
     public void life(float percentage, float duration) {

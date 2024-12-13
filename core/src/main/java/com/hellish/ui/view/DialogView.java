@@ -3,9 +3,7 @@ package com.hellish.ui.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -20,6 +18,7 @@ import com.hellish.Main;
 import com.hellish.audio.AudioManager;
 import com.hellish.audio.AudioType;
 import com.hellish.screen.ScreenType;
+import com.hellish.ui.Scene2DSkin.Drawables;
 import com.hellish.ui.Scene2DSkin.ImageDrawables;
 
 public class DialogView extends Table {
@@ -31,7 +30,6 @@ public class DialogView extends Table {
     private final ImageButton startButton;
     private Image currentImage;
     private int currentImageIndex;
-    public final Sprite backgroundSprite;
     private final Stack stack; // Sử dụng Stack
     private final AudioManager audioManager;
 
@@ -40,10 +38,7 @@ public class DialogView extends Table {
         setFillParent(true);
         audioManager = context.getAudioManager();
 
-        Texture backgroundTexture = new Texture("ui/background/background_dialog.png");
-        backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundSprite.setPosition(-(Gdx.graphics.getWidth()/2), -(Gdx.graphics.getHeight()/2));
+        setBackground(Drawables.DIALOG_BACKGROUND.getAtlasKey());
 
         // Khởi tạo Stack
         stack = new Stack();

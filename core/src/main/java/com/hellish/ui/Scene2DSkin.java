@@ -22,9 +22,9 @@ public class Scene2DSkin{
 	public static Skin defaultSkin;
 	
 	public enum Fonts {
-		DEFAULT("fnt_white", 0.25f),
-		BIG("fnt_white", 0.5f),
-		BIGGER("fnt_white", 0.75f);
+		DEFAULT("fnt_white", 0.5f),
+		BIG("fnt_white", 1),
+		BIGGER("fnt_white", 1.5f);
 		
 		private final String atlasRegionKey;
 		private final float scaling;
@@ -68,6 +68,7 @@ public class Scene2DSkin{
 	}
 	
 	public enum Labels{
+		TEXT,
 		FRAME,
 		TITLE,
 		LARGE,
@@ -121,8 +122,7 @@ public class Scene2DSkin{
 	
 	public enum Drawables{
 		CHAR_INFO_BGD("char_info"),
-	    PLAYER("player"),
-	    WOLF("wolf"),
+		PROGRESS_BAR("progress_bar"),
 	    LIFE_BAR("life_bar"),
 	    MANA_BAR("mana_bar"),
 	    FRAME_BGD("frame_bgd"),
@@ -132,7 +132,10 @@ public class Scene2DSkin{
 	    INVENTORY_SLOT_HELMET("inv_slot_helmet"),
 	    INVENTORY_SLOT_WEAPON("inv_slot_weapon"),
 	    INVENTORY_SLOT_ARMOR("inv_slot_armor"),
-	    INVENTORY_SLOT_BOOTS("inv_slot_boots");
+	    INVENTORY_SLOT_BOOTS("inv_slot_boots"),
+		
+		LOADING_BACKGROUND("main_bgd"),
+		DIALOG_BACKGROUND("dialog_bgd");
 
 	    private final String atlasKey;
 
@@ -187,6 +190,7 @@ public class Scene2DSkin{
 	private static void loadFontSkin(Skin skin) {
 		Colors.put("Red", Color.RED);
 		Colors.put("Blue", Color.BLUE);
+		Colors.put("Black", Color.BLACK);
 		
 		for(Fonts font : Fonts.values()) {
 			BitmapFont bitmapFont = new BitmapFont(
@@ -218,6 +222,10 @@ public class Scene2DSkin{
 	}
 	
 	private static void loadLabelSkin(Skin skin) {
+		Label.LabelStyle textLabelStyle = new Label.LabelStyle();
+		textLabelStyle.font = skin.get(Fonts.DEFAULT.getSkinKey(), BitmapFont.class);
+		skin.add(Labels.TEXT.getSkinKey(), textLabelStyle);
+	
 		Label.LabelStyle frameLabelStyle = new Label.LabelStyle();
 		frameLabelStyle.font = skin.get(Fonts.DEFAULT.getSkinKey(), BitmapFont.class);
 		frameLabelStyle.background = skin.getDrawable(Drawables.FRAME_FGD.getAtlasKey());
@@ -250,7 +258,7 @@ public class Scene2DSkin{
 	private static void loadProgressBarSkin(Skin skin) {
 		ProgressBar.ProgressBarStyle loadingBarStyle = new ProgressBar.ProgressBarStyle();
 		loadingBarStyle.background = skin.getDrawable(Drawables.BAR_BGD.getAtlasKey());
-		loadingBarStyle.knobBefore = skin.getDrawable(Drawables.LIFE_BAR.getAtlasKey());
+		loadingBarStyle.knobBefore = skin.getDrawable(Drawables.PROGRESS_BAR.getAtlasKey());
 		skin.add(ProgressBars.LOADING.getSkinKey(), loadingBarStyle);
 	}
 
