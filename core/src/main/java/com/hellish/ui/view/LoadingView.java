@@ -23,14 +23,7 @@ public class LoadingView extends Table{
 		super(skin);
 		setFillParent(true);
 
-<<<<<<< HEAD
-		Texture backgroundTexture = new Texture("ui/background/background.png");
-        backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundSprite.setPosition(-(Gdx.graphics.getWidth()/2), -(Gdx.graphics.getHeight()/2));
-=======
 		setBackground(Drawables.LOADING_BACKGROUND.getAtlasKey());
->>>>>>> 47b1a12c6cc23032e2e455efb0bc7314c352d072
 		
 		progressBar = new ProgressBar(0, 1, 0.01f, false,
 				getSkin().get(ProgressBars.LOADING.getSkinKey(), ProgressBarStyle.class));

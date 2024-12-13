@@ -51,13 +51,12 @@ public class GuideView extends Table{
         topTable.add(goBackButton).size(20, 20).pad(4).top().right();
 
         // Tạo bảng con cho ảnh hướng dẫn
-        Table centerTable = new Table();
-        centerTable.add(guideImage).size(200, 150).padBottom(50);
+        
 
         // Thêm các bảng con vào bảng chính
-        this.add(topTable).expandX().top().right().padTop(10).padRight(10).row(); // Hàng đầu tiên với nút ở góc trên cùng bên phải
-        this.add(centerTable).expand().padBottom(100); // Hàng thứ hai với ảnh ở giữa
-        
+        this.add(topTable).expandX().top().right().padTop(10).padRight(10).row();
+        this.add(guideImage);
+
         //Tạo event cho nút
         goBackButton.addListener(new ChangeListener() {
             @Override

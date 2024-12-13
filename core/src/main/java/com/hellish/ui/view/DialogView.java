@@ -6,7 +6,6 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -40,11 +39,9 @@ public class DialogView extends Table {
 
         setBackground(Drawables.DIALOG_BACKGROUND.getAtlasKey());
 
-        // Khởi tạo Stack
         stack = new Stack();
-        this.add(stack).size(200,200).top().row(); // Thêm Stack vào Table
+        this.add(stack).center().padTop(50).row();
 
-        // Tạo danh sách hình ảnh
         imagesBefore = new ArrayList<>();
         imagesBefore.add(new Texture("dialog/01_before.png"));
         imagesBefore.add(new Texture("dialog/02_before.png"));
@@ -52,7 +49,6 @@ public class DialogView extends Table {
         imagesBefore.add(new Texture("dialog/04_before.png"));
         imagesBefore.add(new Texture("dialog/05_noti.png"));
 
-        // Tạo mailButton
         mailButton = createButton(ImageDrawables.MAIL_BUTTON);
 
         mail = new ArrayList<>();
@@ -66,15 +62,17 @@ public class DialogView extends Table {
         imagesAfter.add(new Texture("dialog/12_after.png"));
         imagesAfter.add(new Texture("dialog/13_after.png"));
 
-        startButton = createButton(ImageDrawables.BIG_BUTTON_PLAY);
+        // Texture texture = new Texture(image.getFileName());
+        // TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
+        startButton = new ImageButton(new TextureRegionDrawable(new Texture(ImageDrawables.BIG_BUTTON_PLAY.getFileName())));
+
+        // startButton = createButton(ImageDrawables.BIG_BUTTON_PLAY);
+        // startButton.setSize(60,60);
 
         currentImageIndex = 0;
 
-        // Hiển thị hình ảnh đầu tiên
         currentImage = new Image(imagesBefore.get(currentImageIndex));
-        Container<Image> imageContainer = new Container<>(currentImage);
-        imageContainer.size(200, 50); // Đặt kích thước cho Container
-        stack.add(imageContainer);
+        stack.add(currentImage);
 
         // Thêm sự kiện click để thay đổi hình ảnh
         this.addListener(new ClickListener() {
@@ -99,41 +97,25 @@ public class DialogView extends Table {
         currentImageIndex++;
 
         if (currentImageIndex < imagesBefore.size()) {
-            // Thay thế hình ảnh hiện tại
-            currentImage.remove(); // Loại bỏ hình cũ khỏi Stack
+            currentImage.remove();
             currentImage = new Image(imagesBefore.get(currentImageIndex));
-            Container<Image> imageContainer = new Container<>(currentImage);
-            imageContainer.size(200, 50); // Đặt kích thước cho Container
-            stack.add(imageContainer);
-            System.out.println("Ảnh " + currentImageIndex);
+            stack.add(currentImage);
         } else if (currentImageIndex == imagesBefore.size()) {
-            // Hiển thị nút mailButton
-            Container<ImageButton> buttonContainer = new Container<>(mailButton);
-            buttonContainer.size(60, 60);
-            buttonContainer.left().bottom().padBottom(20);
-            stack.add(buttonContainer);
-            System.out.println("Button");
+            stack.add(mailButton);
         } else if (currentImageIndex - imagesBefore.size() - 1< mail.size()) {
             currentImage.remove();
-            mailButton.remove(); // Loại bỏ hình cũ khỏi Stack
+            mailButton.remove();
             currentImage = new Image(mail.get(currentImageIndex - imagesBefore.size() - 1));
-            Container<Image> imageContainer = new Container<>(currentImage);
-            imageContainer.size(150, 100); // Đặt kích thước cho Container
-            stack.add(imageContainer);
-            System.out.println("Ảnh " + currentImageIndex);
+            stack.add(currentImage);
         } else if (currentImageIndex - imagesBefore.size() - mail.size() - 1 < imagesAfter.size()) {
-            currentImage.remove(); // Loại bỏ hình cũ khỏi Stack
+            currentImage.remove();
             currentImage = new Image(imagesAfter.get(currentImageIndex - imagesBefore.size() - mail.size() - 1));
-            Container<Image> imageContainer = new Container<>(currentImage);
-            imageContainer.size(200, 50); // Đặt kích thước cho Container
-            stack.add(imageContainer);
-            System.out.println("Ảnh " + currentImageIndex);
+            stack.add(currentImage);
         } else {
-            Container<ImageButton> buttonContainer = new Container<>(startButton);
-            buttonContainer.size(60, 60);
-            buttonContainer.center().bottom().padBottom(10);
-            stack.add(buttonContainer);
-            System.out.println("Button");
+            currentImage.remove();
+            // Container<ImageButton> buttonContainer = new Container<>(startButton);
+            // buttonContainer.center().bottom().padTop(200);
+            stack.add(startButton);
         }
     }
 

@@ -215,9 +215,6 @@ public class Scene2DSkin{
 		ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
 		scrollPaneStyle.background = skin.getDrawable(Drawables.FRAME_FGD.getAtlasKey()); // Background của ScrollPane
 		scrollPaneStyle.vScrollKnob = skin.getDrawable(Drawables.LIFE_BAR.getAtlasKey()); // Con trượt thanh cuộn dọc
-		//scrollPaneStyle.hScrollKnob = skin.getDrawable(Drawables.MANA_BAR.getAtlasKey()); // Con trượt thanh cuộn ngang
-		
-		// Thêm vào skin với key 'default-scroll'
 		skin.add(Scrolls.DEFAULT.getSkinKey(), scrollPaneStyle);
 	}
 	

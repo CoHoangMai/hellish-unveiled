@@ -14,14 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hellish.Main;
 import com.hellish.audio.AudioManager;
 import com.hellish.audio.AudioType;
-import com.hellish.event.GameRestartEvent;
-import com.hellish.event.GameResumeEvent;
 import com.hellish.screen.ScreenType;
-<<<<<<< HEAD
-import com.hellish.ui.Scene2DSkin.ImageDrawables;
-=======
 import com.hellish.ui.Scene2DSkin.Drawables;
->>>>>>> 47b1a12c6cc23032e2e455efb0bc7314c352d072
+import com.hellish.ui.Scene2DSkin.ImageDrawables;
 
 public class MainMenuView extends Table {
     
@@ -37,15 +32,7 @@ public class MainMenuView extends Table {
         super(skin);
         setFillParent(true);
         audioManager = context.getAudioManager();
-<<<<<<< HEAD
-        // Tải hình nền
-        Texture backgroundTexture = new Texture("ui/background/background.png");
-        backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundSprite.setPosition(-(Gdx.graphics.getWidth()/2), -(Gdx.graphics.getHeight()/2));
-=======
         gameStage = context.getGameStage();
->>>>>>> 47b1a12c6cc23032e2e455efb0bc7314c352d072
         
         setBackground(Drawables.LOADING_BACKGROUND.getAtlasKey());
        
