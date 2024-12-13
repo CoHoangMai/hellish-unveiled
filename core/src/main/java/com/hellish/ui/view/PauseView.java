@@ -16,6 +16,7 @@ import com.hellish.Main;
 import com.hellish.audio.AudioManager;
 import com.hellish.audio.AudioType;
 import com.hellish.screen.ScreenType;
+import com.hellish.ui.Scene2DSkin.ImageDrawables;
 import com.hellish.ui.Scene2DSkin.Labels;
 
 public class PauseView extends Table{
@@ -46,10 +47,10 @@ public class PauseView extends Table{
 		pauseLabel.setAlignment(Align.center);
 		add(pauseLabel).expandX().center().padTop(50).row();
 		// Tạo các nút
-		goBackButton = createButton("ui/button/go_back_small_button.png");
-        settingButton = createButton("ui/button/setting_small_button.png");
-        restartButton = createButton("ui/button/restart_small_button.png");
-        continueButton = createButton("ui/button/continue_small_button.png");
+		goBackButton = createButton(ImageDrawables.SMALL_BUTTON_QUIT);
+        settingButton = createButton(ImageDrawables.SMALL_BUTTON_SETTING);
+        restartButton = createButton(ImageDrawables.SMALL_BUTTON_RESTART);
+        continueButton = createButton(ImageDrawables.SMALL_BUTTON_CONTINUE);
 		// Bố trí các nút
 		Table bottomTable = new Table();
         bottomTable.add(goBackButton).size(20, 20).pad(10); // Nút đầu tiên
@@ -80,8 +81,8 @@ public class PauseView extends Table{
 		});
 	}
 
-	private ImageButton createButton(String texturePath) {
-        Texture texture = new Texture(texturePath);
+	private ImageButton createButton(ImageDrawables image) {
+        Texture texture = new Texture(image.getFileName());
         TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
         ImageButton button = new ImageButton(drawable);
         button.addListener(new ClickListener() {
@@ -101,6 +102,5 @@ public class PauseView extends Table{
             }
         });
         return button;
-
     }
 }
