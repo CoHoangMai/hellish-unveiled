@@ -17,6 +17,7 @@ import com.hellish.ecs.component.FloatingTextComponent;
 import com.hellish.ecs.component.ParticleEffectComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
+import com.hellish.ecs.component.RemovableComponent;
 import com.hellish.ecs.component.EntitySpawnComponent;
 import com.hellish.ecs.component.StateComponent;
 import com.hellish.ecs.component.TiledComponent;
@@ -80,7 +81,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<AiComponent> aiCmpMapper = ComponentMapper.getFor(AiComponent.class);
 	public static final ComponentMapper<ItemComponent> itemCmpMapper = ComponentMapper.getFor(ItemComponent.class);
 	public static final ComponentMapper<InventoryComponent> invCmpMapper = ComponentMapper.getFor(InventoryComponent.class);
-	
+	public static final ComponentMapper<RemovableComponent> removeCmpMapper = ComponentMapper.getFor(RemovableComponent.class);
 	
 	private final Stage gameStage;
 	private final Stage uiStage;
@@ -122,7 +123,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addSystem(new CameraSystem(context));
 		addSystem(new FloatingTextSystem(context));
 		addSystem(new RenderSystem(context));
-		addSystem(new DebugSystem(context));
+		//addSystem(new DebugSystem(context));
 		addSystem(new ParticleEffectSystem(context));
 		
 	}

@@ -118,7 +118,12 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 	@Override
 	public boolean handle(Event event) {
 		if(event instanceof MapChangeEvent) {
-			((MapChangeEvent) event).getTiledMap().getLayers().getByType(TiledMapTileLayer.class, tiledLayers);	
+			final MapChangeEvent mapChangeEvent = (MapChangeEvent) event;
+			if(mapChangeEvent.getTiledMap() == null) {
+				return false;
+			}
+			
+			mapChangeEvent.getTiledMap().getLayers().getByType(TiledMapTileLayer.class, tiledLayers);	
 			
 			MapLayer terrainLayer = ((MapChangeEvent) event).getTiledMap().getLayers().get("terrain");
 			if (terrainLayer != null) {

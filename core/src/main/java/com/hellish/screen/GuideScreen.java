@@ -1,15 +1,15 @@
 package com.hellish.screen;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
+import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.system.RenderSystem;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
 import com.hellish.ui.Scene2DSkin;
@@ -17,15 +17,19 @@ import com.hellish.ui.view.GuideView;
 
 public class GuideScreen extends AbstractScreen<Table>{
     private final AssetManager assetManager;
+    private final ECSEngine ecsEngine;
     private boolean isMusicLoaded;
-    OrthographicCamera camera;
-    SpriteBatch batch;
 
     public GuideScreen(final Main context) {
         super(context);
         assetManager = context.getAssetManager();
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch = new SpriteBatch();
+        ecsEngine = context.getECSEngine();
+		for(EntitySystem system : ecsEngine.getSystems()) {
+			if(!(system instanceof RenderSystem)) {
+				system.setProcessing(false);
+			}
+		}
+		
         isMusicLoaded = false;
 		for (final AudioType audioType : AudioType.values()) {
 		    if (audioType.isMusic()) {

@@ -2,21 +2,17 @@ package com.hellish.map;
 
 import java.util.EnumMap;
 
-import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.hellish.Main;
-import com.hellish.ecs.ECSEngine;
 import com.hellish.event.MapChangeEvent;
 
 public class MapManager {
 	public static final String TAG = MapManager.class.getSimpleName();
 	
 	private final AssetManager assetManager;
-	private final ECSEngine ecsEngine;
 	private final Stage gameStage;
 	
 	private MapType currentMapType;
@@ -24,10 +20,9 @@ public class MapManager {
 	private final EnumMap<MapType, TiledMap> mapCache;
 
 	public MapManager(final Main context) {
-		currentMapType = null;
+		currentMapType = MapType.NO_MAP;
 		currentMap = null;
 		gameStage = context.getGameStage();
-		ecsEngine = context.getECSEngine();
 		assetManager = context.getAssetManager();
 		mapCache = new EnumMap<MapType, TiledMap>(MapType.class);
 	}
@@ -40,17 +35,12 @@ public class MapManager {
 		currentMap = mapCache.get(type);
 		if(currentMap == null) {
 			Gdx.app.debug(TAG, "Tạo map mới " + type);
-			final TiledMap tiledMap = assetManager.get(type.getFilePath(), TiledMap.class);
+			final TiledMap tiledMap = (type == MapType.NO_MAP) ? null : assetManager.get(type.getFilePath(), TiledMap.class);
 			currentMap = tiledMap;
 			mapCache.put(type, currentMap);
 		}
+		currentMapType = type;
 		Gdx.app.debug(TAG, "Map hiện tại: " + type);
-		
-		for (EntitySystem system : ecsEngine.getSystems()) {
-			if(system instanceof EventListener) {
-				gameStage.addListener((EventListener) system);
-			}
-		}
 		
 		MapChangeEvent mapChangeEvent = MapChangeEvent.pool.obtain().set(currentMap);
 		gameStage.getRoot().fire(mapChangeEvent);

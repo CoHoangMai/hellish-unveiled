@@ -48,8 +48,11 @@ import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
+import com.hellish.ecs.component.RemovableComponent;
 import com.hellish.ecs.component.EntitySpawnComponent;
+import com.hellish.event.GameRestartEvent;
 import com.hellish.event.MapChangeEvent;
+import com.hellish.map.MapManager;
 
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
@@ -66,6 +69,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	public static final String COLLISION_BOX = "CollisionBox";
 	public static final String HIT_BOX_SENSOR = "HitBoxSensor";
 	public static final String AI_SENSOR = "AiSensor";
+	private final MapManager mapManager;
 	private final World world;
 	private final RayHandler rayHandler;
 	private final AssetManager assetManager;
@@ -78,6 +82,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		super(Family.all(EntitySpawnComponent.class).get());
 		rayHandler = context.getRayHandler();
 		world = context.getWorld();
+		mapManager = context.getMapManager();
 		assetManager = context.getAssetManager();
 		cachedSpawnCfgs = new HashMap<>();
 		cachedSizes = new HashMap<>();
@@ -90,6 +95,9 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		final Vector2 relativeSize = size(cfg.model); 
 		
 		final Entity spawnedEntity = getEngine().createEntity();
+		
+		//Thành phần Removable để phá đi mỗi khi chuyển hay reset map
+		spawnedEntity.add(getEngine().createComponent(RemovableComponent.class));
 		
 		//Thành phần Image
 		final ImageComponent imageCmp = getEngine().createComponent(ImageComponent.class);
@@ -184,6 +192,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			fixture.setUserData(AI_SENSOR);
 			fixture.setSensor(true);
 		}
+		
 		getEngine().addEntity(spawnedEntity);
 		
 		getEngine().removeEntity(entity);
@@ -276,7 +285,40 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	public boolean handle(Event event) {
 		if (event instanceof MapChangeEvent) {
 			final MapChangeEvent mapChangeEvent = (MapChangeEvent) event;
+			if(mapChangeEvent.getTiledMap() == null) {
+				return false;
+			}
 			MapLayer entityLayer = mapChangeEvent.getTiledMap().getLayers().get("entities");
+			if (entityLayer == null) {
+				return false;
+			}
+			for (MapObject mapObj : entityLayer.getObjects()) {
+				if (! (mapObj instanceof TiledMapTileMapObject)) {
+					Gdx.app.log(TAG, "GameObject kiểu " + mapObj + " trong layer 'entities' không được hỗ trợ.");
+					continue;
+				}
+				TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
+				String type = tiledMapObj.getTile().getProperties().get("type", String.class);
+				if (type == null) {
+					throw new GdxRuntimeException("MapObject " + mapObj + " trong layer 'entities' không có property Class");
+				}
+				Entity entity = getEngine().createEntity();
+				EntitySpawnComponent spawnComponent = getEngine().createComponent(EntitySpawnComponent.class);
+				spawnComponent.type = type;
+				spawnComponent.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
+				entity.add(spawnComponent);
+				getEngine().addEntity(entity);
+			}
+			return true;	
+		} else if(event instanceof GameRestartEvent) {
+			for(Entity entity: getEngine().getEntities()){
+				//Không hiểu nếu dùng Family.all(RemovableComponent.class).get() thì lại không ổn
+				if(ECSEngine.removeCmpMapper.has(entity)) {
+					getEngine().removeEntity(entity);
+				}
+			}
+			
+			MapLayer entityLayer = mapManager.getCurrentMap().getLayers().get("entities");
 			if (entityLayer == null) {
 				return false;
 			}

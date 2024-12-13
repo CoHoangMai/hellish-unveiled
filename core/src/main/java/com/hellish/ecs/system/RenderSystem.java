@@ -131,6 +131,10 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 			backgroundLayers.clear();
 			foregroundLayers.clear();
 			
+			if(mapChangeEvent.getTiledMap() == null) {
+				return false;
+			}
+			
 			mapChangeEvent.getTiledMap().getLayers().forEach(layer -> {
 				if (layer instanceof TiledMapTileLayer) {
 					TiledMapTileLayer tiledLayer = (TiledMapTileLayer) layer;

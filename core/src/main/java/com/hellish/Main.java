@@ -3,6 +3,7 @@ package com.hellish;
 import static com.hellish.ecs.component.LightComponent.ENVIRONMENT_BIT;
 import static com.hellish.ecs.component.LightComponent.PLAYER_BIT;
 
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -87,7 +88,7 @@ public class Main extends Game implements EventListener{
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(assetManager.getFileHandleResolver()));
 		Scene2DSkin.loadSkin();
 		gameStage = new Stage(new FitViewport(16, 9), spriteBatch);
-		uiStage = new Stage(new FitViewport(320, 180), spriteBatch);
+		uiStage = new Stage(new FitViewport(640, 360), spriteBatch);
 		gameStage.addListener(this);
 		uiStage.addListener(this);
 		
@@ -96,16 +97,21 @@ public class Main extends Game implements EventListener{
 		
 		//componentManager
 		componentManager = new ComponentManager();
+
+		//mapManager
+		mapManager = new MapManager(this);
 		
 		//ECS
 		ecsEngine = new ECSEngine(this);
+		for (EntitySystem system : ecsEngine.getSystems()) {
+			if(system instanceof EventListener) {
+				gameStage.addListener((EventListener) system);
+			}
+		}
 		
 		//input
 		inputManager = new InputManager(this);
 		Gdx.input.setInputProcessor(new InputMultiplexer(inputManager, gameStage, uiStage));
-		
-		//mapManager
-		mapManager = new MapManager(this);
 		
 		//Preference manager
 		preferenceManager = new PreferenceManager();

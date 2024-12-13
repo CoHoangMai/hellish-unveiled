@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -13,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hellish.Main;
 import com.hellish.audio.AudioManager;
 import com.hellish.audio.AudioType;
+import com.hellish.event.GameRestartEvent;
+import com.hellish.event.GameResumeEvent;
 import com.hellish.screen.ScreenType;
 import com.hellish.ui.Scene2DSkin.Drawables;
 
@@ -23,12 +26,14 @@ public class MainMenuView extends Table {
     private final ImageButton guideButton;
     private final ImageButton quitButton;
     private final AudioManager audioManager;
+    private final Stage gameStage;
     // Hình nền sẽ được vẽ vào đây
     
     public MainMenuView(Skin skin, final Main context) {
         super(skin);
         setFillParent(true);
         audioManager = context.getAudioManager();
+        gameStage = context.getGameStage();
         
         setBackground(Drawables.LOADING_BACKGROUND.getAtlasKey());
        
@@ -39,11 +44,11 @@ public class MainMenuView extends Table {
         quitButton = createButton("quit_button.png");
 
         // Bố trí các nút
-        this.bottom().padBottom(10); // Đặt các nút ở dưới cùng
-        this.add(startButton).size(60, 60).pad(10); // Nút đầu tiên
-        this.add(settingButton).size(60, 60).pad(10); // Nút thứ hai
-        this.add(guideButton).size(60, 60).pad(10); // Nút thứ ba
-        this.add(quitButton).size(60, 60).pad(10); // Nút thứ tư
+        this.bottom().padBottom(20); // Đặt các nút ở dưới cùng
+        this.add(startButton).size(120, 120).pad(10); // Nút đầu tiên
+        this.add(settingButton).size(120, 120).pad(10); // Nút thứ hai
+        this.add(guideButton).size(120, 120).pad(10); // Nút thứ ba
+        this.add(quitButton).size(120, 120).pad(10); // Nút thứ tư
         
         startButton.addListener(new ChangeListener() {
             @Override
@@ -74,12 +79,12 @@ public class MainMenuView extends Table {
         button.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                button.setSize(70,70);
+                button.setSize(140,140);
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                button.setSize(60,60);
+                button.setSize(120,120);
             }
 
             @Override
@@ -88,7 +93,6 @@ public class MainMenuView extends Table {
             }
         });
         return button;
-
     }
 }
 

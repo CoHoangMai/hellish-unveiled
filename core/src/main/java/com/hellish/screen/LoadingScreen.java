@@ -1,5 +1,6 @@
 package com.hellish.screen;
 
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader.ParticleEffectParameter;
@@ -12,7 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
+import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.ParticleEffectComponent.ParticleEffectType;
+import com.hellish.ecs.system.RenderSystem;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapType;
@@ -21,19 +24,29 @@ import com.hellish.ui.view.LoadingView;
 
 public class LoadingScreen extends AbstractScreen<Table> {
 	private final AssetManager assetManager;
+	private final ECSEngine ecsEngine;
 	private LoadingView loadingView;
 	private boolean isMusicLoaded;
 	
 	public LoadingScreen(final Main context) {
 		super(context);
 		
+		ecsEngine = context.getECSEngine();
+		for(EntitySystem system : ecsEngine.getSystems()) {
+			if(!(system instanceof RenderSystem)) {
+				system.setProcessing(false);
+			}
+		}
+		
 		this.assetManager = context.getAssetManager();
 		
 		assetManager.load("characters_and_effects/char_and_effect.atlas", TextureAtlas.class);
 		assetManager.load("characters_and_effects/gameObjects.atlas", TextureAtlas.class);
 
-		for (final MapType maptype : MapType.values()) {
-			assetManager.load(maptype.getFilePath(), TiledMap.class);
+		for (final MapType mapType : MapType.values()) {
+			if(mapType != MapType.NO_MAP) {
+				assetManager.load(mapType.getFilePath(), TiledMap.class);
+			}
 		}
 		
 		
