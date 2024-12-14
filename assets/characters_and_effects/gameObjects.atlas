@@ -31,6 +31,9 @@ bounds:406,22,120,120
 boss/angry
 index:0
 bounds:406,22,120,120
+boss/die
+index:0
+bounds:406,22,120,120
 boss/walk
 index:0
 bounds:406,22,120,120

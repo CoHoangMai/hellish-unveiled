@@ -32,7 +32,7 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 		stage = context.getGameStage();
 		
 		this.damageFont = new BitmapFont(Gdx.files.internal("ui/damage.fnt"));
-		damageFont.getData().setScale(0.33f);
+		damageFont.getData().setScale(0.5f);
 		this.floatTxtFntStyle = new Label.LabelStyle(damageFont, Color.WHITE);
 	}
 
@@ -74,10 +74,7 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 			entity.add(deadCmp);
 			if (ECSEngine.playerCmpMapper.has(entity)) {
 				deadCmp.reviveTime = 7f;
-				System.out.println("Gục ngã vì chó cắn quá đau.....");
-			} else {
-				System.out.println("Bay màu con chó");
-			}
+			} 
 		}
 	}
 	

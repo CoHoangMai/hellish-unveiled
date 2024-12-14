@@ -103,7 +103,6 @@ public class AiEntity {
 		float sourceX = getPosition().x, sourceY = getPosition().y;
 		float sizeX = physicsCmp.size.x, sizeY = physicsCmp.size.y;
 		sizeX += range;
-		sizeY += range;
 		
 		boolean facingRight = imageCmp.image.isFlipX();
 		if(facingRight) {

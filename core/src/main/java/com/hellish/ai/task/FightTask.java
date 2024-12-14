@@ -7,6 +7,7 @@ public class FightTask extends Action{
 	@Override
 	public Status execute() {
 		if(getStatus() != Status.RUNNING) {
+			
 			getObject().startAttack();
 			getObject().animation(AnimationType.FIGHT, PlayMode.NORMAL, true);
 			return Status.RUNNING;

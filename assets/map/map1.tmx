@@ -2282,10 +2282,7 @@
  <group id="20" name="entities">
   <objectgroup id="21" name="entities">
    <object id="161" gid="14138" x="1566" y="4626" width="64" height="64"/>
-   <object id="162" gid="14139" x="1776" y="4526" width="64" height="64"/>
-   <object id="163" gid="14142" x="1548" y="4064" width="120" height="120"/>
-   <object id="164" gid="14141" x="1416" y="4226" width="64" height="64"/>
-   <object id="165" gid="14140" x="1066" y="4470" width="64" height="64"/>
+   <object id="163" gid="14142" x="1552" y="4244" width="120" height="120"/>
   </objectgroup>
  </group>
  <group id="17" name="terrain">

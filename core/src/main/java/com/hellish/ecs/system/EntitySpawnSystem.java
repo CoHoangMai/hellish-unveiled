@@ -156,6 +156,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			attackCmp.maxDelay = cfg.attackDelay;
 			attackCmp.damage = Math.round(DEFAULT_ATTACK_DAMAGE * cfg.attackScaling);
 			attackCmp.extraRange = cfg.attackExtraRange;
+			attackCmp.canFire = cfg.canFire;
 			spawnedEntity.add(attackCmp);
 		}
 		
@@ -200,7 +201,12 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			spawnedEntity.add(aiCmp);
 			
 			CircleShape circleShape = new CircleShape();
-			circleShape.setRadius(4);
+			
+			if(spawnCmp.type.equals("Boss")) {
+				circleShape.setRadius(5);
+			} else {
+				circleShape.setRadius(4);
+			}
 			Fixture fixture = physicsCmp.body.createFixture(circleShape, 0);
 			circleShape.dispose();
 			fixture.setUserData(AI_SENSOR);
@@ -260,10 +266,12 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				return new SpawnConfiguration(builder);
 			} else if (t.equals("Boss")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.BOSS);
-				builder.speedScaling = 0.5f;
+				builder.speedScaling = 2;
 				builder.physicsScaling.set(0.4f, 0.5f); 
 				builder.physicsOffset.set(0, -30 * UNIT_SCALE);
 				builder.attackScaling = 0.75f;
+				builder.attackExtraRange = 5;
+				builder.canFire = true;
 				builder.lifeScaling = 10;
 				builder.aiTreePath = "ai/boss.tree";
 				builder.hasLight = true;
@@ -286,7 +294,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		});
 	}
 	
-	private Vector2 size(AnimationModel model) {
+	public Vector2 size(AnimationModel model) {
 		return cachedSizes.computeIfAbsent(model, m -> {
 			final TextureAtlas atlas = assetManager.get("characters_and_effects/gameObjects.atlas", TextureAtlas.class);
 			Array<AtlasRegion> regions = atlas.findRegions(model.getModel() + "/" + AnimationType.IDLE.getAtlasKey());
