@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="15" nextobjectid="29">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="15" nextobjectid="30">
  <editorsettings>
   <export target="object PTN.tmx" format="tmx"/>
  </editorsettings>
@@ -50,10 +50,9 @@
   <tile id="1" type="Terrain">
    <image source="PTN-tileset/object/object1.2.png" width="83" height="158"/>
    <objectgroup draworder="index" id="2">
-    <object id="1" x="2.10381" y="123.382" width="77.9646" height="31.6809">
-     <ellipse/>
-    </object>
     <object id="3" x="2.97008" y="116.576" width="78.0884" height="19.9243"/>
+    <object id="4" x="20" y="140" width="40" height="15"/>
+    <object id="6" x="-594" y="-290"/>
    </objectgroup>
   </tile>
   <tile id="2" type="Terrain">
@@ -76,7 +75,7 @@
   <tile id="4" type="Terrain">
    <image source="PTN-tileset/object/wall1.1.png" width="1064" height="272"/>
    <objectgroup draworder="index" id="2">
-    <object id="1" x="4" y="1" width="6" height="162.5"/>
+    <object id="1" x="4" y="1" width="6" height="266.951"/>
     <object id="3" x="8.5" y="257.041" width="265" height="14.4592"/>
     <object id="4" x="628" y="256.674" width="435" height="13.326"/>
    </objectgroup>
@@ -91,7 +90,7 @@
    <image source="PTN-tileset/object/wall 1.3.png" width="479" height="275"/>
    <objectgroup draworder="index" id="2">
     <object id="1" x="5.33333" y="108.307" width="470.667" height="9.02579"/>
-    <object id="2" x="2.66667" y="8" width="7.33333" height="164.667"/>
+    <object id="2" x="3.54441" y="109.818" width="6.45559" height="164.667"/>
    </objectgroup>
   </tile>
  </tileset>
@@ -512,7 +511,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
   </layer>
-  <layer id="11" name="4" width="100" height="100" visible="0">
+  <layer id="11" name="4" width="100" height="100">
    <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -619,10 +618,11 @@
  </group>
  <group id="13" name="terrain">
   <objectgroup id="9" name="Wall-back">
-   <object id="12" gid="23145" x="792" y="421.667" width="40" height="735.667" rotation="-90"/>
-   <object id="13" gid="23145" x="1100.5" y="317.333" width="34.6667" height="304.334" rotation="-90"/>
-   <object id="28" gid="23145" x="1567.83" y="259.833" width="34.6667" height="468.334" rotation="-90"/>
+   <object id="12" gid="23145" x="792" y="421.667" width="40" height="745" rotation="-90"/>
+   <object id="13" gid="23145" x="1100.5" y="316" width="34.6667" height="304.334" rotation="-90"/>
+   <object id="28" gid="23145" x="1577.83" y="259.833" width="34.6667" height="478.334" rotation="-90"/>
    <object id="14" gid="23145" x="578" y="386.333" width="220" height="265"/>
+   <object id="29" gid="23145" x="1105.33" y="225.166" width="7.33337" height="55.0007" rotation="-180"/>
   </objectgroup>
   <objectgroup id="10" name="Object">
    <object id="15" gid="23142" x="1040.64" y="1144.33" width="523.364" height="301"/>
@@ -636,10 +636,10 @@
   </objectgroup>
   <objectgroup id="8" name="Wall">
    <object id="2" gid="23144" x="43" y="1598" width="1064" height="272"/>
-   <object id="4" gid="23146" x="1106" y="1597" width="484" height="278"/>
-   <object id="5" gid="23145" x="1278" y="1329" width="312" height="1210"/>
-   <object id="8" gid="23145" x="-252.364" y="1486.97" width="312" height="1210"/>
-   <object id="11" gid="23145" x="229" y="511" width="247" height="137"/>
+   <object id="4" gid="23146" x="1108" y="1592.5" width="480" height="278"/>
+   <object id="5" gid="23145" x="1278" y="1439" width="312" height="1220"/>
+   <object id="8" gid="23145" x="-252.364" y="1486.97" width="312" height="1113.33"/>
+   <object id="11" gid="23145" x="229" y="511" width="247" height="137" visible="0"/>
   </objectgroup>
  </group>
 </map>

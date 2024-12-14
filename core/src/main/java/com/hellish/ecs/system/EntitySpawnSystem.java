@@ -17,7 +17,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.maps.MapGroupLayer;
@@ -31,6 +33,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Scaling;
@@ -64,6 +69,7 @@ import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.CollisionComponent;
 import com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration;
 import com.hellish.ecs.component.StateComponent;
+import com.hellish.ecs.component.TextComponent;
 
 public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	public static final String TAG = EntitySpawnSystem.class.getSimpleName();
@@ -77,11 +83,13 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	private final Map<String, SpawnConfiguration> cachedSpawnCfgs;
 	private final Map<AnimationModel, Vector2> cachedSizes;
 	
+	private final Stage uiStage;
+	
 	public static final SpawnConfiguration PLAYER_CFG;
 	
 	static {
 		SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.PLAYER);
-		builder.speedScaling = 1.5f;
+		builder.speedScaling = 1.75f;
 		builder.physicsScaling.set(0.2f, 0.44f);
 		builder.physicsOffset.set(0, -18 * UNIT_SCALE);
 		builder.lifeScaling = 3;
@@ -100,6 +108,8 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		assetManager = context.getAssetManager();
 		cachedSpawnCfgs = new HashMap<>();
 		cachedSizes = new HashMap<>();
+		
+		uiStage = context.getUIStage();
 	}
 
 	@Override
@@ -211,6 +221,20 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			circleShape.dispose();
 			fixture.setUserData(AI_SENSOR);
 			fixture.setSensor(true);
+		}
+		
+		if(spawnCmp.type.equals("Boss")) {
+			final TextComponent txtCmp = getEngine().createComponent(TextComponent.class);
+			
+			BitmapFont damageFont = new BitmapFont(Gdx.files.internal("ui/damage.fnt"));
+			damageFont.getData().setScale(0.75f);
+			LabelStyle txtFntStyle = new Label.LabelStyle(damageFont, Color.WHITE);
+			
+			txtCmp.label = new Label("OOP", txtFntStyle);
+			txtCmp.txtLocation.set(spawnCmp.location.x, spawnCmp.location.y + 20 * UNIT_SCALE);
+			uiStage.addActor(txtCmp.label);
+			
+			spawnedEntity.add(txtCmp);
 		}
 		
 		getEngine().addEntity(spawnedEntity);

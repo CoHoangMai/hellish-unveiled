@@ -45,6 +45,7 @@ import com.hellish.ecs.system.RenderSystem;
 import com.hellish.ecs.system.StateSystem;
 import com.hellish.ecs.system.SteeringSystem;
 import com.hellish.ecs.system.TerrainSpawnSystem;
+import com.hellish.ecs.system.TextSystem;
 import com.hellish.ecs.component.AiComponent;
 import com.hellish.ecs.component.AiComponent.AiComponentListener;
 import com.hellish.ecs.component.FloatingTextComponent.FloatingTextComponentListener;
@@ -59,6 +60,7 @@ import com.hellish.ecs.component.PhysicsComponent.PhysicsComponentListener;
 import com.hellish.ecs.component.StateComponent.StateComponentListener;
 import com.hellish.ecs.component.TerrainComponent;
 import com.hellish.ecs.component.TerrainSpawnComponent;
+import com.hellish.ecs.component.TextComponent;
 import com.hellish.ecs.system.LightSystem;
 
 
@@ -78,6 +80,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<LifeComponent> lifeCmpMapper = ComponentMapper.getFor(LifeComponent.class);
 	public static final ComponentMapper<DeadComponent> deadCmpMapper = ComponentMapper.getFor(DeadComponent.class);
 	public static final ComponentMapper<AttackComponent> attackCmpMapper = ComponentMapper.getFor(AttackComponent.class);
+	public static final ComponentMapper<TextComponent> txtCmpMapper = ComponentMapper.getFor(TextComponent.class);
 	public static final ComponentMapper<FloatingTextComponent> floatTxtCmpMapper = ComponentMapper.getFor(FloatingTextComponent.class);
 	public static final ComponentMapper<LootComponent> lootCmpMapper = ComponentMapper.getFor(LootComponent.class);
 	public static final ComponentMapper<StateComponent> stateCmpMapper = ComponentMapper.getFor(StateComponent.class);
@@ -125,6 +128,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addSystem(new StateSystem());
 		addSystem(new AiSystem());
 		addSystem(new CameraSystem(context));
+		addSystem(new TextSystem(context));
 		addSystem(new FloatingTextSystem(context));
 		addSystem(new RenderSystem(context));
 		addSystem(new DebugSystem(context));
