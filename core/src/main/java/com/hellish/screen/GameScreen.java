@@ -57,7 +57,7 @@ public class GameScreen extends AbstractScreen<Table>{
 		}
 		
 		mapManager = context.getMapManager();
-		mapManager.setMap(MapType.MAP_1);
+		mapManager.setMap(MapType.MAP_2);
 		
 		playerSin = 0f;
 		playerCos = 0f;
