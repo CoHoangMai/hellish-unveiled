@@ -98,10 +98,10 @@ public class GameScreen extends AbstractScreen<Table>{
 
 	@Override
 	public void render(float delta) {
-		if(!isMusicLoaded && assetManager.isLoaded(AudioType.GAME.getFilePath())) {
-			isMusicLoaded = true;
-			audioManager.playAudio(AudioType.GAME);
-		}
+		// if(!isMusicLoaded && assetManager.isLoaded(AudioType.GAME.getFilePath())) {
+		// 	isMusicLoaded = true;
+		// 	audioManager.playAudio(AudioType.GAME);
+		// }
 	}
 
 	@Override

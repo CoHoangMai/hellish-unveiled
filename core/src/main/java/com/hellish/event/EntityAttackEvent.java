@@ -5,33 +5,27 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.utils.Pool;
 import com.hellish.ecs.component.AnimationComponent;
 
-public class EntityAggroEvent extends Event{
-	public static final Pool<EntityAggroEvent> pool = new Pool<EntityAggroEvent>() {
+public class EntityAttackEvent extends Event{
+	public static final Pool<EntityAttackEvent> pool = new Pool<EntityAttackEvent>() {
         @Override
-        protected EntityAggroEvent newObject() {
-            return new EntityAggroEvent();
+        protected EntityAttackEvent newObject() {
+            return new EntityAttackEvent();
         }
     };
     
-	private Entity aiEntity;
+	private Entity entity;
 	
-	public EntityAggroEvent set(Entity aiEntity) {
-		this.aiEntity = aiEntity;
-		return this;
-	}
+	public EntityAttackEvent set(Entity entity) {
+        this.entity = entity;
+        return this;
+    }
 
-	public Entity getAiEntity() {
-		return aiEntity;
+    public Entity getEntity() {
+		return entity;
 	}
 	
-	@Override
-	public void reset() {
-		super.reset();
-		aiEntity = null;
-	}
-
 	public String getModel() {
-		AnimationComponent animationComponent = aiEntity.getComponent(AnimationComponent.class);
+		AnimationComponent animationComponent = entity.getComponent(AnimationComponent.class);
 		if (animationComponent != null) {
             if (animationComponent.getModel() != null) {
                 return animationComponent.getModel();  // Trả về mô hình dưới dạng chuỗi
@@ -39,4 +33,10 @@ public class EntityAggroEvent extends Event{
         }
         return "No model found";  // Trả về thông báo nếu không tìm thấy model
     }
+	
+	@Override
+	public void reset() {
+		super.reset();
+		entity = null;
+	}
 }
