@@ -215,6 +215,7 @@ public class Main extends Game implements EventListener{
 		rayHandler.dispose();
 		world.dispose();
 		ecsEngine.dispose();
+		mapManager.dispose();
 		assetManager.dispose();
 		gameStage.dispose();
 		uiStage.dispose();

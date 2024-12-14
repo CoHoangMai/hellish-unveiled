@@ -9,7 +9,7 @@ import com.hellish.ecs.component.PhysicsComponent.Direction;
 public class AnimationComponent implements Component, Poolable{
 	public enum AnimationModel {
 		PLAYER, WOLF, CHEST,
-		FLAG_ZOMBIE, RUNNING_ZOMBIE, TREE_ZOMBIE,
+		FLAG_ZOMBIE, RUNNING_ZOMBIE, TREE_ZOMBIE, BOSS,
 		UNDEFINED;
 
 		public String getModel() {
@@ -18,7 +18,8 @@ public class AnimationComponent implements Component, Poolable{
 	}
 	
 	public enum AnimationType {
-		IDLE, WALK, ATTACK, OPEN, DIE;
+		IDLE, WALK, ATTACK, OPEN, DIE,
+		ANGRY, FIGHT;
 		
 		public String getAtlasKey() {
             return this.name().toLowerCase();

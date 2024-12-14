@@ -68,7 +68,7 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 		    	for(MapObject mapObj : cell.getTile().getObjects()) {
 		    		Entity collisionEntity = getEngine().createEntity();
 		    		
-		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(getEngine(), world, x, y, mapObj));
+		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(getEngine(), world, x, y, mapObj, false));
 		    		
 		    		TiledComponent tiledCmp = getEngine().createComponent(TiledComponent.class);
 		    		tiledCmp.cell = cell;
@@ -102,7 +102,7 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(
 		    			getEngine(), world,
 		    			terrainObjX, terrainObjY, 
-		    			mapObj ));
+		    			mapObj, false));
 		    		
 		    		TiledComponent tiledCmp = getEngine().createComponent(TiledComponent.class);
 		    		tiledCmp.nearbyEntities.add(entity);

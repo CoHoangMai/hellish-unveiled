@@ -17,6 +17,7 @@ import com.hellish.ecs.component.FloatingTextComponent;
 import com.hellish.ecs.component.ParticleEffectComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
+import com.hellish.ecs.component.PortalComponent;
 import com.hellish.ecs.component.RemovableComponent;
 import com.hellish.ecs.component.EntitySpawnComponent;
 import com.hellish.ecs.component.StateComponent;
@@ -38,6 +39,7 @@ import com.hellish.ecs.system.LootSystem;
 import com.hellish.ecs.system.MoveSystem;
 import com.hellish.ecs.system.ParticleEffectSystem;
 import com.hellish.ecs.system.PhysicsSystem;
+import com.hellish.ecs.system.PortalSystem;
 import com.hellish.ecs.system.RenderSystem;
 import com.hellish.ecs.system.StateSystem;
 import com.hellish.ecs.system.SteeringSystem;
@@ -81,6 +83,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<AiComponent> aiCmpMapper = ComponentMapper.getFor(AiComponent.class);
 	public static final ComponentMapper<ItemComponent> itemCmpMapper = ComponentMapper.getFor(ItemComponent.class);
 	public static final ComponentMapper<InventoryComponent> invCmpMapper = ComponentMapper.getFor(InventoryComponent.class);
+	public static final ComponentMapper<PortalComponent> portalCmpMapper = ComponentMapper.getFor(PortalComponent.class);
 	public static final ComponentMapper<RemovableComponent> removeCmpMapper = ComponentMapper.getFor(RemovableComponent.class);
 	
 	private final Stage gameStage;
@@ -102,12 +105,11 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		componentManager.addComponentListener(new StateComponentListener());
 		componentManager.addComponentListener(new AiComponentListener());
 		
-		
-
 		addSystem(new TerrainSpawnSystem());
 		addSystem(new EntitySpawnSystem(context));
 		addSystem(new CollisionSpawnSystem(context));
 		addSystem(new CollisionDespawnSystem(context));
+		addSystem(new PortalSystem(context));
 		addSystem(new MoveSystem());
 		addSystem(new LootSystem(context));
 		addSystem(new InventorySystem(context));
@@ -123,7 +125,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addSystem(new CameraSystem(context));
 		addSystem(new FloatingTextSystem(context));
 		addSystem(new RenderSystem(context));
-		//addSystem(new DebugSystem(context));
+		addSystem(new DebugSystem(context));
 		addSystem(new ParticleEffectSystem(context));
 		
 	}

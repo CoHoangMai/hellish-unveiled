@@ -20,6 +20,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
@@ -76,7 +77,20 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	private final Map<String, SpawnConfiguration> cachedSpawnCfgs;
 	private final Map<AnimationModel, Vector2> cachedSizes;
 	
+	public static final SpawnConfiguration PLAYER_CFG;
 	
+	static {
+		SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.PLAYER);
+		builder.speedScaling = 1.5f;
+		builder.physicsScaling.set(0.2f, 0.44f);
+		builder.physicsOffset.set(0, -2 * UNIT_SCALE);
+		builder.lifeScaling = 3;
+		builder.attackScaling = 1.25f;
+		builder.attackExtraRange = 0.75f;
+		builder.hasLight = true;
+		builder.physicsCategory = PLAYER_BIT;
+		PLAYER_CFG = new SpawnConfiguration(builder);
+	}
 
 	public EntitySpawnSystem(final Main context) {
 		super(Family.all(EntitySpawnComponent.class).get());
@@ -201,16 +215,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	private SpawnConfiguration spawnCfg(String type) {
 		return cachedSpawnCfgs.computeIfAbsent(type, t -> {
 			if(t.equals("Player")) {
-				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.PLAYER);
-				builder.speedScaling = 1.5f;
-				builder.physicsScaling.set(0.2f, 0.44f);
-				builder.physicsOffset.set(0, -2 * UNIT_SCALE);
-				builder.lifeScaling = 3;
-				builder.attackScaling = 1.25f;
-				builder.attackExtraRange = 0.75f;
-				builder.hasLight = true;
-				builder.physicsCategory = PLAYER_BIT;
-				return new SpawnConfiguration(builder);
+				return PLAYER_CFG;
 			} else if (t.equals("Wolf")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.WOLF);
 				builder.physicsScaling.set(0.4f, 0.4f);
@@ -252,6 +257,16 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.hasLight = true;
 				builder.physicsCategory = ENEMY_BIT;
 				return new SpawnConfiguration(builder);
+			} else if (t.equals("Boss")) {
+				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.BOSS);
+				builder.speedScaling = 0.5f;
+				builder.physicsScaling.set(0.4f, 0.6f); 
+				builder.attackScaling = 0.75f;
+				builder.lifeScaling = 10;
+				builder.aiTreePath = "ai/boss.tree";
+				builder.hasLight = true;
+				builder.physicsCategory = ENEMY_BIT;
+				return new SpawnConfiguration(builder);
 			} else if (t.equals("Chest")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.CHEST);
 				builder.physicsScaling.set(0.25f, 0.1f);
@@ -288,28 +303,37 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			if(mapChangeEvent.getTiledMap() == null) {
 				return false;
 			}
-			MapLayer entityLayer = mapChangeEvent.getTiledMap().getLayers().get("entities");
-			if (entityLayer == null) {
+			
+			MapGroupLayer groupLayer = (MapGroupLayer) mapManager.getCurrentMap().getLayers().get("entities");
+			if (groupLayer == null) {
 				return false;
 			}
-			for (MapObject mapObj : entityLayer.getObjects()) {
-				if (! (mapObj instanceof TiledMapTileMapObject)) {
-					Gdx.app.log(TAG, "GameObject kiểu " + mapObj + " trong layer 'entities' không được hỗ trợ.");
-					continue;
+			
+			for(MapLayer entityLayer : groupLayer.getLayers()) {
+				for (MapObject mapObj : entityLayer.getObjects()) {
+					if (! (mapObj instanceof TiledMapTileMapObject)) {
+						Gdx.app.log(TAG, "GameObject kiểu " + mapObj + " trong layer 'entities' không được hỗ trợ.");
+						continue;
+					}
+					TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
+					String type = tiledMapObj.getTile().getProperties().get("type", String.class);
+					if (type == null) {
+						throw new GdxRuntimeException("MapObject " + mapObj + " trong layer 'entities' không có property Class");
+					}
+					
+					if(type.equals("Player") && getEngine().getEntitiesFor(Family.all(PlayerComponent.class).get()).size() > 0) {
+						continue;
+					}
+					
+					Entity entity = getEngine().createEntity();
+					EntitySpawnComponent spawnComponent = getEngine().createComponent(EntitySpawnComponent.class);
+					spawnComponent.type = type;
+					spawnComponent.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
+					entity.add(spawnComponent);
+					getEngine().addEntity(entity);
 				}
-				TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
-				String type = tiledMapObj.getTile().getProperties().get("type", String.class);
-				if (type == null) {
-					throw new GdxRuntimeException("MapObject " + mapObj + " trong layer 'entities' không có property Class");
-				}
-				Entity entity = getEngine().createEntity();
-				EntitySpawnComponent spawnComponent = getEngine().createComponent(EntitySpawnComponent.class);
-				spawnComponent.type = type;
-				spawnComponent.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
-				entity.add(spawnComponent);
-				getEngine().addEntity(entity);
 			}
-			return true;	
+			return true;
 		} else if(event instanceof GameRestartEvent) {
 			for(Entity entity: getEngine().getEntities()){
 				//Không hiểu nếu dùng Family.all(RemovableComponent.class).get() thì lại không ổn
@@ -318,26 +342,28 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				}
 			}
 			
-			MapLayer entityLayer = mapManager.getCurrentMap().getLayers().get("entities");
-			if (entityLayer == null) {
+			MapGroupLayer groupLayer = (MapGroupLayer) mapManager.getCurrentMap().getLayers().get("entities");
+			if (groupLayer == null) {
 				return false;
 			}
-			for (MapObject mapObj : entityLayer.getObjects()) {
-				if (! (mapObj instanceof TiledMapTileMapObject)) {
-					Gdx.app.log(TAG, "GameObject kiểu " + mapObj + " trong layer 'entities' không được hỗ trợ.");
-					continue;
+			for(MapLayer entityLayer : groupLayer.getLayers()) {
+				for (MapObject mapObj : entityLayer.getObjects()) {
+					if (! (mapObj instanceof TiledMapTileMapObject)) {
+						Gdx.app.log(TAG, "GameObject kiểu " + mapObj + " trong layer 'entities' không được hỗ trợ.");
+						continue;
+					}
+					TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
+					String type = tiledMapObj.getTile().getProperties().get("type", String.class);
+					if (type == null) {
+						throw new GdxRuntimeException("MapObject " + mapObj + " trong layer 'entities' không có property Class");
+					}
+					Entity entity = getEngine().createEntity();
+					EntitySpawnComponent spawnComponent = getEngine().createComponent(EntitySpawnComponent.class);
+					spawnComponent.type = type;
+					spawnComponent.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
+					entity.add(spawnComponent);
+					getEngine().addEntity(entity);
 				}
-				TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
-				String type = tiledMapObj.getTile().getProperties().get("type", String.class);
-				if (type == null) {
-					throw new GdxRuntimeException("MapObject " + mapObj + " trong layer 'entities' không có property Class");
-				}
-				Entity entity = getEngine().createEntity();
-				EntitySpawnComponent spawnComponent = getEngine().createComponent(EntitySpawnComponent.class);
-				spawnComponent.type = type;
-				spawnComponent.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
-				entity.add(spawnComponent);
-				getEngine().addEntity(entity);
 			}
 			return true;	
 		}
