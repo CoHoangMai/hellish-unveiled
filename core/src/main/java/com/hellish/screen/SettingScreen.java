@@ -1,23 +1,35 @@
 package com.hellish.screen;
 
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
+import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.system.RenderSystem;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
 import com.hellish.ui.Scene2DSkin;
-import com.hellish.ui.view.DialogView;
+import com.hellish.ui.view.SettingView;
 
-public class DialogScreen extends AbstractScreen<DialogView>{
+public class SettingScreen extends AbstractScreen<SettingView>{
+
+    private final ECSEngine ecsEngine;
     private final AssetManager assetManager;
-    private DialogView dialogView;
     private boolean isMusicLoaded;
 
-    public DialogScreen(final Main context) {
+    public SettingScreen(final Main context) {
         super(context);
+
+        ecsEngine = context.getECSEngine();
+		for(EntitySystem system : ecsEngine.getSystems()) {
+			if(!(system instanceof RenderSystem)) {
+				system.setProcessing(false);
+			}
+		}
+        
         assetManager = context.getAssetManager();
         isMusicLoaded = false;
 		for (final AudioType audioType : AudioType.values()) {
@@ -27,6 +39,14 @@ public class DialogScreen extends AbstractScreen<DialogView>{
 		        assetManager.load(audioType.getFilePath(), Sound.class);
 		    }
 		}
+    }
+
+    @Override
+    protected Array<SettingView> getScreenViews(final Main context) {
+        Array<SettingView> views = new Array<>();
+        SettingView settingView = new SettingView(Scene2DSkin.defaultSkin, context);
+        views.add(settingView);
+        return views;
     }
 
     @Override
@@ -43,30 +63,22 @@ public class DialogScreen extends AbstractScreen<DialogView>{
 
     @Override
     public void resume() {
+        
     }
 
     @Override
     public void dispose() {
+        
     }
 
     @Override
     public void keyPressed(InputManager manager, GameKeys key) {
-    	if(key == GameKeys.SELECT || key == GameKeys.ATTACK) {
-    		dialogView.changeImage();
-            audioManager.playAudio(AudioType.SELECT);
-    	}
+        
     }
 
     @Override
     public void keyUp(InputManager manager, GameKeys key) {
+        
     }
-
-    @Override
-    protected Array<DialogView> getScreenViews(final Main context) {
-        Array<DialogView> views = new Array<>();
-        DialogView dialogView = new DialogView(Scene2DSkin.defaultSkin, context);
-        views.add(dialogView);
-        this.dialogView = dialogView;
-        return views;
-    }  
+    
 }

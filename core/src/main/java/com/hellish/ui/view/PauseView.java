@@ -16,9 +16,11 @@ import com.badlogic.gdx.utils.Align;
 import com.hellish.Main;
 import com.hellish.audio.AudioManager;
 import com.hellish.audio.AudioType;
+import com.hellish.event.GamePauseEvent;
 import com.hellish.event.GameRestartEvent;
 import com.hellish.event.GameResumeEvent;
 import com.hellish.screen.ScreenType;
+import com.hellish.ui.Scene2DSkin.ImageDrawables;
 import com.hellish.ui.Scene2DSkin.Labels;
 
 public class PauseView extends Table{
@@ -52,10 +54,10 @@ public class PauseView extends Table{
 		pauseLabel.setAlignment(Align.center);
 		add(pauseLabel).expandX().center().padTop(120).row();
 		// Tạo các nút
-		goBackButton = createButton("go_back_small_button.png");
-        settingButton = createButton("setting_small_button.png");
-        restartButton = createButton("restart_small_button.png");
-        continueButton = createButton("continue_small_button.png");
+		goBackButton = createButton(ImageDrawables.SMALL_BUTTON_QUIT);
+        settingButton = createButton(ImageDrawables.SMALL_BUTTON_SETTING);
+        restartButton = createButton(ImageDrawables.SMALL_BUTTON_RESTART);
+        continueButton = createButton(ImageDrawables.SMALL_BUTTON_CONTINUE);
 		// Bố trí các nút
 		Table bottomTable = new Table();
         bottomTable.add(goBackButton).size(40, 40).pad(20); // Nút đầu tiên
@@ -98,10 +100,20 @@ public class PauseView extends Table{
 				 GameResumeEvent.pool.free(resumeEvent);
 			}
 		});
+
+		settingButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+				GamePauseEvent pauseEvent = GamePauseEvent.pool.obtain();
+				gameStage.getRoot().fire(pauseEvent);
+				//GameResumeEvent.pool.free(pauseEvent);
+				context.setScreen(ScreenType.SETTING);
+		   }
+        });
 	}
 
-	private ImageButton createButton(String texturePath) {
-        Texture texture = new Texture(texturePath);
+	private ImageButton createButton(ImageDrawables image) {
+        Texture texture = new Texture(image.getFileName());
         TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
         ImageButton button = new ImageButton(drawable);
         button.addListener(new ClickListener() {
@@ -121,6 +133,5 @@ public class PauseView extends Table{
             }
         });
         return button;
-
     }
 }
