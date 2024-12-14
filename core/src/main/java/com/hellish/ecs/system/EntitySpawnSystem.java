@@ -83,7 +83,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.PLAYER);
 		builder.speedScaling = 1.5f;
 		builder.physicsScaling.set(0.2f, 0.44f);
-		builder.physicsOffset.set(0, -2 * UNIT_SCALE);
+		builder.physicsOffset.set(0, -18 * UNIT_SCALE);
 		builder.lifeScaling = 3;
 		builder.attackScaling = 1.25f;
 		builder.attackExtraRange = 0.75f;
@@ -229,7 +229,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			} else if (t.equals("FlagZombie")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.FLAG_ZOMBIE);
 				builder.physicsScaling.set(0.44f, 0.72f);
-				builder.physicsOffset.set(0, -6 * UNIT_SCALE);
+				builder.physicsOffset.set(0, -9 * UNIT_SCALE);
 				builder.attackScaling = 0.5f;
 				builder.lifeScaling = 0.75f;
 				builder.aiTreePath = "ai/zombie.tree";
@@ -239,7 +239,8 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			} else if (t.equals("RunningZombie")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.RUNNING_ZOMBIE);
 				builder.speedScaling = 2;
-				builder.physicsScaling.set(0.48f, 0.72f);
+				builder.physicsScaling.set(0.48f, 0.75f);
+				builder.physicsOffset.set(0, -8 * UNIT_SCALE);
 				builder.attackScaling = 0.5f;
 				builder.lifeScaling = 0.5f;
 				builder.aiTreePath = "ai/zombie.tree";
@@ -250,7 +251,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.TREE_ZOMBIE);
 				builder.speedScaling = 0.75f;
 				builder.physicsScaling.set(0.4f, 0.78f);
-				builder.physicsOffset.set(0, -4 * UNIT_SCALE);
+				builder.physicsOffset.set(0, -7 * UNIT_SCALE);
 				builder.attackScaling = 0.75f;
 				builder.lifeScaling = 1.25f;
 				builder.aiTreePath = "ai/zombie.tree";
@@ -260,7 +261,8 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			} else if (t.equals("Boss")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.BOSS);
 				builder.speedScaling = 0.5f;
-				builder.physicsScaling.set(0.4f, 0.6f); 
+				builder.physicsScaling.set(0.4f, 0.5f); 
+				builder.physicsOffset.set(0, -30 * UNIT_SCALE);
 				builder.attackScaling = 0.75f;
 				builder.lifeScaling = 10;
 				builder.aiTreePath = "ai/boss.tree";

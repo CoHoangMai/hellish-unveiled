@@ -9,6 +9,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -123,17 +124,20 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 				return false;
 			}
 			
-			mapChangeEvent.getTiledMap().getLayers().getByType(TiledMapTileLayer.class, tiledLayers);	
+			//Lấy bgd layer để xác định biên
+			((MapGroupLayer) mapChangeEvent.getTiledMap().getLayers().get("bgd")).getLayers().getByType(TiledMapTileLayer.class, tiledLayers);
 			
-			MapLayer terrainLayer = ((MapChangeEvent) event).getTiledMap().getLayers().get("terrain");
+			MapGroupLayer terrainLayer = (MapGroupLayer) ((MapChangeEvent) event).getTiledMap().getLayers().get("terrain");
 			if (terrainLayer != null) {
-				for (MapObject mapObj : terrainLayer.getObjects()) {
-					if (! (mapObj instanceof TiledMapTileMapObject)) {
-						Gdx.app.log(TAG, "MapObject kiểu " + mapObj + " trong layer 'terrain' không được hỗ trợ.");
-						continue;
+				for(MapLayer subLayer : terrainLayer.getLayers()) {
+					for (MapObject mapObj : subLayer.getObjects()) {
+						if (! (mapObj instanceof TiledMapTileMapObject)) {
+							Gdx.app.log(TAG, "MapObject kiểu " + mapObj + " trong layer 'terrain' không được hỗ trợ.");
+							continue;
+						}
+						TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
+						terrainObjects.add(tiledMapObj);
 					}
-					TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
-					terrainObjects.add(tiledMapObj);
 				}
 			}
 			

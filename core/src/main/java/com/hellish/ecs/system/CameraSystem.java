@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.MathUtils;
@@ -47,7 +48,8 @@ public class CameraSystem extends IteratingSystem implements EventListener{
 			if(tiledMap == null) {
 				return false;
 			}
-			TiledMapTileLayer layer = (TiledMapTileLayer)tiledMap.getLayers().get(0);
+			MapGroupLayer groupLayer = (MapGroupLayer) tiledMap.getLayers().get("bgd");
+			TiledMapTileLayer layer = (TiledMapTileLayer)groupLayer.getLayers().get(0);
 			 if (layer != null) {
 		            maxW = layer.getWidth();
 		            maxH = layer.getHeight();

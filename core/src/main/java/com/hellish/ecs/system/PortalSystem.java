@@ -105,29 +105,31 @@ public class  PortalSystem extends IteratingSystem implements EventListener{
 		if(event instanceof MapChangeEvent) {
 			MapLayer portalLayer = ((MapChangeEvent) event).getTiledMap().getLayers().get("portals");
 			
-			for(MapObject mapObj : portalLayer.getObjects()) {
-				String toMapString = mapObj.getProperties().get("toMap", "", String.class);
-				Integer toPortal = mapObj.getProperties().get("toPortal", -1, Integer.class);
-				
-				if(toMapString.isBlank()) {
-					continue;
-				} else if(toPortal == -1) {
-					Gdx.app.error(TAG, "Portal " + mapObj.getProperties().get("id") + " không có thuộc tính toPortal");
+			if(portalLayer != null) {
+				for(MapObject mapObj : portalLayer.getObjects()) {
+					String toMapString = mapObj.getProperties().get("toMap", "", String.class);
+					Integer toPortal = mapObj.getProperties().get("toPortal", -1, Integer.class);
+					
+					if(toMapString.isBlank()) {
+						continue;
+					} else if(toPortal == -1) {
+						Gdx.app.error(TAG, "Portal " + mapObj.getProperties().get("id") + " không có thuộc tính toPortal");
+					}
+					
+					Entity portalEntity = getEngine().createEntity();
+					
+					portalEntity.add(PhysicsComponent.physicsCmpFromShape2D(getEngine(), world, 0, 0, mapObj, true));
+					
+					PortalComponent portalCmp = getEngine().createComponent(PortalComponent.class);
+					portalCmp.id = (int) mapObj.getProperties().get("id");
+					portalCmp.toPortal = toPortal;
+					
+					portalCmp.toMap = MapType.valueOf(toMapString);
+					
+					portalEntity.add(portalCmp);
+					
+					getEngine().addEntity(portalEntity);
 				}
-				
-				Entity portalEntity = getEngine().createEntity();
-				
-				portalEntity.add(PhysicsComponent.physicsCmpFromShape2D(getEngine(), world, 0, 0, mapObj, true));
-				
-				PortalComponent portalCmp = getEngine().createComponent(PortalComponent.class);
-				portalCmp.id = (int) mapObj.getProperties().get("id");
-				portalCmp.toPortal = toPortal;
-				
-				portalCmp.toMap = MapType.valueOf(toMapString);
-				
-				portalEntity.add(portalCmp);
-				
-				getEngine().addEntity(portalEntity);
 			}
 			return true;
 		}
