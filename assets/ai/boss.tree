@@ -13,7 +13,7 @@ subtree name:"fight"
     (isEnemyNearby?) (canAttack? range:4) angry
     fight
     wait seconds:0.75
-    cooldown duration:"uniform,2.0,3.5"
+    cooldown duration:"uniform,0.5,0.75"
     
 subtree name:"chase"
   sequence

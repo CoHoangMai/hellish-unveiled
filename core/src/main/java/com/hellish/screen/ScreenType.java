@@ -8,7 +8,8 @@ public enum ScreenType {
 	MAIN_MENU(MainMenuScreen.class),
 	GUIDE(GuideScreen.class), 
 	DAILOG(DialogScreen.class),
-	SETTING(SettingScreen.class);
+	SETTING(SettingScreen.class),
+	WIN(WinScreen.class);
 	
 	@SuppressWarnings("rawtypes")
 	private final Class<? extends AbstractScreen> screenClass;

@@ -135,7 +135,8 @@ public class Scene2DSkin{
 	    INVENTORY_SLOT_BOOTS("inv_slot_boots"),
 		
 		LOADING_BACKGROUND("main_bgd"),
-		DIALOG_BACKGROUND("dialog_bgd");
+		DIALOG_BACKGROUND("dialog_bgd"),
+		GUIDE_BACKGROUND("guide_bgd");
 
 	    private final String atlasKey;
 
