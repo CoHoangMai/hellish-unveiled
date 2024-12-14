@@ -73,7 +73,6 @@ public class AudioSystem extends IteratingSystem implements EventListener{
         }
         for (Sound sound : soundRequests.values()) {
             sound.play();
-            System.out.println("Sound: " + sound.path);
         }
     }
     
