@@ -13,6 +13,7 @@ import com.hellish.ui.view.DialogView;
 
 public class DialogScreen extends AbstractScreen<DialogView>{
     private final AssetManager assetManager;
+    private DialogView dialogView;
     private boolean isMusicLoaded;
 
     public DialogScreen(final Main context) {
@@ -38,32 +39,26 @@ public class DialogScreen extends AbstractScreen<DialogView>{
 
     @Override
     public void pause() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'pause'");
     }
 
     @Override
     public void resume() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'resume'");
     }
 
     @Override
     public void dispose() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dispose'");
     }
 
     @Override
     public void keyPressed(InputManager manager, GameKeys key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'keyPressed'");
+    	if(key == GameKeys.SELECT || key == GameKeys.ATTACK) {
+    		dialogView.changeImage();
+            audioManager.playAudio(AudioType.SELECT);
+    	}
     }
 
     @Override
     public void keyUp(InputManager manager, GameKeys key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'keyUp'");
     }
 
     @Override
@@ -71,6 +66,7 @@ public class DialogScreen extends AbstractScreen<DialogView>{
         Array<DialogView> views = new Array<>();
         DialogView dialogView = new DialogView(Scene2DSkin.defaultSkin, context);
         views.add(dialogView);
+        this.dialogView = dialogView;
         return views;
     }  
 }

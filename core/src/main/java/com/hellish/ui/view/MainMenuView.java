@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -25,14 +24,12 @@ public class MainMenuView extends Table {
     private final ImageButton guideButton;
     private final ImageButton quitButton;
     private final AudioManager audioManager;
-    private final Stage gameStage;
     // Hình nền sẽ được vẽ vào đây
     
     public MainMenuView(Skin skin, final Main context) {
         super(skin);
         setFillParent(true);
         audioManager = context.getAudioManager();
-        gameStage = context.getGameStage();
         
         setBackground(Drawables.LOADING_BACKGROUND.getAtlasKey());
        

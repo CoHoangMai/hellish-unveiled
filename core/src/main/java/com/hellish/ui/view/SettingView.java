@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
@@ -36,7 +35,7 @@ public class SettingView extends Table{
     public final Sprite backgroundSprite;
     private final Image dimOverlay;
     //private CheckBox fullscreenCheckBox;
-    private SelectBox<String> resolutionSelectBox;
+    //private SelectBox<String> resolutionSelectBox;
 
     public SettingView(Skin skin, final Main context) {
         super(skin);

@@ -93,7 +93,7 @@ public class DialogView extends Table {
         });
     }
 
-    private void changeImage() {
+    public void changeImage() {
         currentImageIndex++;
 
         if (currentImageIndex < imagesBefore.size()) {
