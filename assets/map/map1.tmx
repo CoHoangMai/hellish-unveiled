@@ -577,7 +577,7 @@
  </tileset>
  <group id="31" name="entities">
   <objectgroup id="32" name="entities">
-   <object id="815" gid="10719" x="768" y="2389.58" width="64" height="64"/>
+   <object id="815" gid="10719" x="772" y="2235.58" width="64" height="64"/>
    <object id="816" gid="10715" x="22.5455" y="1901.7" width="64" height="64"/>
    <object id="817" gid="10715" x="1489.21" y="2335.03" width="64" height="64"/>
    <object id="818" gid="10715" x="1322.55" y="1041.09" width="64" height="64"/>
@@ -590,7 +590,7 @@
    <object id="825" gid="10718" x="37.697" y="1971.39" width="64" height="64"/>
    <object id="826" gid="10718" x="1489.21" y="2050.18" width="64" height="64"/>
    <object id="827" gid="10718" x="58.9091" y="1213.82" width="64" height="64"/>
-   <object id="828" gid="10718" x="864.97" y="538.061" width="64" height="64"/>
+   <object id="828" gid="10718" x="1028.97" y="554.061" width="64" height="64"/>
    <object id="830" gid="10720" x="1076.36" y="111.515" width="120" height="120"/>
   </objectgroup>
  </group>

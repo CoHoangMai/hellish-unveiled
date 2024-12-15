@@ -61,6 +61,7 @@ import com.hellish.ecs.component.StateComponent.StateComponentListener;
 import com.hellish.ecs.component.TerrainComponent;
 import com.hellish.ecs.component.TerrainSpawnComponent;
 import com.hellish.ecs.component.TextComponent;
+import com.hellish.ecs.component.TextComponent.TextComponentListener;
 import com.hellish.ecs.system.LightSystem;
 
 
@@ -105,6 +106,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		componentManager = context.getComponentManager();
 		componentManager.addComponentListener(new ImageComponentListener(gameStage));
 		componentManager.addComponentListener(new PhysicsComponentListener());
+		componentManager.addComponentListener(new TextComponentListener(uiStage));
 		componentManager.addComponentListener(new FloatingTextComponentListener(uiStage));
 		componentManager.addComponentListener(new StateComponentListener());
 		componentManager.addComponentListener(new AiComponentListener());

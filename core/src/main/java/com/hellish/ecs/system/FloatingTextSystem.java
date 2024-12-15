@@ -46,5 +46,7 @@ public class FloatingTextSystem extends IteratingSystem{
 		textCmp.label.setPosition(uiLocation.x, uiStage.getViewport().getWorldHeight() - uiLocation.y);
 		
 		textCmp.time += deltaTime;
+		
+		textCmp.label.toBack();
 	}
 }

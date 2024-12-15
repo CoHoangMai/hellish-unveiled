@@ -36,5 +36,7 @@ public class TextSystem extends IteratingSystem{
 		uiStage.getViewport().unproject(uiLocation);
 		
 		textCmp.label.setPosition(uiLocation.x, uiStage.getViewport().getWorldHeight() - uiLocation.y);
+		
+		textCmp.label.toBack();
 	}
 }

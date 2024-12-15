@@ -14,6 +14,7 @@ import com.hellish.ecs.component.DeadComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.LightComponent;
+import com.hellish.ecs.component.TextComponent;
 import com.hellish.event.EntityReviveEvent;
 
 public class DeadSystem extends IteratingSystem{
@@ -33,6 +34,7 @@ public class DeadSystem extends IteratingSystem{
 		final ImageComponent imageCmp = ECSEngine.imageCmpMapper.get(entity);
 		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
 		final LightComponent lightCmp = ECSEngine.lightCmpMapper.get(entity);
+		final TextComponent txtCmp = ECSEngine.txtCmpMapper.get(entity);
 		
 		if(aniCmp == null) {
 			getEngine().removeEntity(entity);
@@ -41,12 +43,6 @@ public class DeadSystem extends IteratingSystem{
 		
 		if(aniCmp.isAnimationFinished()) {
 			if(deadCmp.reviveTime == null) {
-				imageCmp.image.addAction(Actions.sequence(
-					Actions.delay(0.5f),
-					Actions.fadeOut(0.75f),
-					Actions.run(() -> getEngine().removeEntity(entity))
-				));
-				
 				//Rage, rage against the dying of the light.
 				if(lightCmp != null) {
 					Color lightColor = lightCmp.light.getColor();
@@ -55,6 +51,17 @@ public class DeadSystem extends IteratingSystem{
 						lightCmp.light.setColor(lightColor);
 					}
 				}
+				
+				txtCmp.label.addAction(Actions.sequence(
+						Actions.delay(0.5f),
+						Actions.fadeOut(0.75f)
+					));
+				
+				imageCmp.image.addAction(Actions.sequence(
+					Actions.delay(0.5f),
+					Actions.fadeOut(0.75f),
+					Actions.run(() -> getEngine().removeEntity(entity))
+				));		
 				
 				return;
 			}		

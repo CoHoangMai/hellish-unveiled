@@ -142,7 +142,7 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 			}
 			
 			//Tạo biên cho map
-			/*int mapWidth = tiledLayers.get(0).getWidth();
+			int mapWidth = tiledLayers.get(0).getWidth();
 			int mapHeight = tiledLayers.get(0).getHeight();
 			Entity entity = getEngine().createEntity();
 			PhysicsComponent physicsCmp = getEngine().createComponent(PhysicsComponent.class);
@@ -164,7 +164,7 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 			fixture.setUserData(COLLISION_BOX);
 			loopShape.dispose();
 			entity.add(physicsCmp);
-			getEngine().addEntity(entity);*/
+			getEngine().addEntity(entity);
 			
 			return true;
 		} else if(event instanceof CollisionDespawnEvent) {

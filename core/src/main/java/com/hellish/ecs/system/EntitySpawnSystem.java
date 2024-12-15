@@ -33,7 +33,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.Array;
@@ -83,8 +82,6 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	private final Map<String, SpawnConfiguration> cachedSpawnCfgs;
 	private final Map<AnimationModel, Vector2> cachedSizes;
 	
-	private final Stage uiStage;
-	
 	public static final SpawnConfiguration PLAYER_CFG;
 	
 	static {
@@ -108,8 +105,6 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		assetManager = context.getAssetManager();
 		cachedSpawnCfgs = new HashMap<>();
 		cachedSizes = new HashMap<>();
-		
-		uiStage = context.getUIStage();
 	}
 
 	@Override
@@ -213,7 +208,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			CircleShape circleShape = new CircleShape();
 			
 			if(spawnCmp.type.equals("Boss")) {
-				circleShape.setRadius(5);
+				circleShape.setRadius(6);
 			} else {
 				circleShape.setRadius(4);
 			}
@@ -229,10 +224,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			BitmapFont damageFont = new BitmapFont(Gdx.files.internal("ui/damage.fnt"));
 			damageFont.getData().setScale(0.75f);
 			LabelStyle txtFntStyle = new Label.LabelStyle(damageFont, Color.WHITE);
-			
 			txtCmp.label = new Label("OOP", txtFntStyle);
-			txtCmp.txtLocation.set(spawnCmp.location.x, spawnCmp.location.y + 20 * UNIT_SCALE);
-			uiStage.addActor(txtCmp.label);
 			
 			spawnedEntity.add(txtCmp);
 		}
