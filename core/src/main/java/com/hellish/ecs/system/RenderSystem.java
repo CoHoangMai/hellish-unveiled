@@ -82,7 +82,7 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 				gameStage.addActor(imageCmpMapper.get(entity).image);
 			}
 	    	
-	    	/*boolean isPlayer = ECSEngine.playerCmpMapper.has(entity);
+	    	boolean isPlayer = ECSEngine.playerCmpMapper.has(entity);
 	    	if(isPlayer) {
 	    		for(Entity otherEntity : entitiesArray) {
 	    			if(entity != otherEntity && ECSEngine.terrainCmpMapper.has(otherEntity)) {
@@ -96,7 +96,7 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 	    			}
 	    		}
 	    	}
-	    	*/
+	    	
 	    	imageCmpMapper.get(entity).image.toFront();
 	    }
 
@@ -121,7 +121,7 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 
 		uiStage.getViewport().apply();
 		uiStage.act(deltaTime);
-		uiStage.draw();		
+		uiStage.draw();	
 	}
 
 

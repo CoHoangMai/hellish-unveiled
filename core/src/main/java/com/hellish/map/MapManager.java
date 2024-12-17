@@ -29,11 +29,7 @@ public class MapManager implements Disposable{
 		mapCache = new EnumMap<MapType, TiledMap>(MapType.class);
 	}
 	
-	public void setMap(final MapType type) {
-		if(currentMapType == type) {
-			return;
-		}
-		
+	public void setMap(final MapType type) {		
 		currentMap = mapCache.get(type);
 		if(currentMap == null) {
 			Gdx.app.debug(TAG, "Tạo map mới " + type);
@@ -53,6 +49,10 @@ public class MapManager implements Disposable{
 	
 	public TiledMap getCurrentMap() {
 		return currentMap;
+	}
+	
+	public MapType getCurrentMapType() {
+		return currentMapType;
 	}
 
 	@Override

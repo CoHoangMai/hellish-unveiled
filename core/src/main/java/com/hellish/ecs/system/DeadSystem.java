@@ -16,6 +16,8 @@ import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.LightComponent;
 import com.hellish.ecs.component.TextComponent;
 import com.hellish.event.EntityReviveEvent;
+import com.hellish.event.LoseEvent;
+import com.hellish.event.WinEvent;
 
 public class DeadSystem extends IteratingSystem{
 	private final ComponentManager componentManager;
@@ -42,6 +44,12 @@ public class DeadSystem extends IteratingSystem{
 		}
 		
 		if(aniCmp.isAnimationFinished()) {
+			if(ECSEngine.playerCmpMapper.get(entity) != null) {
+            	LoseEvent loseEvent = LoseEvent.pool.obtain();
+                stage.getRoot().fire(loseEvent);  
+                LoseEvent.pool.free(loseEvent); 
+            }
+			
 			if(deadCmp.reviveTime == null) {
 				//Rage, rage against the dying of the light.
 				if(lightCmp != null) {
@@ -52,24 +60,34 @@ public class DeadSystem extends IteratingSystem{
 					}
 				}
 				
-				txtCmp.label.addAction(Actions.sequence(
+				if(txtCmp != null) {
+					txtCmp.label.addAction(Actions.sequence(
 						Actions.delay(0.5f),
 						Actions.fadeOut(0.75f)
 					));
+				}
 				
 				imageCmp.image.addAction(Actions.sequence(
 					Actions.delay(0.5f),
 					Actions.fadeOut(0.75f),
-					Actions.run(() -> getEngine().removeEntity(entity))
+					Actions.run(() -> {
+						//Tạm dùng cách này để nhận diện Boss
+						if (txtCmp != null) {
+		                    WinEvent winEvent = WinEvent.pool.obtain();
+		                    stage.getRoot().fire(winEvent);  
+		                    WinEvent.pool.free(winEvent); 
+		                }
+						
+						getEngine().removeEntity(entity);
+					})
 				));		
-				
-				return;
+                
+                return;
 			}		
 			deadCmp.reviveTime -= deltaTime;
 			if(deadCmp.reviveTime <= 0) {
 				final LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(entity);
 				lifeCmp.life = lifeCmp.max;
-				System.out.println("...Nhưng đam mê trêu chó là không thể từ bỏ!!!");
 				
 				EntityReviveEvent event = EntityReviveEvent.pool.obtain().set(entity);
 				stage.getRoot().fire(event);

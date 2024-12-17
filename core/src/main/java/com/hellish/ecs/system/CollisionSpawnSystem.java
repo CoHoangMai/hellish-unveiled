@@ -34,7 +34,7 @@ import com.hellish.event.MapChangeEvent;
 
 public class CollisionSpawnSystem extends IteratingSystem implements EventListener{
 	public static final String TAG = CollisionSpawnSystem.class.getSimpleName();
-	public static final int SPAWN_AREA_SIZE = 7;
+	public static final int SPAWN_AREA_SIZE = 10;
 	final private World world;
 	final private Array<TiledMapTileLayer> tiledLayers;	
 	final private Array<TiledMapTileMapObject> terrainObjects;
@@ -123,10 +123,16 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 			if(mapChangeEvent.getTiledMap() == null) {
 				return false;
 			}
+		
+			tiledLayers.clear();
+			terrainObjects.clear();
+			processedCells.clear();
+			processedObjects.clear();
 			
 			//Lấy bgd layer để xác định biên
 			((MapGroupLayer) mapChangeEvent.getTiledMap().getLayers().get("bgd")).getLayers().getByType(TiledMapTileLayer.class, tiledLayers);
 			
+			//Tạo terrain
 			MapGroupLayer terrainLayer = (MapGroupLayer) ((MapChangeEvent) event).getTiledMap().getLayers().get("terrain");
 			if (terrainLayer != null) {
 				for(MapLayer subLayer : terrainLayer.getLayers()) {

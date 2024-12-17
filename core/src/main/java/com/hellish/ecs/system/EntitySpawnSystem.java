@@ -58,6 +58,7 @@ import com.hellish.ecs.component.EntitySpawnComponent;
 import com.hellish.event.GameRestartEvent;
 import com.hellish.event.MapChangeEvent;
 import com.hellish.map.MapManager;
+import com.hellish.map.MapType;
 
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
@@ -361,37 +362,20 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			}
 			return true;
 		} else if(event instanceof GameRestartEvent) {
-			for(Entity entity: getEngine().getEntities()){
-				//Không hiểu nếu dùng Family.all(RemovableComponent.class).get() thì lại không ổn
-				if(ECSEngine.removeCmpMapper.has(entity)) {
-					getEngine().removeEntity(entity);
-				}
+			Array<Entity> entities = new Array<Entity>();
+			
+			//Không dùng getEngine().removeAllEntities() vì sẽ không báo được ComponentListener
+			
+			for(Entity entity : getEngine().getEntities()) {
+				entities.add(entity);
 			}
 			
-			MapGroupLayer groupLayer = (MapGroupLayer) mapManager.getCurrentMap().getLayers().get("entities");
-			if (groupLayer == null) {
-				return false;
-			}
-			for(MapLayer entityLayer : groupLayer.getLayers()) {
-				for (MapObject mapObj : entityLayer.getObjects()) {
-					if (! (mapObj instanceof TiledMapTileMapObject)) {
-						Gdx.app.log(TAG, "GameObject kiểu " + mapObj + " trong layer 'entities' không được hỗ trợ.");
-						continue;
-					}
-					TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
-					String type = tiledMapObj.getTile().getProperties().get("type", String.class);
-					if (type == null) {
-						throw new GdxRuntimeException("MapObject " + mapObj + " trong layer 'entities' không có property Class");
-					}
-					Entity entity = getEngine().createEntity();
-					EntitySpawnComponent spawnComponent = getEngine().createComponent(EntitySpawnComponent.class);
-					spawnComponent.type = type;
-					spawnComponent.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
-					entity.add(spawnComponent);
-					getEngine().addEntity(entity);
-				}
-			}
-			return true;	
+			for (Entity entity : entities) {
+				getEngine().removeEntity(entity);
+		    }
+			
+			mapManager.setMap(MapType.MAP_1);
+			return true;
 		}
 		return false;
 	}

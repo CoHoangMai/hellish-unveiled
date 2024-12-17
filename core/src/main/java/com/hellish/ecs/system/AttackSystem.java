@@ -138,9 +138,6 @@ public class AttackSystem extends IteratingSystem{
 				final LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(fixtureEntity);
 				if (lifeCmp != null) {
 					lifeCmp.takeDamage += attackCmp.damage * MathUtils.random(0.9f, 1.1f);
-					if(ECSEngine.playerCmpMapper.has(fixtureEntity)) {
-						System.out.println("Bị cắn mất " + (int)lifeCmp.takeDamage + " miếng HP!");
-					}
 				}
 				
 				if (isAttackerPlayer) {

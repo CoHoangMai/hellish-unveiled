@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -21,14 +20,14 @@ import com.hellish.screen.ScreenType;
 import com.hellish.ui.Scene2DSkin;
 import com.hellish.ui.Scene2DSkin.ImageDrawables;
 
-public class WinView extends Table{
+public class LoseView extends Table{
 	private final Stage gameStage;
 	
 	private final ImageButton goBackButton;
     private final ImageButton restartButton;
-	private final Image congratulation;
+	private final Image gameOver;
 	
-	public WinView(Skin skin, final Main context) {
+	public LoseView(Skin skin, final Main context) {
 		super(skin);
 		
 		gameStage = context.getGameStage();
@@ -37,10 +36,8 @@ public class WinView extends Table{
 		
 		setBackground(skin.get(OVERLAY_KEY, TextureRegionDrawable.class));
 		
-		Stack stack = new Stack();
-		
-		congratulation = new Image(new Texture("ui/screen/CONGRATULATION.png"));
-	    stack.add(congratulation);
+		gameOver = new Image(new Texture("ui/screen/GAMEOVER.png"));
+	    add(gameOver).center().size(gameOver.getWidth() * 0.6f, gameOver.getHeight() * 0.6f).padTop(40).row();
 	    
 	    goBackButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_QUIT);
         restartButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_RESTART);
@@ -53,11 +50,9 @@ public class WinView extends Table{
         restartButton.setTouchable(Touchable.disabled);
         
         Table table = new Table();
-        table.add(goBackButton).size(40, 40).pad(20).padTop(160);
-        table.add(restartButton).size(40, 40).pad(20).padTop(160);
-		stack.add(table);
-		
-		this.add(stack).fill().expand().padBottom(40);
+        table.add(goBackButton).size(40, 40).pad(20).padTop(0);
+        table.add(restartButton).size(40, 40).pad(20).padTop(0);
+		add(table).padBottom(45);
 		
 		 goBackButton.addListener(new ClickListener() {
 				@Override

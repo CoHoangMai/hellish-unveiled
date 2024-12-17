@@ -11,7 +11,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -28,8 +27,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.hellish.audio.AudioManager;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.ComponentManager;
-import com.hellish.event.GamePauseEvent;
-import com.hellish.event.GameResumeEvent;
+import com.hellish.ecs.system.RenderSystem;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapManager;
 import com.hellish.screen.GameScreen;
@@ -41,7 +39,7 @@ import box2dLight.RayHandler;
 
 import java.util.EnumMap;
 
-public class Main extends Game implements EventListener{
+public class Main extends Game {
 	private static final String TAG = Main.class.getSimpleName();
 	public static final String VIETNAMESE_CHARS = "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ";
 	public static final float UNIT_SCALE = 1 / 32f;
@@ -67,8 +65,6 @@ public class Main extends Game implements EventListener{
 	
 	private ECSEngine ecsEngine;
 	
-	private boolean paused;
-	
 	@Override
 	public void create() {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -86,14 +82,15 @@ public class Main extends Game implements EventListener{
 		//assetManager
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(assetManager.getFileHandleResolver()));
-		Scene2DSkin.loadSkin();
+		
 		gameStage = new Stage(new FitViewport(16, 9), spriteBatch);
 		uiStage = new Stage(new FitViewport(640, 360), spriteBatch);
-		gameStage.addListener(this);
-		uiStage.addListener(this);
 		
 		//audio
 		audioManager = new AudioManager(this);
+		
+		//skin
+		Scene2DSkin.loadSkin(this);
 		
 		//componentManager
 		componentManager = new ComponentManager();
@@ -115,8 +112,6 @@ public class Main extends Game implements EventListener{
 		
 		//Preference manager
 		preferenceManager = new PreferenceManager();
-		
-		paused = false;
 		
 		//Screen đầu
 		screenCache = new EnumMap<ScreenType, Screen>(ScreenType.class);
@@ -186,6 +181,17 @@ public class Main extends Game implements EventListener{
 			}
 		} else {
 			Gdx.app.debug(TAG, "Đổi sang screen: " + screenType);
+			if(screen instanceof GameScreen) {
+				for(EntitySystem system : ecsEngine.getSystems()) {
+					system.setProcessing(true);
+				}
+			} else {
+				for(EntitySystem system : ecsEngine.getSystems()) {
+					if(!(system instanceof RenderSystem)) {
+						system.setProcessing(false);
+					}
+				}
+			}
 			setScreen(screen);
 		}
 	} 
@@ -195,10 +201,9 @@ public class Main extends Game implements EventListener{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		@SuppressWarnings("deprecation")
-		final float deltaTime = paused ? 0 : Math.min(0.25f, Gdx.graphics.getRawDeltaTime());
+		final float deltaTime = Math.min(0.25f, Gdx.graphics.getRawDeltaTime());
 		GdxAI.getTimepiece().update(deltaTime);
 		ecsEngine.update(deltaTime);
-
 		super.render();
 	}
 	
@@ -221,23 +226,5 @@ public class Main extends Game implements EventListener{
 		uiStage.dispose();
 		spriteBatch.dispose();
 		Scene2DSkin.disposeSkin();
-	}
-
-	@Override
-	public boolean handle(Event event) {
-		if(event instanceof GamePauseEvent) {
-			paused = true;
-			if(getScreen() instanceof GameScreen) {
-				getScreen().pause();
-			}
-		} else if(event instanceof GameResumeEvent) {
-			paused = false;
-			if(getScreen() instanceof GameScreen) {
-				getScreen().resume();
-			}
-		} else {
-			return false;
-		}
-		return true;
-	}
+	}	
 }
