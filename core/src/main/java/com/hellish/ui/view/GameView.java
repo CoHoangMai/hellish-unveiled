@@ -38,6 +38,11 @@ public class GameView extends Table{
         //Data binding
         model.onPropertyChange("playerLife", lifePercentage -> playerLife((float) lifePercentage));
         model.onPropertyChange("popUpText", popUpInfo -> popUp((String) popUpInfo));
+        model.onPropertyChange("gameRestarted", restart -> {
+        	if((boolean) restart) {
+        		playerInfo.life(1, 0);
+        	} 
+        });
 	}
 	
 	 public void playerLife(float percentage) {

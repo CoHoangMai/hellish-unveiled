@@ -89,7 +89,7 @@ public class AnimationSystem extends IteratingSystem {
         }
 
         // Tạo animation mới cho fire
-        final TextureAtlas atlas = assetManager.get("characters_and_effects/gameObjects.atlas", TextureAtlas.class);
+        final TextureAtlas atlas = assetManager.get("game_objects/gameObjects.atlas", TextureAtlas.class);
         final Array<AtlasRegion> fireAtlasRegions = atlas.findRegions(fireKey);
         
         if (fireAtlasRegions.size == 0) {
@@ -134,7 +134,7 @@ public class AnimationSystem extends IteratingSystem {
 	        }
 	    }
 	
-		final TextureAtlas atlas = assetManager.get("characters_and_effects/gameObjects.atlas", TextureAtlas.class);
+		final TextureAtlas atlas = assetManager.get("game_objects/gameObjects.atlas", TextureAtlas.class);
 		
 		final Array<AtlasRegion> atlasRegions = atlas.findRegions(directionAtlasKey);
 		if (atlasRegions.size == 0) {

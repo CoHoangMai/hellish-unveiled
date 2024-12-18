@@ -5,9 +5,9 @@ import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.
 import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_MAX_ACCELERATION;
 import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_ATTACK_DAMAGE;
 import static com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration.DEFAULT_LIFE;
-import static com.hellish.ecs.component.LightComponent.ENEMY_BIT;
-import static com.hellish.ecs.component.LightComponent.ENVIRONMENT_BIT;
-import static com.hellish.ecs.component.LightComponent.PLAYER_BIT;
+import static com.hellish.ecs.component.PhysicsComponent.ENEMY_BIT;
+import static com.hellish.ecs.component.PhysicsComponent.ENVIRONMENT_BIT;
+import static com.hellish.ecs.component.PhysicsComponent.PLAYER_BIT;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -313,7 +313,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	
 	public Vector2 size(AnimationModel model) {
 		return cachedSizes.computeIfAbsent(model, m -> {
-			final TextureAtlas atlas = assetManager.get("characters_and_effects/gameObjects.atlas", TextureAtlas.class);
+			final TextureAtlas atlas = assetManager.get("game_objects/gameObjects.atlas", TextureAtlas.class);
 			Array<AtlasRegion> regions = atlas.findRegions(model.getModel() + "/" + AnimationType.IDLE.getAtlasKey());
 			if (regions.size == 0) {
 				throw new RuntimeException("Không có texture region cho " + model);
@@ -365,7 +365,6 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			Array<Entity> entities = new Array<Entity>();
 			
 			//Không dùng getEngine().removeAllEntities() vì sẽ không báo được ComponentListener
-			
 			for(Entity entity : getEngine().getEntities()) {
 				entities.add(entity);
 			}

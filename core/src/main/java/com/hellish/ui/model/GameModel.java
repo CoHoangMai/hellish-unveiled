@@ -65,7 +65,8 @@ public class GameModel extends PropertyChangeSource implements EventListener{
 		} else if(event instanceof EntityAggroEvent){
 			//Tạm không làm gì
 		} else if(event instanceof GameRestartEvent){
-			setPlayerLife(1);
+			this.playerLife = 1;
+			notify("gameRestarted", true);
 		} else {
 			return false;
 		}

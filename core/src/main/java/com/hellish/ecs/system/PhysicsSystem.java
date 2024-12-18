@@ -207,7 +207,8 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 	public void preSolve(Contact contact, Manifold oldManifold) {
 		contact.setEnabled(
 			(isStaticBody(contact.getFixtureA()) && isDynamicBody(contact.getFixtureB())) ||
-			(isStaticBody(contact.getFixtureB()) && isDynamicBody(contact.getFixtureA()))
+			(isStaticBody(contact.getFixtureB()) && isDynamicBody(contact.getFixtureA())) ||
+			(isDynamicBody(contact.getFixtureA()) && isDynamicBody(contact.getFixtureB()))
 		);
 	}
 

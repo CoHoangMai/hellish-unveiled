@@ -163,7 +163,7 @@ public class AttackSystem extends IteratingSystem{
 		final ImageComponent imageCmp = getEngine().createComponent(ImageComponent.class);
 		imageCmp.image = new FlipImage();
 		
-		final TextureAtlas atlas = assetManager.get("characters_and_effects/gameObjects.atlas", TextureAtlas.class);
+		final TextureAtlas atlas = assetManager.get("game_objects/gameObjects.atlas", TextureAtlas.class);
 		Array<AtlasRegion> regions = atlas.findRegions("fire/fire");
 		if (regions.size == 0) {
 			throw new RuntimeException("Không có texture region cho " + AnimationModel.FIRE);

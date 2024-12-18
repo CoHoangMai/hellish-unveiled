@@ -1,7 +1,6 @@
 package com.hellish.ecs.component;
 
 import static com.hellish.Main.UNIT_SCALE;
-import static com.hellish.ecs.component.LightComponent.ENVIRONMENT_BIT;
 import static com.hellish.ecs.system.CollisionSpawnSystem.SPAWN_AREA_SIZE;
 import static com.hellish.ecs.system.EntitySpawnSystem.COLLISION_BOX;
 import static com.hellish.ecs.system.EntitySpawnSystem.HIT_BOX_SENSOR;
@@ -35,6 +34,10 @@ import com.hellish.ai.steer.steerer.Steerer;
 import com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration;
 
 public class PhysicsComponent implements Component, Poolable, Steerable<Vector2> {
+	 public static final short PLAYER_BIT = 1 << 0; // = 2
+	 public static final short ENEMY_BIT = 1 << 1; // = 4
+	 public static final short ENVIRONMENT_BIT = 1 << 2; // = 8
+	    
 	public enum Direction {
 		UP, DOWN, LEFT, RIGHT;
 		
@@ -235,8 +238,11 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		@Override
 		public void onComponentRemoved(Entity entity, PhysicsComponent component) {
 			Body body = component.body;
-			body.getWorld().destroyBody(body);
-			body.setUserData(null);
+			if(body != null) {
+				body.getWorld().destroyBody(body);
+				body.setUserData(null);
+				component.body = null;
+			}
 		}
 	}
 

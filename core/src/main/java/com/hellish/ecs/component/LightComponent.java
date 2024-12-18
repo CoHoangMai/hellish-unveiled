@@ -7,9 +7,6 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 import box2dLight.Light;
 
 public class LightComponent implements Component, Poolable{
-    public static final short PLAYER_BIT = 1 << 0; // = 2
-    public static final short ENEMY_BIT = 1 << 1; // = 4
-    public static final short ENVIRONMENT_BIT = 1 << 2; // = 8
     public static final Color LIGHT_COLOR = new Color(1f, 1f, 1f, 0.7f);
     
     public ClosedFloatingPointRange distance;

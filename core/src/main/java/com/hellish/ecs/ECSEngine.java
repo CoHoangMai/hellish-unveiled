@@ -14,7 +14,6 @@ import com.hellish.ecs.component.CollisionComponent;
 import com.hellish.ecs.component.ComponentManager;
 import com.hellish.ecs.component.DeadComponent;
 import com.hellish.ecs.component.FloatingTextComponent;
-import com.hellish.ecs.component.ParticleEffectComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.component.PortalComponent;
@@ -38,7 +37,6 @@ import com.hellish.ecs.system.InventorySystem;
 import com.hellish.ecs.system.LifeSystem;
 import com.hellish.ecs.system.LootSystem;
 import com.hellish.ecs.system.MoveSystem;
-import com.hellish.ecs.system.ParticleEffectSystem;
 import com.hellish.ecs.system.PhysicsSystem;
 import com.hellish.ecs.system.PortalSystem;
 import com.hellish.ecs.system.RenderSystem;
@@ -68,7 +66,6 @@ import com.hellish.ecs.system.LightSystem;
 public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<PlayerComponent> playerCmpMapper = ComponentMapper.getFor(PlayerComponent.class);
 	public static final ComponentMapper<AnimationComponent> aniCmpMapper = ComponentMapper.getFor(AnimationComponent.class);
-	public static final ComponentMapper<ParticleEffectComponent> peCmpMapper = ComponentMapper.getFor(ParticleEffectComponent.class);
 	public static final ComponentMapper<ImageComponent> imageCmpMapper = ComponentMapper.getFor(ImageComponent.class);
 	public static final ComponentMapper<TerrainComponent> terrainCmpMapper = ComponentMapper.getFor(TerrainComponent.class);
 	public static final ComponentMapper<EntitySpawnComponent> entitySpawnCmpMapper = ComponentMapper.getFor(EntitySpawnComponent.class); 
@@ -133,8 +130,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addSystem(new TextSystem(context));
 		addSystem(new FloatingTextSystem(context));
 		addSystem(new RenderSystem(context));
-		addSystem(new DebugSystem(context));
-		addSystem(new ParticleEffectSystem(context));
+		//addSystem(new DebugSystem(context));
 		
 	}
 	

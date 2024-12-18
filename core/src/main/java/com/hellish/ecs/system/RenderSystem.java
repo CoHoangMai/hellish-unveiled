@@ -19,6 +19,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Disposable;
 import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
@@ -89,9 +90,13 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 	    				ImageComponent thisImageCmp = ECSEngine.imageCmpMapper.get(entity);
 	    				ImageComponent otherImageCmp = ECSEngine.imageCmpMapper.get(otherEntity);
 	    				if(isEntityObscured(thisImageCmp, otherImageCmp)) {
-	    					otherImageCmp.image.setColor(1f, 1f, 1f, 0.5f);
+	    					if(otherImageCmp.image.getColor().a >= 1 && !otherImageCmp.image.hasActions()) {
+		    					otherImageCmp.image.addAction(Actions.alpha(0.5f, 0.5f));
+	    					}
 	    				} else {
-	    					otherImageCmp.image.setColor(1f, 1f, 1f, 1f); 
+	    					if(otherImageCmp.image.getColor().a < 1 && !otherImageCmp.image.hasActions()) {
+		    					otherImageCmp.image.addAction(Actions.alpha(1, 0.5f));
+	    					}
 	    				}
 	    			}
 	    		}

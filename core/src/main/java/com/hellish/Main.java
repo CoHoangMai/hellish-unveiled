@@ -1,7 +1,7 @@
 package com.hellish;
 
-import static com.hellish.ecs.component.LightComponent.ENVIRONMENT_BIT;
-import static com.hellish.ecs.component.LightComponent.PLAYER_BIT;
+import static com.hellish.ecs.component.PhysicsComponent.ENVIRONMENT_BIT;
+import static com.hellish.ecs.component.PhysicsComponent.PLAYER_BIT;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Application;
