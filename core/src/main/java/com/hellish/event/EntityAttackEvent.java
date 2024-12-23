@@ -16,8 +16,17 @@ public class EntityAttackEvent extends Event{
 	private Entity entity;
 	
 	public EntityAttackEvent set(Entity entity) {
-        this.entity = entity;
-        return this;
+        try {
+            if (entity == null) {
+                throw new IllegalArgumentException("Entity cannot be null");
+            }
+            this.entity = entity;
+            return this;
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace(); // In ra thông tin chi tiết của ngoại lệ
+            return null; // Hoặc có thể trả về một giá trị khác phù hợp
+        }
     }
 
     public Entity getEntity() {

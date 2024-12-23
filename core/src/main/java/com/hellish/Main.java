@@ -28,6 +28,8 @@ import com.hellish.audio.AudioManager;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.ComponentManager;
 import com.hellish.ecs.system.RenderSystem;
+import com.hellish.event.EntityAttackEvent;
+import com.hellish.event.ScreenChangeEvent;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapManager;
 import com.hellish.screen.GameScreen;
@@ -176,6 +178,7 @@ public class Main extends Game {
 				final Screen newScreen = (Screen)ClassReflection.getConstructor(screenType.getScreenClass(), Main.class).newInstance(this);
 				screenCache.put(screenType, newScreen);
 				setScreen(newScreen);
+				fireScreenChangeEvent(screenType);
 			} catch (ReflectionException e) {
 				throw new GdxRuntimeException("Screen "+ screenType + " không thể khởi tạo", e);
 			}
@@ -193,8 +196,14 @@ public class Main extends Game {
 				}
 			}
 			setScreen(screen);
+			fireScreenChangeEvent(screenType);
 		}
-	} 
+	}
+	
+	private void fireScreenChangeEvent(ScreenType screenType) {
+		ScreenChangeEvent event = new ScreenChangeEvent(screenType.name());
+		gameStage.getRoot().fire(event);
+	}
 	
 	@Override
 	public void render() {

@@ -50,10 +50,10 @@ public class MainMenuScreen extends AbstractScreen<MainMenuView> {
 
     @Override
     public void render(float delta) {
-        if(!isMusicLoaded && assetManager.isLoaded(AudioType.INTRO.getFilePath())) {
-			isMusicLoaded = true;
-			audioManager.playAudio(AudioType.INTRO);
-		}
+        // if(!isMusicLoaded && assetManager.isLoaded(AudioType.INTRO.getFilePath())) {
+		// 	isMusicLoaded = true;
+		// 	audioManager.playAudio(AudioType.INTRO);
+		// }
     }
 
     @Override

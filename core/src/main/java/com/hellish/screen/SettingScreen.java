@@ -2,12 +2,10 @@ package com.hellish.screen;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
-import com.hellish.audio.AudioType;
 import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.system.AudioSystem;
 import com.hellish.ecs.system.RenderSystem;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
@@ -18,28 +16,29 @@ public class SettingScreen extends AbstractScreen<SettingView>{
 
     private final ECSEngine ecsEngine;
     private final AssetManager assetManager;
-    private boolean isMusicLoaded;
-
-    public SettingScreen(final Main context) {
-        super(context);
-
-        ecsEngine = context.getECSEngine();
-		for(EntitySystem system : ecsEngine.getSystems()) {
-			if(!(system instanceof RenderSystem)) {
-				system.setProcessing(false);
-			}
-		}
-        
-        assetManager = context.getAssetManager();
-        isMusicLoaded = false;
-		for (final AudioType audioType : AudioType.values()) {
-		    if (audioType.isMusic()) {
-		        assetManager.load(audioType.getFilePath(), Music.class);
-		    } else {
-		        assetManager.load(audioType.getFilePath(), Sound.class);
-		    }
-		}
-    }
+    private AudioSystem audioSystem;
+        private boolean isMusicLoaded;
+    
+        public SettingScreen(final Main context) {
+            super(context);
+    
+            ecsEngine = context.getECSEngine();
+            for(EntitySystem system : ecsEngine.getSystems()) {
+                if(!(system instanceof RenderSystem)) {
+                    system.setProcessing(false);
+                }
+                if(!(system instanceof AudioSystem)) {
+                    system.setProcessing(true);
+                }
+            }
+            
+            assetManager = context.getAssetManager();
+            isMusicLoaded = false;
+            audioSystem = ecsEngine.getSystem(AudioSystem.class);
+            if (audioSystem == null) {
+                throw new IllegalArgumentException("AudioSystem cannot be null");
+            }
+        }
 
     @Override
     protected Array<SettingView> getScreenViews(final Main context) {
@@ -51,10 +50,10 @@ public class SettingScreen extends AbstractScreen<SettingView>{
 
     @Override
     public void render(float delta) {
-        if(!isMusicLoaded && assetManager.isLoaded(AudioType.INTRO.getFilePath())) {
-			isMusicLoaded = true;
-			audioManager.playAudio(AudioType.INTRO);
-		}
+        // if(!isMusicLoaded && assetManager.isLoaded(AudioType.INTRO.getFilePath())) {
+		// 	isMusicLoaded = true;
+		// 	audioManager.playAudio(AudioType.INTRO);
+		// }
     }
 
     @Override
