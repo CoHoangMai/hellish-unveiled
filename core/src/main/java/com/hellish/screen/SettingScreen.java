@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
@@ -43,8 +42,8 @@ public class SettingScreen extends AbstractScreen<SettingView>{
     }
 
     @Override
-    protected Array getScreenViews(final Main context) {
-        Array<Table> views = new Array<>();
+    protected Array<SettingView> getScreenViews(final Main context) {
+        Array<SettingView> views = new Array<>();
         SettingView settingView = new SettingView(Scene2DSkin.defaultSkin, context);
         views.add(settingView);
         return views;

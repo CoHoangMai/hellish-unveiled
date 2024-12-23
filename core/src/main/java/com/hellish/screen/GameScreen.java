@@ -11,6 +11,8 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
@@ -19,12 +21,13 @@ import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PlayerComponent;
-import com.hellish.ecs.system.AnimationSystem;
 import com.hellish.ecs.system.CameraSystem;
 import com.hellish.ecs.system.DebugSystem;
 import com.hellish.ecs.system.RenderSystem;
 import com.hellish.event.GamePauseEvent;
 import com.hellish.event.GameResumeEvent;
+import com.hellish.event.LoseEvent;
+import com.hellish.event.WinEvent;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapManager;
@@ -34,9 +37,11 @@ import com.hellish.ui.model.GameModel;
 import com.hellish.ui.model.InventoryModel;
 import com.hellish.ui.view.GameView;
 import com.hellish.ui.view.InventoryView;
+import com.hellish.ui.view.LoseView;
 import com.hellish.ui.view.PauseView;
+import com.hellish.ui.view.WinView;
 
-public class GameScreen extends AbstractScreen<Table>{
+public class GameScreen extends AbstractScreen<Table> implements EventListener{
 	private final MapManager mapManager;
 	private final AssetManager assetManager;
 	private final ECSEngine ecsEngine;
@@ -47,17 +52,28 @@ public class GameScreen extends AbstractScreen<Table>{
 	private float playerCos;
 	private Vector2 directionVector;
 	
+	private final HashSet<Class<?>> mandatorySystems;
+	
 	public GameScreen(final Main context) {
 		super(context);
 		
 		assetManager = context.getAssetManager();
+		
 		ecsEngine = context.getECSEngine();
 		for(EntitySystem system : ecsEngine.getSystems()) {
 			system.setProcessing(true);
 		}
 		
+		mandatorySystems = new HashSet<>(Arrays.asList(
+			CameraSystem.class,
+			RenderSystem.class,
+			DebugSystem.class
+		));
+		
+		context.getGameStage().addListener(this);
+		
 		mapManager = context.getMapManager();
-		mapManager.setMap(MapType.MAP_1);
+		mapManager.setMap(MapType.MAP_2);
 		
 		playerSin = 0f;
 		playerCos = 0f;
@@ -75,23 +91,9 @@ public class GameScreen extends AbstractScreen<Table>{
 	}
 	
 	private void pauseWorld(boolean pause) {
-		HashSet<Class<?>> mandatorySystems = new HashSet<>(Arrays.asList(
-			AnimationSystem.class,
-			CameraSystem.class,
-			RenderSystem.class,
-			DebugSystem.class
-		));
-		
 		for(EntitySystem system : ecsEngine.getSystems()) {
 			if(!mandatorySystems.contains(system.getClass())) {
 				system.setProcessing(!pause);
-			}
-		}
-		
-		for(Actor actor : uiStage.getActors()) {
-			if(actor instanceof PauseView) {
-				actor.setVisible(pause);
-				break;
 			}
 		}
 	}
@@ -114,12 +116,39 @@ public class GameScreen extends AbstractScreen<Table>{
 		pauseWorld(false);
 	}
 	
-
-	@Override
-	public void dispose() {
-		
+	public void showPauseView(boolean show) {
+		for(Actor actor : uiStage.getActors()) {
+			if(actor instanceof PauseView) {
+				actor.setVisible(show);
+				break;
+			}
+		}
 	}
-
+	
+	public void showWinView(boolean show) {
+		for(Actor actor : uiStage.getActors()) {
+			if(actor instanceof WinView) {
+				actor.setVisible(show);
+				if(show) {
+					((WinView) actor).playShowAnimation();
+				}
+				break;
+			}
+		}
+	}
+	
+	public void showLoseView(boolean show) {
+		for(Actor actor : uiStage.getActors()) {
+			if(actor instanceof LoseView) {
+				actor.setVisible(show);
+				if(show) {
+					((LoseView) actor).playShowAnimation();
+				}
+				break;
+			}
+		}
+	}
+	
 	@Override
 	protected Array<Table> getScreenViews(Main context) {
 		Array<Table> views = new Array<>();
@@ -134,6 +163,14 @@ public class GameScreen extends AbstractScreen<Table>{
         PauseView pauseView = new PauseView(Scene2DSkin.defaultSkin, context);
         pauseView.setVisible(false);
         views.add(pauseView);
+        
+        WinView winView = new WinView(Scene2DSkin.defaultSkin, context);
+        winView.setVisible(false);
+        views.add(winView);
+        
+        LoseView loseView = new LoseView(Scene2DSkin.defaultSkin, context);
+        loseView.setVisible(false);
+        views.add(loseView);
         
 		return views;
 	}
@@ -218,5 +255,36 @@ public class GameScreen extends AbstractScreen<Table>{
             }
         	updatePlayerMovement();
         }
+	}
+
+	@Override
+	public boolean handle(Event event) {
+		if(event instanceof GamePauseEvent) {
+			paused = true;
+			this.pause();
+			this.showPauseView(true);
+		} else if(event instanceof GameResumeEvent) {
+			paused = false;
+			this.resume();
+			this.showPauseView(false);
+			this.showWinView(false);
+			this.showLoseView(false);
+		} else if(event instanceof WinEvent) {
+			paused = true;
+			this.pause();
+			this.showWinView(true);
+		} else if(event instanceof LoseEvent) {
+			paused = true;
+			this.pause();
+			this.showLoseView(true);
+		}else {
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public void dispose() {
+		
 	}
 }

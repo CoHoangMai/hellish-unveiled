@@ -10,6 +10,8 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.MapGroupLayer;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
@@ -119,7 +121,7 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 
 		uiStage.getViewport().apply();
 		uiStage.act(deltaTime);
-		uiStage.draw();		
+		uiStage.draw();	
 	}
 
 
@@ -142,6 +144,27 @@ public class RenderSystem extends IteratingSystem implements Disposable, EventLi
 						foregroundLayers.add(tiledLayer);
 					} else {
 						backgroundLayers.add(tiledLayer);
+					}
+				}
+			});
+			
+			mapChangeEvent.getTiledMap().getLayers().forEach(layer -> {
+				if(layer instanceof MapGroupLayer) {
+					MapGroupLayer groupLayer = (MapGroupLayer) layer;
+					if(groupLayer.getName().equals("bgd")) {
+						for(MapLayer mapLayer : groupLayer.getLayers()) {
+							if (mapLayer instanceof TiledMapTileLayer) {
+			                    TiledMapTileLayer tiledLayer = (TiledMapTileLayer) mapLayer;
+			                    backgroundLayers.add(tiledLayer);
+			                }
+						}
+					} else if(groupLayer.getName().equals("fgd")) {
+						for(MapLayer mapLayer : groupLayer.getLayers()) {
+							if (mapLayer instanceof TiledMapTileLayer) {
+			                    TiledMapTileLayer tiledLayer = (TiledMapTileLayer) mapLayer;
+			                    foregroundLayers.add(tiledLayer);
+			                }
+						}
 					}
 				}
 			});

@@ -11,6 +11,7 @@ import com.hellish.event.CollisionDespawnEvent;
 
 public class CollisionDespawnSystem extends IteratingSystem{
 	private final Stage gameStage;
+	
 	public CollisionDespawnSystem(final Main context) {
 		super(Family.all(TiledComponent.class).get());
 		

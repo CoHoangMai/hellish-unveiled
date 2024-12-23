@@ -30,6 +30,7 @@ public class EntitySpawnComponent implements Component, Poolable{
 		public final float attackScaling;
 		public final float attackDelay;
 		public final float attackExtraRange;
+		public final boolean canFire;
 		public final float lifeScaling;
 		public final boolean lootable;
 		public final String aiTreePath;
@@ -52,6 +53,7 @@ public class EntitySpawnComponent implements Component, Poolable{
 			this.attackScaling = builder.attackScaling;
 			this.attackDelay = builder.attackDelay;
 			this.attackExtraRange = builder.attackExtraRange;
+			this.canFire = builder.canFire;
 			this.lifeScaling = builder.lifeScaling;
 			this.lootable = builder.lootable;
 			this.aiTreePath = builder.aiTreePath;
@@ -73,6 +75,8 @@ public class EntitySpawnComponent implements Component, Poolable{
 			public float attackScaling = 1;
 			public float attackDelay = 0.2f;
 			public float attackExtraRange = 0;
+			public boolean canFire = false;
+			
 			public float lifeScaling = 1;
 			public boolean lootable = false;
 			public String aiTreePath = "";

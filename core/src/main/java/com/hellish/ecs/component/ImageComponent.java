@@ -28,8 +28,7 @@ public class ImageComponent implements Component, Poolable, Comparable<ImageComp
 		if (layerDiff != 0) {
 			return layerDiff;
 		} else {
-			int yDiff = Float.compare(other.image.getY() - other.image.getHeight() * 0.5f, 
-					this.image.getY() - this.image.getHeight() * 0.5f);
+			int yDiff = Float.compare(other.image.getY(), this.image.getY());
 			if (yDiff != 0) {
 				return yDiff;
 			} else {

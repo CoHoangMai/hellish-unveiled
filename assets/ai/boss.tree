@@ -1,0 +1,26 @@
+#Actions
+import wander:"com.hellish.ai.task.WanderTask"
+import chase:"com.hellish.ai.task.ChaseTask"
+import angry:"com.hellish.ai.task.AngryTask"
+import fight:"com.hellish.ai.task.FightTask"
+import cooldown:"com.hellish.ai.task.CooldownWanderTask"
+
+#Conditions
+import isEnemyNearby?:"com.hellish.ai.condition.IsEnemyNearby"
+import canAttack?:"com.hellish.ai.condition.CanAttack"
+subtree name:"fight"
+  sequence
+    (isEnemyNearby?) (canAttack? range:4) angry
+    fight
+    wait seconds:0.75
+    cooldown duration:"uniform,0.5,0.75"
+    
+subtree name:"chase"
+  sequence
+    (isEnemyNearby?) chase range:4
+    
+root
+  selector
+    $fight
+    $chase
+    wander duration:"uniform,2.0,3.5"

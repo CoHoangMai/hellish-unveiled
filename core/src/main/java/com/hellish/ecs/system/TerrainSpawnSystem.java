@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
@@ -58,22 +59,24 @@ public class TerrainSpawnSystem extends IteratingSystem implements EventListener
 			if(mapChangeEvent.getTiledMap() == null) {
 				return false;
 			}
-			MapLayer terrainLayer = mapChangeEvent.getTiledMap().getLayers().get("terrain");
+			MapGroupLayer terrainLayer = (MapGroupLayer) mapChangeEvent.getTiledMap().getLayers().get("terrain");
 			if (terrainLayer == null) {
 				return false;
 			}
-			for (MapObject mapObj : terrainLayer.getObjects()) {
-				if (! (mapObj instanceof TiledMapTileMapObject)) {
-					Gdx.app.log(TAG, "MapObject kiểu " + mapObj + " trong layer 'terrain' không được hỗ trợ.");
-					continue;
+			for(MapLayer mapLayer : terrainLayer.getLayers()) {
+				for (MapObject mapObj : mapLayer.getObjects()) {
+					if (! (mapObj instanceof TiledMapTileMapObject)) {
+						Gdx.app.log(TAG, "MapObject kiểu " + mapObj + " trong layer 'terrain' không được hỗ trợ.");
+						continue;
+					}
+					TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
+					Entity entity = getEngine().createEntity();
+					TerrainSpawnComponent spawnCmp = getEngine().createComponent(TerrainSpawnComponent.class);
+					spawnCmp.textureRegion = tiledMapObj.getTextureRegion();
+					spawnCmp.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
+					entity.add(spawnCmp);
+					getEngine().addEntity(entity);
 				}
-				TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
-				Entity entity = getEngine().createEntity();
-				TerrainSpawnComponent spawnCmp = getEngine().createComponent(TerrainSpawnComponent.class);
-				spawnCmp.textureRegion = tiledMapObj.getTextureRegion();
-				spawnCmp.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
-				entity.add(spawnCmp);
-				getEngine().addEntity(entity);
 			}
 			return true;	
 		}

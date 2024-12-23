@@ -3,11 +3,15 @@ package com.hellish.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -16,10 +20,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.hellish.Main;
+import com.hellish.audio.AudioManager;
+import com.hellish.audio.AudioType;
 
 public class Scene2DSkin{
 	public static Skin defaultSkin;
+	public static final String OVERLAY_KEY = "overlayTexture";
+	private static AudioManager audioManager;
 	
 	public enum Fonts {
 		DEFAULT("fnt_white", 0.5f),
@@ -80,7 +90,11 @@ public class Scene2DSkin{
 	}
 	
 	public enum Buttons{
-		TEXT_BUTTON;
+		TEXT_BUTTON,
+		GO_BACK_BUTTON,
+		RESTART_BUTTON,
+		SETTING_BUTTON,
+		CONTINUE_BUTTON;
 		
 		public String getSkinKey() {
 			return this.name().toLowerCase();
@@ -135,7 +149,8 @@ public class Scene2DSkin{
 	    INVENTORY_SLOT_BOOTS("inv_slot_boots"),
 		
 		LOADING_BACKGROUND("main_bgd"),
-		DIALOG_BACKGROUND("dialog_bgd");
+		DIALOG_BACKGROUND("dialog_bgd"),
+		GUIDE_BACKGROUND("guide_bgd");
 
 	    private final String atlasKey;
 
@@ -173,18 +188,30 @@ public class Scene2DSkin{
 		}
 	}
 	
-	public static void loadSkin() {
+	public static void loadSkin(final Main context) {
+		audioManager = context.getAudioManager();
+		
 		Scene2DSkin.defaultSkin = new Skin(new TextureAtlas("ui/ui.atlas"));
 		
 		loadFontSkin(defaultSkin);
 		loadListSkin(defaultSkin);
 		loadScrollPaneSkin(defaultSkin);
 		loadLabelSkin(defaultSkin);
-		loadButtonSkin(defaultSkin);
+		loadTextButtonSkin(defaultSkin);
 		loadProgressBarSkin(defaultSkin);
 		loadSliderSkin(defaultSkin);
 		loadCheckBoxSkin(defaultSkin);
         loadSelectBoxSkin(defaultSkin);
+        
+        createOverlayTexture(defaultSkin);
+	}
+
+	private static void createOverlayTexture(Skin skin) {
+		Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(0.1f, 0.1f, 0.1f, 0.7f);
+        pixmap.fillRectangle(0, 0, 1, 1);
+		Texture texture = new Texture(pixmap);
+		skin.add(OVERLAY_KEY, new TextureRegionDrawable(texture));
 	}
 
 	private static void loadFontSkin(Skin skin) {
@@ -246,7 +273,7 @@ public class Scene2DSkin{
 		skin.add(Labels.NORMAL.getSkinKey(), normalLabelStyle);
 	}
 
-	private static void loadButtonSkin(Skin skin) {
+	private static void loadTextButtonSkin(Skin skin) {
 		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
 		textButtonStyle.font = skin.get(Fonts.DEFAULT.getSkinKey(), BitmapFont.class);
 		skin.add(Buttons.TEXT_BUTTON.getSkinKey(), textButtonStyle);
@@ -254,8 +281,13 @@ public class Scene2DSkin{
 	
 	private static void loadProgressBarSkin(Skin skin) {
 		ProgressBar.ProgressBarStyle loadingBarStyle = new ProgressBar.ProgressBarStyle();
+		
 		loadingBarStyle.background = skin.getDrawable(Drawables.BAR_BGD.getAtlasKey());
+		loadingBarStyle.background.setMinHeight(30);
+		
 		loadingBarStyle.knobBefore = skin.getDrawable(Drawables.PROGRESS_BAR.getAtlasKey());
+		loadingBarStyle.knobBefore.setMinHeight(30);
+		
 		skin.add(ProgressBars.LOADING.getSkinKey(), loadingBarStyle);
 	}
 
@@ -296,6 +328,29 @@ public class Scene2DSkin{
         selectBoxStyle.scrollStyle = skin.get(Lists.DEFAULT.getSkinKey(), ScrollPane.ScrollPaneStyle.class);
 		selectBoxStyle.listStyle = skin.get(Lists.DEFAULT.getSkinKey(), List.ListStyle.class);
         skin.add(SelectBoxes.SELECT_BOX.getSkinKey(), selectBoxStyle);
+    }
+    
+	public static ImageButton createButton(ImageDrawables image) {
+        Texture texture = new Texture(image.getFileName());
+        TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
+        ImageButton button = new ImageButton(drawable);
+        button.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                button.setSize(50, 50);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                button.setSize(40, 40);
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                audioManager.playAudio(AudioType.SELECT);
+            }
+        });
+        return button;
     }
 	
 	public static void disposeSkin() {

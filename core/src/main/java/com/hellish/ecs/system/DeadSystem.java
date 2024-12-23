@@ -14,7 +14,10 @@ import com.hellish.ecs.component.DeadComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.LightComponent;
+import com.hellish.ecs.component.TextComponent;
 import com.hellish.event.EntityReviveEvent;
+import com.hellish.event.LoseEvent;
+import com.hellish.event.WinEvent;
 
 public class DeadSystem extends IteratingSystem{
 	private final ComponentManager componentManager;
@@ -33,6 +36,7 @@ public class DeadSystem extends IteratingSystem{
 		final ImageComponent imageCmp = ECSEngine.imageCmpMapper.get(entity);
 		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
 		final LightComponent lightCmp = ECSEngine.lightCmpMapper.get(entity);
+		final TextComponent txtCmp = ECSEngine.txtCmpMapper.get(entity);
 		
 		if(aniCmp == null) {
 			getEngine().removeEntity(entity);
@@ -40,13 +44,13 @@ public class DeadSystem extends IteratingSystem{
 		}
 		
 		if(aniCmp.isAnimationFinished()) {
+			if(ECSEngine.playerCmpMapper.get(entity) != null) {
+            	LoseEvent loseEvent = LoseEvent.pool.obtain();
+                stage.getRoot().fire(loseEvent);  
+                LoseEvent.pool.free(loseEvent); 
+            }
+			
 			if(deadCmp.reviveTime == null) {
-				imageCmp.image.addAction(Actions.sequence(
-					Actions.delay(0.5f),
-					Actions.fadeOut(0.75f),
-					Actions.run(() -> getEngine().removeEntity(entity))
-				));
-				
 				//Rage, rage against the dying of the light.
 				if(lightCmp != null) {
 					Color lightColor = lightCmp.light.getColor();
@@ -56,13 +60,34 @@ public class DeadSystem extends IteratingSystem{
 					}
 				}
 				
-				return;
+				if(txtCmp != null) {
+					txtCmp.label.addAction(Actions.sequence(
+						Actions.delay(0.5f),
+						Actions.fadeOut(0.75f)
+					));
+				}
+				
+				imageCmp.image.addAction(Actions.sequence(
+					Actions.delay(0.5f),
+					Actions.fadeOut(0.75f),
+					Actions.run(() -> {
+						//Tạm dùng cách này để nhận diện Boss
+						if (txtCmp != null) {
+		                    WinEvent winEvent = WinEvent.pool.obtain();
+		                    stage.getRoot().fire(winEvent);  
+		                    WinEvent.pool.free(winEvent); 
+		                }
+						
+						getEngine().removeEntity(entity);
+					})
+				));		
+                
+                return;
 			}		
 			deadCmp.reviveTime -= deltaTime;
 			if(deadCmp.reviveTime <= 0) {
 				final LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(entity);
 				lifeCmp.life = lifeCmp.max;
-				System.out.println("...Nhưng đam mê trêu chó là không thể từ bỏ!!!");
 				
 				EntityReviveEvent event = EntityReviveEvent.pool.obtain().set(entity);
 				stage.getRoot().fire(event);

@@ -19,7 +19,7 @@ public class WanderSteerer extends RaycastObstacleAvoidanceSteererBase{
 		this.wanderSB.setWanderOffset(0)
 					.setWanderOrientation(0)
 					.setWanderRadius(0.2f)
-					.setWanderRate(MathUtils.PI2 * 4);
+					.setWanderRate(MathUtils.PI2 * 2);
 		
 		this.prioritySteering.add(wanderSB);
 	}

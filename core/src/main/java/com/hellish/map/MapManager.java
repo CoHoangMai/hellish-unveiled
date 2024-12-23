@@ -6,10 +6,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Disposable;
 import com.hellish.Main;
 import com.hellish.event.MapChangeEvent;
 
-public class MapManager {
+public class MapManager implements Disposable{
 	public static final String TAG = MapManager.class.getSimpleName();
 	
 	private final AssetManager assetManager;
@@ -24,14 +25,11 @@ public class MapManager {
 		currentMap = null;
 		gameStage = context.getGameStage();
 		assetManager = context.getAssetManager();
+		
 		mapCache = new EnumMap<MapType, TiledMap>(MapType.class);
 	}
 	
-	public void setMap(final MapType type) {
-		if(currentMapType == type) {
-			return;
-		}
-		
+	public void setMap(final MapType type) {		
 		currentMap = mapCache.get(type);
 		if(currentMap == null) {
 			Gdx.app.debug(TAG, "Tạo map mới " + type);
@@ -39,15 +37,31 @@ public class MapManager {
 			currentMap = tiledMap;
 			mapCache.put(type, currentMap);
 		}
-		currentMapType = type;
-		Gdx.app.debug(TAG, "Map hiện tại: " + type);
 		
 		MapChangeEvent mapChangeEvent = MapChangeEvent.pool.obtain().set(currentMap);
-		gameStage.getRoot().fire(mapChangeEvent);
+			gameStage.getRoot().fire(mapChangeEvent);
 		MapChangeEvent.pool.free(mapChangeEvent);
+		
+		currentMapType = type;
+		
+		Gdx.app.debug(TAG, "Map hiện tại: " + type);
 	}
 	
 	public TiledMap getCurrentMap() {
 		return currentMap;
+	}
+	
+	public MapType getCurrentMapType() {
+		return currentMapType;
+	}
+
+	@Override
+	public void dispose() {
+		for(TiledMap map : mapCache.values()) {
+			if(map != null) {
+				map.dispose();
+			}
+		}
+		mapCache.clear();
 	}	
 }

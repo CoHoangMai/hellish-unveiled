@@ -9,7 +9,8 @@ import com.hellish.ecs.component.PhysicsComponent.Direction;
 public class AnimationComponent implements Component, Poolable{
 	public enum AnimationModel {
 		PLAYER, WOLF, CHEST,
-		FLAG_ZOMBIE, RUNNING_ZOMBIE, TREE_ZOMBIE,
+		FLAG_ZOMBIE, RUNNING_ZOMBIE, TREE_ZOMBIE, BOSS,
+		FIRE,
 		UNDEFINED;
 
 		public String getModel() {
@@ -18,7 +19,8 @@ public class AnimationComponent implements Component, Poolable{
 	}
 	
 	public enum AnimationType {
-		IDLE, WALK, ATTACK, OPEN, DIE;
+		IDLE, WALK, ATTACK, OPEN, DIE,
+		ANGRY, FIGHT, UNSPECIFIED;
 		
 		public String getAtlasKey() {
             return this.name().toLowerCase();
@@ -37,6 +39,8 @@ public class AnimationComponent implements Component, Poolable{
 	public String currentDirectionKey;
 	public String nextDirectionKey;
 	
+	public Direction realDirection;
+	
 	public AnimationComponent() {
 		aniTime = 0;
 		mode = Animation.PlayMode.LOOP;
@@ -45,10 +49,12 @@ public class AnimationComponent implements Component, Poolable{
 		nextModel = AnimationModel.UNDEFINED;
 		currentInjuredStatus = false;
 		nextInjuredStatus = false;
-		currentAnimationType = AnimationType.IDLE;
-		nextAnimationType = AnimationType.IDLE;
+		currentAnimationType = AnimationType.UNSPECIFIED;
+		nextAnimationType = AnimationType.UNSPECIFIED;
 		currentDirectionKey = "down_";
 		nextDirectionKey = "down_";
+		
+		realDirection = Direction.LEFT;
 	}
 
 	@Override
@@ -64,18 +70,8 @@ public class AnimationComponent implements Component, Poolable{
 		nextAnimationType = AnimationType.IDLE;
 		currentDirectionKey = "down_";
 		nextDirectionKey = "down_";
-	}
-	
-	public String getDirectionKey(Direction direction) {
-		if(direction == Direction.UP) {
-			return "up_";
-		} else if(direction == Direction.DOWN) {
-			return "down_";
-		} else if(direction == Direction.LEFT || direction == Direction.RIGHT) {
-			return "side_";
-		} else {
-			return "";
-		}
+		
+		realDirection = Direction.LEFT;
 	}
 	
 	public void nextAnimation(AnimationType type) {

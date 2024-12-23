@@ -9,6 +9,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -33,7 +34,7 @@ import com.hellish.event.MapChangeEvent;
 
 public class CollisionSpawnSystem extends IteratingSystem implements EventListener{
 	public static final String TAG = CollisionSpawnSystem.class.getSimpleName();
-	public static final int SPAWN_AREA_SIZE = 7;
+	public static final int SPAWN_AREA_SIZE = 10;
 	final private World world;
 	final private Array<TiledMapTileLayer> tiledLayers;	
 	final private Array<TiledMapTileMapObject> terrainObjects;
@@ -68,7 +69,7 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 		    	for(MapObject mapObj : cell.getTile().getObjects()) {
 		    		Entity collisionEntity = getEngine().createEntity();
 		    		
-		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(getEngine(), world, x, y, mapObj));
+		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(getEngine(), world, x, y, mapObj, false));
 		    		
 		    		TiledComponent tiledCmp = getEngine().createComponent(TiledComponent.class);
 		    		tiledCmp.cell = cell;
@@ -102,7 +103,7 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(
 		    			getEngine(), world,
 		    			terrainObjX, terrainObjY, 
-		    			mapObj ));
+		    			mapObj, false));
 		    		
 		    		TiledComponent tiledCmp = getEngine().createComponent(TiledComponent.class);
 		    		tiledCmp.nearbyEntities.add(entity);
@@ -122,18 +123,27 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 			if(mapChangeEvent.getTiledMap() == null) {
 				return false;
 			}
+		
+			tiledLayers.clear();
+			terrainObjects.clear();
+			processedCells.clear();
+			processedObjects.clear();
 			
-			mapChangeEvent.getTiledMap().getLayers().getByType(TiledMapTileLayer.class, tiledLayers);	
+			//Lấy bgd layer để xác định biên
+			((MapGroupLayer) mapChangeEvent.getTiledMap().getLayers().get("bgd")).getLayers().getByType(TiledMapTileLayer.class, tiledLayers);
 			
-			MapLayer terrainLayer = ((MapChangeEvent) event).getTiledMap().getLayers().get("terrain");
+			//Tạo terrain
+			MapGroupLayer terrainLayer = (MapGroupLayer) ((MapChangeEvent) event).getTiledMap().getLayers().get("terrain");
 			if (terrainLayer != null) {
-				for (MapObject mapObj : terrainLayer.getObjects()) {
-					if (! (mapObj instanceof TiledMapTileMapObject)) {
-						Gdx.app.log(TAG, "MapObject kiểu " + mapObj + " trong layer 'terrain' không được hỗ trợ.");
-						continue;
+				for(MapLayer subLayer : terrainLayer.getLayers()) {
+					for (MapObject mapObj : subLayer.getObjects()) {
+						if (! (mapObj instanceof TiledMapTileMapObject)) {
+							Gdx.app.log(TAG, "MapObject kiểu " + mapObj + " trong layer 'terrain' không được hỗ trợ.");
+							continue;
+						}
+						TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
+						terrainObjects.add(tiledMapObj);
 					}
-					TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
-					terrainObjects.add(tiledMapObj);
 				}
 			}
 			

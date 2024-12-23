@@ -32,7 +32,7 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 		stage = context.getGameStage();
 		
 		this.damageFont = new BitmapFont(Gdx.files.internal("ui/damage.fnt"));
-		damageFont.getData().setScale(0.33f);
+		damageFont.getData().setScale(0.5f);
 		this.floatTxtFntStyle = new Label.LabelStyle(damageFont, Color.WHITE);
 	}
 
@@ -40,6 +40,8 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 	protected void processEntity(Entity entity, float deltaTime) {
 		final LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(entity);
 		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
+		final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
+		
 		lifeCmp.life = Math.min(lifeCmp.life + lifeCmp.regeneration * deltaTime, lifeCmp.max);
 		
 		if(lifeCmp.life < lifeCmp.max * 0.5f) {
@@ -53,7 +55,6 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 		}
 		
 		if (lifeCmp.takeDamage > 0) {
-			final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
 			lifeCmp.life -= (int)lifeCmp.takeDamage;
 			
 			EntityTakeDamageEvent takeDamageEvent = EntityTakeDamageEvent.pool.obtain().set(entity);
@@ -66,6 +67,7 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 		
 		if (lifeCmp.isDead()) {
 			lifeCmp.isInjured = false;
+			physicsCmp.currentSteerer = null;
 			if(aniCmp != null) {
 				aniCmp.nextAnimation(AnimationType.DIE);
 				aniCmp.mode = PlayMode.NORMAL;
@@ -74,10 +76,7 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 			entity.add(deadCmp);
 			if (ECSEngine.playerCmpMapper.has(entity)) {
 				deadCmp.reviveTime = 7f;
-				System.out.println("Gục ngã vì chó cắn quá đau.....");
-			} else {
-				System.out.println("Bay màu con chó");
-			}
+			} 
 		}
 	}
 	

@@ -15,6 +15,8 @@ public class AttackComponent implements Component, Poolable{
 	public float extraRange;
 	private AttackState state;
 	
+	public boolean canFire;
+	
 	public AttackComponent() {
 		doAttack = false;
 		damage = 0;
@@ -22,6 +24,8 @@ public class AttackComponent implements Component, Poolable{
 		maxDelay = 0;
 		extraRange = 0;
 		state = AttackState.READY;
+		
+		canFire = false;
 	}
 	
 	@Override
@@ -32,6 +36,8 @@ public class AttackComponent implements Component, Poolable{
 		maxDelay = 0;
 		extraRange = 0;
 		state = AttackState.READY;
+		
+		canFire = false;
 	}
 	
 	public AttackState getState() {

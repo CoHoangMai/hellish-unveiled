@@ -43,6 +43,7 @@ public class LoadingView extends Table{
 		add(txtButton).expandX().fillX().bottom().pad(10).row();
 
 		Table progressContainer = new Table();
+		progressContainer.padLeft(50).padRight(50);
     	progressContainer.add(progressBar).expand().fill(); // Đặt Progress Bar ở dưới cùng
     	Stack stack = new Stack(); // Stack để chồng các thành phần
     	stack.add(progressContainer); // Thêm Progress Bar vào Stack
