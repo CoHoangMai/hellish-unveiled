@@ -1,7 +1,7 @@
 package com.hellish.audio;
 
 public enum AudioType {
-	INTRO("audio/horror-background-atmosphere-11-240870.mp3", true, 0.3f),
+	INTRO("audio/screen/loading_main_menu.mp3", true, 0.1f),
 	SELECT("audio/mixkit-hard-horror-hit-drum-565.wav", false, 0.3f),
 	GAME("audio/Where-My-Home-Is.mp3", true, 0.3f);
 	

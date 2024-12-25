@@ -45,7 +45,6 @@ public class GameScreen extends AbstractScreen<Table> implements EventListener{
 	private final MapManager mapManager;
 	private final AssetManager assetManager;
 	private final ECSEngine ecsEngine;
-	private boolean isMusicLoaded;
 	public boolean paused;
 	
 	private float playerSin;
@@ -80,7 +79,7 @@ public class GameScreen extends AbstractScreen<Table> implements EventListener{
 		directionVector = new Vector2();
 
 		paused = false;
-		isMusicLoaded = false;
+		
 		for (final AudioType audioType : AudioType.values()) {
 		    if (audioType.isMusic()) {
 		        assetManager.load(audioType.getFilePath(), Music.class);
@@ -100,10 +99,10 @@ public class GameScreen extends AbstractScreen<Table> implements EventListener{
 
 	@Override
 	public void render(float delta) {
-		if(!isMusicLoaded && assetManager.isLoaded(AudioType.GAME.getFilePath())) {
-			isMusicLoaded = true;
-			audioManager.playAudio(AudioType.GAME);
-		}
+		// if(!isMusicLoaded && assetManager.isLoaded(AudioType.GAME.getFilePath())) {
+		// 	isMusicLoaded = true;
+		// 	audioManager.playAudio(AudioType.GAME);
+		// }
 	}
 
 	@Override

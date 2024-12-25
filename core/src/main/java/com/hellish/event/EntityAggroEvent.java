@@ -3,6 +3,7 @@ package com.hellish.event;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.utils.Pool;
+import com.hellish.ecs.component.AnimationComponent;
 
 public class EntityAggroEvent extends Event{
 	public static final Pool<EntityAggroEvent> pool = new Pool<EntityAggroEvent>() {
@@ -28,4 +29,14 @@ public class EntityAggroEvent extends Event{
 		super.reset();
 		aiEntity = null;
 	}
+
+	public String getModel() {
+		AnimationComponent animationComponent = aiEntity.getComponent(AnimationComponent.class);
+		if (animationComponent != null) {
+            if (animationComponent.getModel() != null) {
+                return animationComponent.getModel();  // Trả về mô hình dưới dạng chuỗi
+            }
+        }
+        return "No model found";  // Trả về thông báo nếu không tìm thấy model
+    }
 }

@@ -19,8 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hellish.Main;
-import com.hellish.audio.AudioManager;
-import com.hellish.audio.AudioType;
+import com.hellish.ecs.system.AudioSystem;
 import com.hellish.screen.ScreenType;
 import com.hellish.ui.Scene2DSkin;
 import com.hellish.ui.Scene2DSkin.CheckBoxes;
@@ -30,17 +29,16 @@ import com.hellish.ui.Scene2DSkin.Sliders;
 
 public class SettingView extends Table{
    
-    private final AudioManager audioManager;
     private final ImageButton goBackButton;
     public final Sprite backgroundSprite;
     private final Image dimOverlay;
+    private final AudioSystem audioSystem = new AudioSystem();
     //private CheckBox fullscreenCheckBox;
     //private SelectBox<String> resolutionSelectBox;
 
     public SettingView(Skin skin, final Main context) {
         super(skin);
         setFillParent(true);
-        audioManager = context.getAudioManager();
 
         Texture backgroundTexture = new Texture("ui/background/background_guide.png");
         backgroundSprite = new Sprite(backgroundTexture);
@@ -54,14 +52,14 @@ public class SettingView extends Table{
         this.top(); // Đặt bảng chính để định vị từ trên xuống
 
         Label volumeMusicLabel = new Label("Music Volume", Scene2DSkin.defaultSkin.get(Labels.NORMAL.getSkinKey(), Label.LabelStyle.class));
-        Label volumeMusicValueLabel = new Label(String.format("%d%%", (int) (audioManager.getMusicVolume() * 100)), Scene2DSkin.defaultSkin.get(Labels.NORMAL.getSkinKey(), Label.LabelStyle.class));
+        Label volumeMusicValueLabel = new Label(String.format("%d%%", (int) (audioSystem.getMusicVolume() * 100)), Scene2DSkin.defaultSkin.get(Labels.NORMAL.getSkinKey(), Label.LabelStyle.class));
         Slider volumeMusicSlider = new Slider(0, 1, 0.01f, false, Scene2DSkin.defaultSkin.get(Sliders.SLIDER.getSkinKey(), SliderStyle.class));
-        volumeMusicSlider.setValue(audioManager.getMusicVolume());
+        volumeMusicSlider.setValue(audioSystem.getMusicVolume());
 
         Label volumeSFXLabel = new Label("SFX Volume", Scene2DSkin.defaultSkin.get(Labels.NORMAL.getSkinKey(), Label.LabelStyle.class));
-        Label volumeSFXValueLabel = new Label(String.format("%d%%", (int) (audioManager.getSFXVolume() * 100)), Scene2DSkin.defaultSkin.get(Labels.NORMAL.getSkinKey(), Label.LabelStyle.class));
+        Label volumeSFXValueLabel = new Label(String.format("%d%%", (int) (audioSystem.getSoundVolume() * 100)), Scene2DSkin.defaultSkin.get(Labels.NORMAL.getSkinKey(), Label.LabelStyle.class));
         Slider volumeSFXSlider = new Slider(0, 1, 0.01f, false, Scene2DSkin.defaultSkin.get(Sliders.SLIDER.getSkinKey(), SliderStyle.class));
-        volumeSFXSlider.setValue(audioManager.getMusicVolume());
+        volumeSFXSlider.setValue(audioSystem.getSoundVolume());
 
         Table topTable = new Table();
         topTable.add(goBackButton).size(20, 20).pad(4).top().right();
@@ -91,8 +89,9 @@ public class SettingView extends Table{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 float volume = volumeMusicSlider.getValue();
-                audioManager.setMusicVolume(volume);
-                volumeMusicValueLabel.setText(String.format("%d%%", (int) (audioManager.getMusicVolume() * 100))); 
+                audioSystem.setMusicVolume(volume);  // Thay đổi volume cho nhạc nền
+                volumeMusicValueLabel.setText(String.format("%d%%", (int) (volume * 100)));
+                System.out.println("Music volume after slider change: " + volume);
             }
         });
 
@@ -100,8 +99,8 @@ public class SettingView extends Table{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 float volume = volumeSFXSlider.getValue();
-                audioManager.setSFXVolume(volume);
-                volumeSFXValueLabel.setText(String.format("%d%%", (int) (audioManager.getSFXVolume() * 100))); 
+                audioSystem.setSoundVolume(volume);
+                volumeSFXValueLabel.setText(String.format("%d%%", (int) (audioSystem.getSoundVolume() * 100))); 
             }
         });
 
@@ -120,7 +119,7 @@ public class SettingView extends Table{
                     x720screenCheckBox.setChecked(false);
                     DisplayMode currentMode = Gdx.graphics.getDisplayMode();
                     Gdx.graphics.setFullscreenMode(currentMode);
-                    audioManager.playAudio(AudioType.SELECT);
+                    //audioSystem.queueSound("audio/sounds/button_click.mp3");
                 }
             }
         });
@@ -132,7 +131,7 @@ public class SettingView extends Table{
                     fullscreenCheckBox.setChecked(false);
                     x720screenCheckBox.setChecked(false);
                     Gdx.graphics.setWindowedMode(960, 540);
-                    audioManager.playAudio(AudioType.SELECT);
+                    //audioSystem.queueSound("audio/sounds/button_click.mp3");
                 }
             }
         });
@@ -144,7 +143,7 @@ public class SettingView extends Table{
                     fullscreenCheckBox.setChecked(false);
                     x540screenCheckBox.setChecked(false);
                     Gdx.graphics.setWindowedMode(1280, 720);
-                    audioManager.playAudio(AudioType.SELECT);
+                    //audioSystem.queueSound("audio/sounds/button_click.mp3");
                 }
             }
         });
@@ -174,7 +173,7 @@ public class SettingView extends Table{
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                audioManager.playAudio(AudioType.SELECT);
+                //audioSystem.queueSound("audio/sounds/button_click.mp3");
             }
         });
         return button;

@@ -93,4 +93,8 @@ public class AnimationComponent implements Component, Poolable{
 	public boolean isAnimationFinished() {
 		return animation.isAnimationFinished(aniTime);
 	}
+
+	public String getModel() {
+		return	currentModel.getModel();
+	}
 }

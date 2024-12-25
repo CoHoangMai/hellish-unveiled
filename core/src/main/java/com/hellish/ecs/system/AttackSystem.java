@@ -1,8 +1,5 @@
 package com.hellish.ecs.system;
 	
-import static com.hellish.Main.UNIT_SCALE;
-import static com.hellish.ecs.system.EntitySpawnSystem.HIT_BOX_SENSOR;
-	
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -14,12 +11,16 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.hellish.Main;
+import static com.hellish.Main.UNIT_SCALE;
 import com.hellish.actor.FlipImage;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
+import com.hellish.ecs.component.AnimationComponent.AnimationModel;
+import com.hellish.ecs.component.AnimationComponent.AnimationType;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.AttackComponent.AttackState;
 import com.hellish.ecs.component.FireComponent;
@@ -27,13 +28,13 @@ import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.PhysicsComponent;
-import com.hellish.ecs.component.AnimationComponent.AnimationModel;
-import com.hellish.ecs.component.AnimationComponent.AnimationType;
 import com.hellish.ecs.component.PhysicsComponent.Direction;
+import static com.hellish.ecs.system.EntitySpawnSystem.HIT_BOX_SENSOR;
+import com.hellish.event.EntityAttackEvent;
 	
 public class AttackSystem extends IteratingSystem{
 	public static final Rectangle AABB_RECT = new Rectangle();
-	
+	private final Stage gameStage;
 	private final World world;
 	private final AssetManager assetManager;
 	
@@ -42,6 +43,7 @@ public class AttackSystem extends IteratingSystem{
 		
 		world = context.getWorld();
 		assetManager = context.getAssetManager();
+		gameStage = context.getGameStage();
 	}
 
 	@Override
@@ -68,7 +70,9 @@ public class AttackSystem extends IteratingSystem{
 		if(attackCmp.delay <= 0 && attackCmp.isAttacking()) {
 			attackCmp.setState(AttackState.DEAL_DAMAGE);
 			attackDirection = aniCmp.realDirection;
-			
+			EntityAttackEvent event = EntityAttackEvent.pool.obtain().set(entity);
+			gameStage.getRoot().fire(event);
+			EntityAttackEvent.pool.free(event);
 			if(attackCmp.canFire) {
 				fire(imageCmp.image.isFlipX(), physicsCmp.body.getPosition(), physicsCmp.size);
 			}

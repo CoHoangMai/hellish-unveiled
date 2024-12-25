@@ -22,7 +22,6 @@ public class LoadingScreen extends AbstractScreen<Table> {
 	private final AssetManager assetManager;
 	private final ECSEngine ecsEngine;
 	private LoadingView loadingView;
-	private boolean isMusicLoaded;
 	
 	public LoadingScreen(final Main context) {
 		super(context);
@@ -44,8 +43,6 @@ public class LoadingScreen extends AbstractScreen<Table> {
 			}
 		}
 		
-		
-		isMusicLoaded = false;
 		for (final AudioType audioType : AudioType.values()) {
 		    if (audioType.isMusic()) {
 		        assetManager.load(audioType.getFilePath(), Music.class);
@@ -58,10 +55,10 @@ public class LoadingScreen extends AbstractScreen<Table> {
 	@Override
 	public void render(float delta) {
 		assetManager.update();
-		if(!isMusicLoaded && assetManager.isLoaded(AudioType.INTRO.getFilePath())) {
-			isMusicLoaded = true;
-			audioManager.playAudio(AudioType.INTRO);
-		}
+		// if(!isMusicLoaded && assetManager.isLoaded(AudioType.INTRO.getFilePath())) {
+		// 	isMusicLoaded = true;
+		// 	audioManager.playAudio(AudioType.INTRO);
+		// }
 		
 		loadingView.setProgress(assetManager.getProgress());
 	}

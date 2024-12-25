@@ -63,7 +63,7 @@ public class GameModel extends PropertyChangeSource implements EventListener{
 		} else if(event instanceof EntityLootEvent){
 			setPopUpText("[BLACK]Ta vừa lụm được [RED]thứ gì đó");
 		} else if(event instanceof EntityAggroEvent){
-			//Tạm không làm gì
+			
 		} else if(event instanceof GameRestartEvent){
 			this.playerLife = 1;
 			notify("gameRestarted", true);
