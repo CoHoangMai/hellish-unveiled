@@ -175,7 +175,7 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		return physicsCmp;
 	}
 
-	public static PhysicsComponent physicsCmpFromShape2D(Engine engine, World world, float x, float y, MapObject mapObj, boolean isPortal) {
+	public static PhysicsComponent physicsCmpFromShape2D(Engine engine, World world, float x, float y, MapObject mapObj, boolean hasSpawnArea) {
 		Shape2D shape = null;
 		
 		if (mapObj instanceof RectangleMapObject) {
@@ -211,12 +211,14 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		    new Vector2(0f, 0f)
 		});
 		Fixture collisionFixture = physicsCmp.body.createFixture(loopShape, 0.0f);
-		collisionFixture.getFilterData().categoryBits = ENVIRONMENT_BIT;
 		collisionFixture.setUserData(COLLISION_BOX);   
-		collisionFixture.setSensor(isPortal);
+		collisionFixture.setSensor(!hasSpawnArea);
+		if(hasSpawnArea) {
+			collisionFixture.getFilterData().categoryBits = ENVIRONMENT_BIT;
+		}
 		loopShape.dispose();
 
-		if(!isPortal) {
+		if(hasSpawnArea) {
 			FixtureDef spawnAreaFixDef = new FixtureDef();
 			PolygonShape spawnAreaShape = new PolygonShape();
 			Vector2 center = new Vector2(bodyW * 0.5f, bodyH * 0.5f);

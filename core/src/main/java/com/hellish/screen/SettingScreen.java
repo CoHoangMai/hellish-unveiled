@@ -45,14 +45,12 @@ public class SettingScreen extends AbstractScreen<SettingView>{
 
     @Override
     public void render(float delta) {
-        // if(!isMusicLoaded && assetManager.isLoaded(AudioType.INTRO.getFilePath())) {
-		// 	isMusicLoaded = true;
-		// 	audioManager.playAudio(AudioType.INTRO);
-		// }
+    	
     }
 
     @Override
     public void pause() {
+    	
     }
 
     @Override

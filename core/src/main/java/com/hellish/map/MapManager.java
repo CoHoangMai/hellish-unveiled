@@ -39,7 +39,7 @@ public class MapManager implements Disposable{
 		}
 		
 		MapChangeEvent mapChangeEvent = MapChangeEvent.pool.obtain().set(currentMap);
-			gameStage.getRoot().fire(mapChangeEvent);
+		gameStage.getRoot().fire(mapChangeEvent);
 		MapChangeEvent.pool.free(mapChangeEvent);
 		
 		currentMapType = type;

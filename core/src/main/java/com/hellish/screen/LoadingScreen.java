@@ -55,10 +55,6 @@ public class LoadingScreen extends AbstractScreen<Table> {
 	@Override
 	public void render(float delta) {
 		assetManager.update();
-		// if(!isMusicLoaded && assetManager.isLoaded(AudioType.INTRO.getFilePath())) {
-		// 	isMusicLoaded = true;
-		// 	audioManager.playAudio(AudioType.INTRO);
-		// }
 		
 		loadingView.setProgress(assetManager.getProgress());
 	}

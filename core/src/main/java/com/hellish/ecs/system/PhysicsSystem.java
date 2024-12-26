@@ -137,6 +137,12 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 	public void beginContact(Contact contact) {
 		final Entity entityA = getEntity(contact.getFixtureA());
 		final Entity entityB = getEntity(contact.getFixtureB());
+		
+		if(entityA == null || entityB == null) {
+			System.out.println("[BeginContact] Có fixture hoang");
+			return;
+		}
+		
 		final ComponentMapper<TiledComponent> tiledCmpMapper = ECSEngine.tiledCmpMapper;
 		final ComponentMapper<CollisionComponent> collCmpMapper = ECSEngine.collisionCmpMapper;
 		final ComponentMapper<AiComponent> aiCmpMapper = ECSEngine.aiCmpMapper;
@@ -173,12 +179,28 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 				&& !contact.getFixtureA().isSensor()) {
 			ECSEngine.portalCmpMapper.get(entityB).triggerEntities.add(entityA);
 		}
+		
+		//xử lý thay đổi ánh sáng
+		if(ECSEngine.nightZoneCmpMapper.has(entityA) && ECSEngine.playerCmpMapper.has(entityB) 
+				&& !contact.getFixtureB().isSensor()) {
+			ECSEngine.nightZoneCmpMapper.get(entityA).triggerEntities.add(entityB);
+		}
+		if(ECSEngine.nightZoneCmpMapper.has(entityB) && ECSEngine.playerCmpMapper.has(entityA) 
+				&& !contact.getFixtureA().isSensor()) {
+			ECSEngine.nightZoneCmpMapper.get(entityB).triggerEntities.add(entityA);
+		}
 	}
 
 	@Override
 	public void endContact(Contact contact) {
 		final Entity entityA = getEntity(contact.getFixtureA());
         final Entity entityB = getEntity(contact.getFixtureB());
+        
+        if(entityA == null || entityB == null) {
+        	System.out.println("[EndContact] Có fixture hoang");
+			return;
+		}
+        
         final ComponentMapper<TiledComponent> tiledCmpMapper = ECSEngine.tiledCmpMapper;
 		final ComponentMapper<AiComponent> aiCmpMapper = ECSEngine.aiCmpMapper;
 		final boolean isEntityATiledCollisionSensor = tiledCmpMapper.has(entityA) && isSensorA(contact);
@@ -207,8 +229,7 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 	public void preSolve(Contact contact, Manifold oldManifold) {
 		contact.setEnabled(
 			(isStaticBody(contact.getFixtureA()) && isDynamicBody(contact.getFixtureB())) ||
-			(isStaticBody(contact.getFixtureB()) && isDynamicBody(contact.getFixtureA())) ||
-			(isDynamicBody(contact.getFixtureA()) && isDynamicBody(contact.getFixtureB()))
+			(isStaticBody(contact.getFixtureB()) && isDynamicBody(contact.getFixtureA())) 
 		);
 	}
 

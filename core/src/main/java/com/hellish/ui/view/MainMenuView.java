@@ -24,7 +24,6 @@ public class MainMenuView extends Table {
     private final ImageButton guideButton;
     private final ImageButton quitButton;
     private final AudioManager audioManager;
-    // Hình nền sẽ được vẽ vào đây
     
     public MainMenuView(Skin skin, final Main context) {
         super(skin);
@@ -49,7 +48,7 @@ public class MainMenuView extends Table {
         startButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                context.setScreen(ScreenType.GAME); // Chuyển đến màn hình Game
+                context.setScreen(ScreenType.DAILOG); // Chuyển đến màn hình Game
             }
         });
 

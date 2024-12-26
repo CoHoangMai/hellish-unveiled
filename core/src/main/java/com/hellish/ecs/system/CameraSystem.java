@@ -51,8 +51,8 @@ public class CameraSystem extends IteratingSystem implements EventListener{
 			MapGroupLayer groupLayer = (MapGroupLayer) tiledMap.getLayers().get("bgd");
 			TiledMapTileLayer layer = (TiledMapTileLayer)groupLayer.getLayers().get(0);
 			 if (layer != null) {
-		            maxW = layer.getWidth();
-		            maxH = layer.getHeight();
+		            maxW = layer.getWidth() / 2;
+		            maxH = layer.getHeight() / 2;
 		        }
 			return true;
 		}

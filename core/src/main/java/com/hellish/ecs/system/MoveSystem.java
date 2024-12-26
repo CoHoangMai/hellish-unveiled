@@ -6,10 +6,11 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent;
+import com.hellish.ecs.component.PlayerComponent;
 
 public class MoveSystem extends IteratingSystem{
 	public MoveSystem() {
-		super(Family.all(MoveComponent.class, PhysicsComponent.class).get());
+		super(Family.all(MoveComponent.class, PhysicsComponent.class, PlayerComponent.class).get());
 	}
 
 	@Override

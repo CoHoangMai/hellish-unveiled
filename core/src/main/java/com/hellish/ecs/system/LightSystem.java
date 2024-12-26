@@ -3,18 +3,20 @@ package com.hellish.ecs.system;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+
 import box2dLight.RayHandler;
 
 import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.LightComponent;
+import com.hellish.event.LightChangeEvent;
 
-public class LightSystem extends IteratingSystem {
+public class LightSystem extends IteratingSystem implements EventListener{
     private static final Interpolation distanceInterpolation = Interpolation.smoother;
 	private static final Color dayLightColor = Color.WHITE;
     private static final Color nightLightColor = Color.ROYAL;
@@ -38,21 +40,6 @@ public class LightSystem extends IteratingSystem {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-
-        // Ambient light transition logic
-        if (Gdx.input.isKeyJustPressed(Input.Keys.N) && ambientTransitionTime == 1f && !isNight) {
-            ambientTransitionTime = 0f;
-            ambientTo = nightLightColor;
-            ambientFrom = dayLightColor;
-            isNight = true;
-            System.out.println("Night");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.D) && ambientTransitionTime == 1f && isNight) {
-            ambientTransitionTime = 0f;
-            ambientTo = dayLightColor;
-            ambientFrom = nightLightColor;
-            isNight = false;
-            System.out.println("Day");
-        }
 
         if (ambientTransitionTime < 1f) {
             ambientTransitionTime = Math.min(ambientTransitionTime + deltaTime * 0.5f, 1f);
@@ -85,4 +72,23 @@ public class LightSystem extends IteratingSystem {
         // Apply interpolated distance to light
         b2dLight.setDistance(distanceInterpolation.apply(distance[0], distance[1], lightCmp.getDistanceTime()));
     }
+
+	@Override
+	public boolean handle(Event event) {
+		if(event instanceof LightChangeEvent) {
+			 ambientTransitionTime = 0f;
+			 
+			 ambientFrom = ambientColor;
+			 if(isNight) {
+				 ambientTo = dayLightColor;
+			 } else {
+				 ambientTo = nightLightColor;
+			 }
+			
+			 isNight = !isNight;
+		} else {
+			return false;
+		}
+		return true;
+	}
 }

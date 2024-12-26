@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.actor.FlipImage;
 import com.hellish.ecs.ECSEngine;
@@ -33,11 +34,15 @@ public class  PortalSystem extends IteratingSystem implements EventListener{
 	private final World world;
 	private final MapManager mapManager;
 	
+	private final Array<Entity> entitiesToRemove;
+	
 	public PortalSystem(final Main context) {
 		super(Family.all(PortalComponent.class).get());
 		
 		world = context.getWorld();
 		mapManager = context.getMapManager();
+		
+		entitiesToRemove = new Array<Entity>();
 	}
 
 	@Override
@@ -49,12 +54,18 @@ public class  PortalSystem extends IteratingSystem implements EventListener{
 			portalCmp.triggerEntities.clear();
 			
 			Gdx.app.debug(TAG, triggerEntity + " đi vào portal " + portalCmp.id);	
-
+			
 			for(Entity eachEntity : getEngine().getEntities()) {
 				if(!ECSEngine.playerCmpMapper.has(eachEntity)) {
-					getEngine().removeEntity(eachEntity);
-				}
+					entitiesToRemove.add(eachEntity);
+				}	
 			}
+			
+			for (Entity eachEntity : entitiesToRemove) {
+				getEngine().removeEntity(eachEntity);
+		    }
+			
+			entitiesToRemove.clear();
 			
 			mapManager.setMap(portalCmp.toMap);
 			
@@ -78,11 +89,17 @@ public class  PortalSystem extends IteratingSystem implements EventListener{
 			
 			PhysicsComponent oldPhysicsCmp = ECSEngine.physicsCmpMapper.get(playerEntity);
 	        if (oldPhysicsCmp != null) {
+	        	//phải làm tay mấy việc này vì PhysicsComponentListener chưa nghe được
 	            world.destroyBody(oldPhysicsCmp.body);
+	            oldPhysicsCmp.body.setUserData(null);
+	            oldPhysicsCmp.body = null;
 	            playerEntity.remove(PhysicsComponent.class);
 	        }
 	        
-			playerEntity.add(PhysicsComponent.physicsCmpFromImgandCfg(getEngine(), world, image, PLAYER_CFG));
+	        PhysicsComponent newPhysicsCmp = PhysicsComponent.physicsCmpFromImgandCfg(getEngine(), world, image, PLAYER_CFG);
+			//phải làm tay mấy việc này vì PhysicsComponentListener chưa nghe được
+			newPhysicsCmp.body.setUserData(playerEntity);
+	        playerEntity.add(newPhysicsCmp);
 			
 			ECSEngine.lightCmpMapper.get(playerEntity).light.attachToBody(ECSEngine.physicsCmpMapper.get(playerEntity).body);
 		}
@@ -118,7 +135,7 @@ public class  PortalSystem extends IteratingSystem implements EventListener{
 					
 					Entity portalEntity = getEngine().createEntity();
 					
-					portalEntity.add(PhysicsComponent.physicsCmpFromShape2D(getEngine(), world, 0, 0, mapObj, true));
+					portalEntity.add(PhysicsComponent.physicsCmpFromShape2D(getEngine(), world, 0, 0, mapObj, false));
 					
 					PortalComponent portalCmp = getEngine().createComponent(PortalComponent.class);
 					portalCmp.id = (int) mapObj.getProperties().get("id");

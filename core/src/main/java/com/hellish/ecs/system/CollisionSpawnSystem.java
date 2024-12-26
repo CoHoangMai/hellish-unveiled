@@ -31,10 +31,9 @@ import com.hellish.ecs.component.TiledComponent;
 import com.hellish.event.CollisionDespawnEvent;
 import com.hellish.event.MapChangeEvent;
 
-
 public class CollisionSpawnSystem extends IteratingSystem implements EventListener{
 	public static final String TAG = CollisionSpawnSystem.class.getSimpleName();
-	public static final int SPAWN_AREA_SIZE = 10;
+	public static final int SPAWN_AREA_SIZE = 20;
 	final private World world;
 	final private Array<TiledMapTileLayer> tiledLayers;	
 	final private Array<TiledMapTileMapObject> terrainObjects;
@@ -69,7 +68,7 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 		    	for(MapObject mapObj : cell.getTile().getObjects()) {
 		    		Entity collisionEntity = getEngine().createEntity();
 		    		
-		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(getEngine(), world, x, y, mapObj, false));
+		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(getEngine(), world, x, y, mapObj, true));
 		    		
 		    		TiledComponent tiledCmp = getEngine().createComponent(TiledComponent.class);
 		    		tiledCmp.cell = cell;
@@ -103,7 +102,7 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(
 		    			getEngine(), world,
 		    			terrainObjX, terrainObjY, 
-		    			mapObj, false));
+		    			mapObj, true));
 		    		
 		    		TiledComponent tiledCmp = getEngine().createComponent(TiledComponent.class);
 		    		tiledCmp.nearbyEntities.add(entity);
@@ -148,8 +147,8 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 			}
 			
 			//Tạo biên cho map
-			int mapWidth = tiledLayers.get(0).getWidth();
-			int mapHeight = tiledLayers.get(0).getHeight();
+			int mapWidth = tiledLayers.get(0).getWidth() / 2;
+			int mapHeight = tiledLayers.get(0).getHeight() / 2;
 			Entity entity = getEngine().createEntity();
 			PhysicsComponent physicsCmp = getEngine().createComponent(PhysicsComponent.class);
 			physicsCmp.body = world.createBody(new BodyDef() {{

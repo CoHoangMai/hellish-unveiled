@@ -23,6 +23,7 @@ import com.hellish.ecs.component.ImageComponent.ImageComponentListener;
 import com.hellish.ecs.component.InventoryComponent;
 import com.hellish.ecs.component.ItemComponent;
 import com.hellish.ecs.component.LifeComponent;
+import com.hellish.ecs.component.NightZoneComponent;
 import com.hellish.ecs.component.LightComponent;
 import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.MoveComponent;
@@ -46,6 +47,7 @@ import com.hellish.ecs.system.CameraSystem;
 import com.hellish.ecs.system.CollisionDespawnSystem;
 import com.hellish.ecs.system.CollisionSpawnSystem;
 import com.hellish.ecs.system.DeadSystem;
+import com.hellish.ecs.system.DebugSystem;
 import com.hellish.ecs.system.EntitySpawnSystem;
 import com.hellish.ecs.system.FireSystem;
 import com.hellish.ecs.system.FloatingTextSystem;
@@ -54,6 +56,7 @@ import com.hellish.ecs.system.LifeSystem;
 import com.hellish.ecs.system.LightSystem;
 import com.hellish.ecs.system.LootSystem;
 import com.hellish.ecs.system.MoveSystem;
+import com.hellish.ecs.system.NightZoneSystem;
 import com.hellish.ecs.system.PhysicsSystem;
 import com.hellish.ecs.system.PortalSystem;
 import com.hellish.ecs.system.RenderSystem;
@@ -87,6 +90,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<InventoryComponent> invCmpMapper = ComponentMapper.getFor(InventoryComponent.class);
 	public static final ComponentMapper<PortalComponent> portalCmpMapper = ComponentMapper.getFor(PortalComponent.class);
 	public static final ComponentMapper<RemovableComponent> removeCmpMapper = ComponentMapper.getFor(RemovableComponent.class);
+	public static final ComponentMapper<NightZoneComponent> nightZoneCmpMapper = ComponentMapper.getFor(NightZoneComponent.class);
 	
 	private final Stage gameStage;
 	private final Stage uiStage;
@@ -121,6 +125,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addSystem(new LifeSystem(context));
 		addSystem(new PhysicsSystem(context));
 		addSystem(new LightSystem(context));
+		addSystem(new NightZoneSystem(context));
 		addSystem(new AnimationSystem(context));
 		addSystem(new AttackSystem(context));
 		addSystem(new FireSystem());
@@ -131,8 +136,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addSystem(new TextSystem(context));
 		addSystem(new FloatingTextSystem(context));
 		addSystem(new RenderSystem(context));
-		//addSystem(new DebugSystem(context));
-		
+		//addSystem(new DebugSystem(context));	
 	}
 	
 	@Override
