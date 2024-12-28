@@ -4,14 +4,14 @@ import java.util.HashSet;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 public class TiledComponent implements Component, Poolable{
 	//Tạm dùng chung cho cả cell và object
 	public Cell cell;
-	public TiledMapTileMapObject object;
+	public MapObject object;
 	public HashSet<Entity> nearbyEntities;
 	
 	public TiledComponent() {

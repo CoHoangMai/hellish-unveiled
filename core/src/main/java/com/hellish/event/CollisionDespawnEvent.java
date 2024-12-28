@@ -1,7 +1,7 @@
 package com.hellish.event;
 
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.utils.Pool;
 
@@ -15,12 +15,12 @@ public class CollisionDespawnEvent extends Event{
 	
     //Tạm dùng chung cho cả 2 loại cell và map object
 	public Cell cell;
-	public TiledMapTileMapObject terrainObject;
+	public MapObject mapObject;
 	
 	@Override
 	public void reset() {
 		super.reset();
 		cell = null;
-		terrainObject = null;
+		mapObject = null;
 	}
 }

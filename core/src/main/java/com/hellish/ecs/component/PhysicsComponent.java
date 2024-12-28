@@ -1,7 +1,7 @@
 package com.hellish.ecs.component;
 
 import static com.hellish.Main.UNIT_SCALE;
-import static com.hellish.ecs.system.CollisionSpawnSystem.SPAWN_AREA_SIZE;
+import static com.hellish.ecs.system.CollisionSpawnSystem.EXTRA_SPAWN_SIZE;
 import static com.hellish.ecs.system.EntitySpawnSystem.COLLISION_BOX;
 import static com.hellish.ecs.system.EntitySpawnSystem.HIT_BOX_SENSOR;
 
@@ -222,7 +222,7 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 			FixtureDef spawnAreaFixDef = new FixtureDef();
 			PolygonShape spawnAreaShape = new PolygonShape();
 			Vector2 center = new Vector2(bodyW * 0.5f, bodyH * 0.5f);
-			spawnAreaShape.setAsBox(SPAWN_AREA_SIZE + 1, SPAWN_AREA_SIZE + 1, center, 0);
+			spawnAreaShape.setAsBox(bodyW / 2 + EXTRA_SPAWN_SIZE, bodyH /2 + EXTRA_SPAWN_SIZE, center, 0);
 		    spawnAreaFixDef.shape = spawnAreaShape;
 		    spawnAreaFixDef.isSensor = true;
 		    physicsCmp.body.createFixture(spawnAreaFixDef);

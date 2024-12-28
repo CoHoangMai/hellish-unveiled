@@ -53,7 +53,6 @@ import com.hellish.ecs.component.LootComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
-import com.hellish.ecs.component.RemovableComponent;
 import com.hellish.ecs.component.EntitySpawnComponent;
 import com.hellish.event.GameRestartEvent;
 import com.hellish.event.MapChangeEvent;
@@ -115,9 +114,6 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		final Vector2 relativeSize = size(cfg.model); 
 		
 		final Entity spawnedEntity = getEngine().createEntity();
-		
-		//Thành phần Removable để phá đi mỗi khi chuyển hay reset map
-		spawnedEntity.add(getEngine().createComponent(RemovableComponent.class));
 		
 		//Thành phần Image
 		final ImageComponent imageCmp = getEngine().createComponent(ImageComponent.class);

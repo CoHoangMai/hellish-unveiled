@@ -31,7 +31,6 @@ import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PhysicsComponent.PhysicsComponentListener;
 import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.component.PortalComponent;
-import com.hellish.ecs.component.RemovableComponent;
 import com.hellish.ecs.component.StateComponent;
 import com.hellish.ecs.component.StateComponent.StateComponentListener;
 import com.hellish.ecs.component.TerrainComponent;
@@ -89,7 +88,6 @@ public class ECSEngine extends PooledEngine implements Disposable{
 	public static final ComponentMapper<ItemComponent> itemCmpMapper = ComponentMapper.getFor(ItemComponent.class);
 	public static final ComponentMapper<InventoryComponent> invCmpMapper = ComponentMapper.getFor(InventoryComponent.class);
 	public static final ComponentMapper<PortalComponent> portalCmpMapper = ComponentMapper.getFor(PortalComponent.class);
-	public static final ComponentMapper<RemovableComponent> removeCmpMapper = ComponentMapper.getFor(RemovableComponent.class);
 	public static final ComponentMapper<NightZoneComponent> nightZoneCmpMapper = ComponentMapper.getFor(NightZoneComponent.class);
 	
 	private final Stage gameStage;
@@ -136,7 +134,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addSystem(new TextSystem(context));
 		addSystem(new FloatingTextSystem(context));
 		addSystem(new RenderSystem(context));
-		//addSystem(new DebugSystem(context));	
+		addSystem(new DebugSystem(context));	
 	}
 	
 	@Override

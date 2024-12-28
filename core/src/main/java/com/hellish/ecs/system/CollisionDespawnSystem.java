@@ -27,7 +27,7 @@ public class CollisionDespawnSystem extends IteratingSystem{
 				colDespawnEvent.cell = tiledCmp.cell;
 			}
 			if(tiledCmp.object != null) {
-				colDespawnEvent.terrainObject = tiledCmp.object;
+				colDespawnEvent.mapObject = tiledCmp.object;
 			}
 			gameStage.getRoot().fire(colDespawnEvent);
 			CollisionDespawnEvent.pool.free(colDespawnEvent);

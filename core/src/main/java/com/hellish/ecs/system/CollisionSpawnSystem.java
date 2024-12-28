@@ -12,9 +12,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
@@ -23,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.CollisionComponent;
@@ -32,13 +35,14 @@ import com.hellish.event.CollisionDespawnEvent;
 import com.hellish.event.MapChangeEvent;
 
 public class CollisionSpawnSystem extends IteratingSystem implements EventListener{
+	public static final Rectangle SPAWN_RECT = new Rectangle();
 	public static final String TAG = CollisionSpawnSystem.class.getSimpleName();
-	public static final int SPAWN_AREA_SIZE = 20;
+	public static final int EXTRA_SPAWN_SIZE = 5;
 	final private World world;
 	final private Array<TiledMapTileLayer> tiledLayers;	
 	final private Array<TiledMapTileMapObject> terrainObjects;
 	final private HashSet<Cell> processedCells;
-	final private HashSet<TiledMapTileMapObject> processedObjects;
+	final private HashSet<MapObject> processedObjects;
 	public CollisionSpawnSystem(final Main context) {
 		super(Family.all(PhysicsComponent.class, CollisionComponent.class).get());
 		
@@ -46,17 +50,17 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 		tiledLayers = new Array<TiledMapTileLayer>();
 		terrainObjects = new Array<TiledMapTileMapObject>();
 		processedCells = new HashSet<Cell>();
-		processedObjects = new HashSet<TiledMapTileMapObject>();
+		processedObjects = new HashSet<MapObject>();
 	}
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
-		float entityX = ECSEngine.physicsCmpMapper.get(entity).body.getPosition().x;
-		float entityY = ECSEngine.physicsCmpMapper.get(entity).body.getPosition().y;
+		float entityX = ECSEngine.physicsCmpMapper.get(entity).getPosition().x;
+		float entityY = ECSEngine.physicsCmpMapper.get(entity).getPosition().y;
 		
 		//Xử lý collision trong các Tile Layer
 		for(TiledMapTileLayer layer : tiledLayers) {
-			forEachCell(layer, (int)entityX, (int)entityY, SPAWN_AREA_SIZE, (cell, x, y) -> {
+			forEachCell(layer, (int)entityX, (int)entityY, EXTRA_SPAWN_SIZE, (cell, x, y) -> {
 				if(cell.getTile().getObjects().getCount() == 0) {
 		    		return;
 		    	}
@@ -86,32 +90,43 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 			if(terrainObject.getTile().getObjects().getCount() == 0) {
 	    		continue;
 	    	}
-			if(processedObjects.contains(terrainObject)) {
-				continue;
-			}
 			
-			float terrainObjX = terrainObject.getX() * UNIT_SCALE;
-			float terrainObjY = terrainObject.getY() * UNIT_SCALE;
-			
-			if(Math.abs(terrainObjX - entityX) <= SPAWN_AREA_SIZE && Math.abs(terrainObjY - entityY) <= SPAWN_AREA_SIZE) {
-				processedObjects.add(terrainObject);
+			for(MapObject mapObj : terrainObject.getTile().getObjects()) {
+				if(processedObjects.contains(mapObj)) {
+					continue;
+				}
 				
-				for(MapObject mapObj : terrainObject.getTile().getObjects()) {
-		    		Entity collisionEntity = getEngine().createEntity();
-		    			
+				if (!(mapObj instanceof RectangleMapObject)) {
+			        throw new GdxRuntimeException("MapObject shape không được hỗ trợ: " + mapObj);
+			    }
+				
+				final Rectangle rectangle = ((RectangleMapObject) mapObj).getRectangle();
+				
+				final float bodyX = (terrainObject.getX() + rectangle.x) * UNIT_SCALE - EXTRA_SPAWN_SIZE;
+		        final float bodyY = (terrainObject.getY() + rectangle.y) * UNIT_SCALE - EXTRA_SPAWN_SIZE;
+		        final float bodyW = rectangle.width * UNIT_SCALE + EXTRA_SPAWN_SIZE * 2;
+		        final float bodyH = rectangle.height * UNIT_SCALE + EXTRA_SPAWN_SIZE * 2;
+		        
+		        SPAWN_RECT.set(bodyX, bodyY, bodyW, bodyH);
+		        
+		        if (SPAWN_RECT.contains(entityX, entityY)) {
+		        	Entity collisionEntity = getEngine().createEntity();
+	    			
 		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(
 		    			getEngine(), world,
-		    			terrainObjX, terrainObjY, 
+		    			terrainObject.getX() * UNIT_SCALE, terrainObject.getY() * UNIT_SCALE, 
 		    			mapObj, true));
 		    		
 		    		TiledComponent tiledCmp = getEngine().createComponent(TiledComponent.class);
 		    		tiledCmp.nearbyEntities.add(entity);
-		    		tiledCmp.object = terrainObject;
+		    		tiledCmp.object = mapObj;
 		    		collisionEntity.add(tiledCmp);
 		    			
 		    		getEngine().addEntity(collisionEntity);
-		    	}
-			} 
+		    		
+		    		processedObjects.add(mapObj);
+		        }
+			}
 		}
 	}
 
@@ -176,8 +191,8 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 			if(((CollisionDespawnEvent)event).cell != null) {
 				processedCells.remove(((CollisionDespawnEvent)event).cell);
 			}
-			if(((CollisionDespawnEvent)event).terrainObject != null) {
-				processedObjects.remove(((CollisionDespawnEvent)event).terrainObject);
+			if(((CollisionDespawnEvent)event).mapObject != null) {
+				processedObjects.remove(((CollisionDespawnEvent)event).mapObject);
 			}
 			return true;
 		}
