@@ -16,6 +16,7 @@ import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.LightComponent;
 import com.hellish.ecs.component.TextComponent;
 import com.hellish.event.EntityReviveEvent;
+import com.hellish.event.EventUtils;
 import com.hellish.event.LoseEvent;
 import com.hellish.event.WinEvent;
 
@@ -45,9 +46,7 @@ public class DeadSystem extends IteratingSystem{
 		
 		if(aniCmp.isAnimationFinished()) {
 			if(ECSEngine.playerCmpMapper.get(entity) != null) {
-            	LoseEvent loseEvent = LoseEvent.pool.obtain();
-                stage.getRoot().fire(loseEvent);  
-                LoseEvent.pool.free(loseEvent); 
+                EventUtils.fireEvent(stage, LoseEvent.pool, event -> {});
             }
 			
 			if(deadCmp.reviveTime == null) {
@@ -73,9 +72,7 @@ public class DeadSystem extends IteratingSystem{
 					Actions.run(() -> {
 						//Tạm dùng cách này để nhận diện Boss
 						if (txtCmp != null) {
-		                    WinEvent winEvent = WinEvent.pool.obtain();
-		                    stage.getRoot().fire(winEvent);  
-		                    WinEvent.pool.free(winEvent); 
+		                    EventUtils.fireEvent(stage, WinEvent.pool, event -> {});
 		                }
 						
 						getEngine().removeEntity(entity);
@@ -88,10 +85,8 @@ public class DeadSystem extends IteratingSystem{
 			if(deadCmp.reviveTime <= 0) {
 				final LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(entity);
 				lifeCmp.life = lifeCmp.max;
-				
-				EntityReviveEvent event = EntityReviveEvent.pool.obtain().set(entity);
-				stage.getRoot().fire(event);
-				EntityReviveEvent.pool.free(event);
+
+				EventUtils.fireEvent(stage, EntityReviveEvent.pool, event -> event.set(entity));
 				
 				entity.getComponents().forEach(component -> {
 					componentManager.notifyComponentRemoved(entity, deadCmp);

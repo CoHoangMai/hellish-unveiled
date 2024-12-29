@@ -10,6 +10,7 @@ import com.hellish.ecs.component.InventoryComponent;
 import com.hellish.ecs.component.ItemComponent;
 import com.hellish.ecs.component.ItemComponent.ItemType;
 import com.hellish.event.EntityAddItemEvent;
+import com.hellish.event.EventUtils;
 
 import static com.hellish.ecs.component.InventoryComponent.INVENTORY_CAPACITY;
 
@@ -37,9 +38,7 @@ public class InventorySystem extends IteratingSystem{
 			
 			Entity newItem = spawnItem(itemType, slotIdx);
 			inventory.items.add(newItem);
-			EntityAddItemEvent addItemEvent = EntityAddItemEvent.pool.obtain().set(entity, newItem);
-			stage.getRoot().fire(addItemEvent);
-			EntityAddItemEvent.pool.free(addItemEvent);
+			EventUtils.fireEvent(stage, EntityAddItemEvent.pool, event -> event.set(entity, newItem));
 		}
 		inventory.itemsToAdd.clear();
 	}

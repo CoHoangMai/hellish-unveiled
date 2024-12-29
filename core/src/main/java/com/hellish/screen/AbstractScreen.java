@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
-import com.hellish.audio.AudioManager;
 import com.hellish.input.GameKeyInputListener;
 import com.hellish.input.InputManager;
 
@@ -20,7 +19,6 @@ public abstract class AbstractScreen<T extends Table> implements Screen, GameKey
 	protected final Stage uiStage;
 	protected final Array<T> screenViews;
 	protected final InputManager inputManager;
-	protected final AudioManager audioManager;
 	
 	public AbstractScreen(final Main context) {
 		this.context = context;
@@ -31,7 +29,6 @@ public abstract class AbstractScreen<T extends Table> implements Screen, GameKey
 		gameStage = context.getGameStage();
 		uiStage = context.getUIStage();
 		screenViews = getScreenViews(context);
-		audioManager = context.getAudioManager();
 	}
 	
 	protected abstract Array<T> getScreenViews(final Main context);

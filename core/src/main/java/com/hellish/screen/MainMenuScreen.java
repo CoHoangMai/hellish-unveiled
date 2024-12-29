@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.system.AudioSystem;
 import com.hellish.ecs.system.RenderSystem;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
@@ -18,7 +19,7 @@ public class MainMenuScreen extends AbstractScreen<MainMenuView> {
         
         ecsEngine = context.getECSEngine();
 		for(EntitySystem system : ecsEngine.getSystems()) {
-			if(!(system instanceof RenderSystem)) {
+			if(!(system instanceof RenderSystem)  && !(system instanceof AudioSystem)) {
 				system.setProcessing(false);
 			}
 		}

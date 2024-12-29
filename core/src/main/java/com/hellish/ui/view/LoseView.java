@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hellish.Main;
+import com.hellish.event.EventUtils;
 import com.hellish.event.GameRestartEvent;
 import com.hellish.event.GameResumeEvent;
 import com.hellish.screen.ScreenType;
@@ -57,12 +58,8 @@ public class LoseView extends Table{
 		 goBackButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					GameRestartEvent restartEvent = GameRestartEvent.pool.obtain();
-					gameStage.getRoot().fire(restartEvent);
-					GameRestartEvent.pool.free(restartEvent);
-					GameResumeEvent resumeEvent = GameResumeEvent.pool.obtain();
-					gameStage.getRoot().fire(resumeEvent);
-					GameResumeEvent.pool.free(resumeEvent);
+					EventUtils.fireEvent(gameStage, GameRestartEvent.pool, e -> {});
+					EventUtils.fireEvent(gameStage, GameResumeEvent.pool, e -> {});
 					context.setScreen(ScreenType.MAIN_MENU);
 	            }	
 		 });
@@ -70,12 +67,8 @@ public class LoseView extends Table{
 		 restartButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					GameRestartEvent restartEvent = GameRestartEvent.pool.obtain();
-					gameStage.getRoot().fire(restartEvent);
-					GameRestartEvent.pool.free(restartEvent);
-					GameResumeEvent resumeEvent = GameResumeEvent.pool.obtain();
-					gameStage.getRoot().fire(resumeEvent);
-					GameResumeEvent.pool.free(resumeEvent);
+					EventUtils.fireEvent(gameStage, GameRestartEvent.pool, e -> {});
+					EventUtils.fireEvent(gameStage, GameResumeEvent.pool, e -> {});
 				}		
 		 });
 	}

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -23,13 +24,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hellish.Main;
-import com.hellish.audio.AudioManager;
-import com.hellish.audio.AudioType;
+import com.hellish.event.EventUtils;
+import com.hellish.event.SelectEvent;
 
 public class Scene2DSkin{
 	public static Skin defaultSkin;
 	public static final String OVERLAY_KEY = "overlayTexture";
-	private static AudioManager audioManager;
+	private static Stage gameStage;
 	
 	public enum Fonts {
 		DEFAULT("fnt_white", 0.5f),
@@ -189,7 +190,7 @@ public class Scene2DSkin{
 	}
 	
 	public static void loadSkin(final Main context) {
-		audioManager = context.getAudioManager();
+		gameStage = context.getGameStage();
 		
 		Scene2DSkin.defaultSkin = new Skin(new TextureAtlas("ui/ui.atlas"));
 		
@@ -347,7 +348,7 @@ public class Scene2DSkin{
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                audioManager.playAudio(AudioType.SELECT);
+                EventUtils.fireEvent(gameStage, SelectEvent.pool, e -> {});
             }
         });
         return button;

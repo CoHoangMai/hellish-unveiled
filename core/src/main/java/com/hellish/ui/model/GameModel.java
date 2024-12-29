@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.LifeComponent;
-import com.hellish.event.EntityAggroEvent;
 import com.hellish.event.EntityLootEvent;
 import com.hellish.event.EntityReviveEvent;
 import com.hellish.event.EntityTakeDamageEvent;
@@ -62,8 +61,6 @@ public class GameModel extends PropertyChangeSource implements EventListener{
 			
 		} else if(event instanceof EntityLootEvent){
 			setPopUpText("[BLACK]Ta vừa lụm được [RED]thứ gì đó");
-		} else if(event instanceof EntityAggroEvent){
-			
 		} else if(event instanceof GameRestartEvent){
 			this.playerLife = 1;
 			notify("gameRestarted", true);

@@ -3,6 +3,9 @@
  <editorsettings>
   <export target="object PTN.tmx" format="tmx"/>
  </editorsettings>
+ <properties>
+  <property name="mapMusic" value="audio/music/boss_theme.mp3"/>
+ </properties>
  <tileset firstgid="1" name="spriteSheet_fireEffect03_42x52" tilewidth="16" tileheight="16" tilecount="285" columns="15">
   <image source="PTN-tileset/tiles_laboratory_LandOfPixels/32px/spriteSheet_fireEffect03_42x52.png" width="252" height="312"/>
  </tileset>

@@ -11,7 +11,10 @@ import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
 import com.hellish.audio.AudioType;
 import com.hellish.ecs.ECSEngine;
+import com.hellish.ecs.system.AudioSystem;
 import com.hellish.ecs.system.RenderSystem;
+import com.hellish.event.EventUtils;
+import com.hellish.event.SelectEvent;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapType;
@@ -28,7 +31,7 @@ public class LoadingScreen extends AbstractScreen<Table> {
 		
 		ecsEngine = context.getECSEngine();
 		for(EntitySystem system : ecsEngine.getSystems()) {
-			if(!(system instanceof RenderSystem)) {
+			if(!(system instanceof RenderSystem) && !(system instanceof AudioSystem)) {
 				system.setProcessing(false);
 			}
 		}
@@ -67,7 +70,6 @@ public class LoadingScreen extends AbstractScreen<Table> {
 	@Override
 	public void hide() {
 		super.hide();
-		audioManager.stopCurrentMusic();
 	}
 
 	@Override
@@ -100,7 +102,7 @@ public class LoadingScreen extends AbstractScreen<Table> {
 	@Override
 	public void keyPressed(InputManager manager, GameKeys key) {
 		if (assetManager.getProgress() >= 1) {
-			audioManager.playAudio(AudioType.SELECT);
+            EventUtils.fireEvent(gameStage, SelectEvent.pool, e -> {});
 			context.setScreen(ScreenType.MAIN_MENU);
 		}
 	}

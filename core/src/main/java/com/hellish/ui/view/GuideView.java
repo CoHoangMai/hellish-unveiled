@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -14,23 +15,23 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hellish.Main;
-import com.hellish.audio.AudioManager;
-import com.hellish.audio.AudioType;
+import com.hellish.event.EventUtils;
+import com.hellish.event.SelectEvent;
 import com.hellish.screen.ScreenType;
 import com.hellish.ui.Scene2DSkin.ImageDrawables;
 
 public class GuideView extends Table{
-    
+    private final Stage gameStage;
     public final Sprite backgroundSprite;
     private final ImageButton goBackButton;
-    private final AudioManager audioManager;
     private final Image dimOverlay;
     private final Image guideImage;
 
     public GuideView(Skin skin, final Main context) {
         super(skin);
         setFillParent(true);
-        audioManager = context.getAudioManager();
+        gameStage = context.getGameStage();
+        
         // Tải hình nền
         Texture backgroundTexture = new Texture("ui/background/background_guide.png");
         backgroundSprite = new Sprite(backgroundTexture);
@@ -83,7 +84,7 @@ public class GuideView extends Table{
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                audioManager.playAudio(AudioType.SELECT);
+                EventUtils.fireEvent(gameStage, SelectEvent.pool, e -> {});
             }
         });
         return button;

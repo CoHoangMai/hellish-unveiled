@@ -66,7 +66,6 @@ public enum DefaultState implements EntityState{
 		@Override
 		public void enter(StateEntity stateEntity) {
 			stateEntity.root(true);
-			
 		}
 		
 		@Override

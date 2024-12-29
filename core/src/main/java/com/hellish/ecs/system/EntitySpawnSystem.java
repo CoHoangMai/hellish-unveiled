@@ -205,9 +205,9 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			CircleShape circleShape = new CircleShape();
 			
 			if(spawnCmp.type.equals("Boss")) {
-				circleShape.setRadius(6);
+				circleShape.setRadius(8);
 			} else {
-				circleShape.setRadius(4);
+				circleShape.setRadius(5);
 			}
 			Fixture fixture = physicsCmp.body.createFixture(circleShape, 0);
 			circleShape.dispose();

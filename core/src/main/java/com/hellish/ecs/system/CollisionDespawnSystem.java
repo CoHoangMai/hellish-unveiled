@@ -8,6 +8,7 @@ import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.TiledComponent;
 import com.hellish.event.CollisionDespawnEvent;
+import com.hellish.event.EventUtils;
 
 public class CollisionDespawnSystem extends IteratingSystem{
 	private final Stage gameStage;
@@ -22,15 +23,14 @@ public class CollisionDespawnSystem extends IteratingSystem{
 	protected void processEntity(Entity entity, float deltaTime) {
 		final TiledComponent tiledCmp = ECSEngine.tiledCmpMapper.get(entity);
 		if(tiledCmp!= null && tiledCmp.nearbyEntities.isEmpty()) {
-			CollisionDespawnEvent colDespawnEvent = CollisionDespawnEvent.pool.obtain();
-			if(tiledCmp.cell != null) {
-				colDespawnEvent.cell = tiledCmp.cell;
-			}
-			if(tiledCmp.objectKey != null) {
-				colDespawnEvent.mapObjectKey = tiledCmp.objectKey;
-			}
-			gameStage.getRoot().fire(colDespawnEvent);
-			CollisionDespawnEvent.pool.free(colDespawnEvent);
+			EventUtils.fireEvent(gameStage, CollisionDespawnEvent.pool, event -> {
+				if(tiledCmp.cell != null) {
+					event.cell = tiledCmp.cell;
+				}
+				if(tiledCmp.objectKey != null) {
+					event.mapObjectKey = tiledCmp.objectKey;
+				}
+			});
 			
 			getEngine().removeEntity(entity);
 		}

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.hellish.ai.steer.steerer.PursueSteerer;
 import com.hellish.ai.steer.steerer.WanderSteerer;
@@ -24,7 +23,7 @@ public class AiEntity {
 
 	public final Entity entity;
 	
-	private final Stage stage;
+	public final Stage stage;
 	
 	private final AnimationComponent aniCmp;
 	private final ImageComponent imageCmp;
@@ -169,9 +168,5 @@ public class AiEntity {
 			return false;
 		}
 		return attackCmp.isReady() && inTargetRange(range);
-	}
-
-	public void fireEvent(Event event) {
-		stage.getRoot().fire(event);
 	}
 }

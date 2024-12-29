@@ -24,10 +24,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.hellish.audio.AudioManager;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.ComponentManager;
+import com.hellish.ecs.system.AudioSystem;
 import com.hellish.ecs.system.RenderSystem;
+import com.hellish.event.EventUtils;
 import com.hellish.event.ScreenChangeEvent;
 import com.hellish.input.InputManager;
 import com.hellish.map.MapManager;
@@ -53,8 +54,6 @@ public class Main extends Game {
 	private RayHandler rayHandler;
 	
 	private AssetManager assetManager;
-	
-	private AudioManager audioManager;
 	
 	private Stage gameStage;
 	private Stage uiStage;
@@ -86,9 +85,6 @@ public class Main extends Game {
 		
 		gameStage = new Stage(new FitViewport(16, 9), spriteBatch);
 		uiStage = new Stage(new FitViewport(640, 360), spriteBatch);
-		
-		//audio
-		audioManager = new AudioManager(this);
 		
 		//skin
 		Scene2DSkin.loadSkin(this);
@@ -139,10 +135,6 @@ public class Main extends Game {
 		return ecsEngine;
 	}
 	
-	public AudioManager getAudioManager() {
-		return audioManager;
-	}
-	
 	public InputManager getInputManager() {
 		return inputManager;
 	}
@@ -177,7 +169,6 @@ public class Main extends Game {
 				final Screen newScreen = (Screen)ClassReflection.getConstructor(screenType.getScreenClass(), Main.class).newInstance(this);
 				screenCache.put(screenType, newScreen);
 				setScreen(newScreen);
-				fireScreenChangeEvent(screenType);
 			} catch (ReflectionException e) {
 				throw new GdxRuntimeException("Screen "+ screenType + " không thể khởi tạo", e);
 			}
@@ -189,19 +180,14 @@ public class Main extends Game {
 				}
 			} else {
 				for(EntitySystem system : ecsEngine.getSystems()) {
-					if(!(system instanceof RenderSystem)) {
+					if(!(system instanceof RenderSystem) && !(system instanceof AudioSystem)) {
 						system.setProcessing(false);
 					}
 				}
 			}
 			setScreen(screen);
-			fireScreenChangeEvent(screenType);
 		}
-	}
-	
-	private void fireScreenChangeEvent(ScreenType screenType) {
-		ScreenChangeEvent event = new ScreenChangeEvent(screenType.name());
-		gameStage.getRoot().fire(event);
+		EventUtils.fireEvent(gameStage, ScreenChangeEvent.pool, event -> event.set(screenType));
 	}
 	
 	@Override

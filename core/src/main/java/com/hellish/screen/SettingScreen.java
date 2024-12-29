@@ -21,7 +21,7 @@ public class SettingScreen extends AbstractScreen<SettingView>{
     
             ecsEngine = context.getECSEngine();
             for(EntitySystem system : ecsEngine.getSystems()) {
-                if(!(system instanceof RenderSystem)) {
+                if(!(system instanceof RenderSystem) && !(system instanceof AudioSystem)) {
                     system.setProcessing(false);
                 }
                 if(!(system instanceof AudioSystem)) {

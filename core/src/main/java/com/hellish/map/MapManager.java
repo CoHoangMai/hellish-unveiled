@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
 import com.hellish.Main;
+import com.hellish.event.EventUtils;
 import com.hellish.event.MapChangeEvent;
 
 public class MapManager implements Disposable{
@@ -38,9 +39,7 @@ public class MapManager implements Disposable{
 			mapCache.put(type, currentMap);
 		}
 		
-		MapChangeEvent mapChangeEvent = MapChangeEvent.pool.obtain().set(currentMap);
-		gameStage.getRoot().fire(mapChangeEvent);
-		MapChangeEvent.pool.free(mapChangeEvent);
+		EventUtils.fireEvent(gameStage, MapChangeEvent.pool, event -> event.set(currentMap));
 		
 		currentMapType = type;
 		

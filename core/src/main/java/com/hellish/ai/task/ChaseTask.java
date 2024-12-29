@@ -4,6 +4,8 @@ import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
 import com.hellish.ai.AiEntity;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
+import com.hellish.event.EntityAggroEvent;
+import com.hellish.event.EventUtils;
 
 public class ChaseTask extends Action{
 	@TaskAttribute(required = true)
@@ -13,6 +15,7 @@ public class ChaseTask extends Action{
 	public Status execute() {
 		if(getStatus() != Status.RUNNING) {
 			getObject().animation(AnimationType.WALK);
+			EventUtils.fireEvent(getObject().stage, EntityAggroEvent.pool, event -> event.set(getObject().entity));
 			return Status.RUNNING;
 		}
 

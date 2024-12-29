@@ -31,6 +31,7 @@ import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PhysicsComponent.Direction;
 import static com.hellish.ecs.system.EntitySpawnSystem.HIT_BOX_SENSOR;
 import com.hellish.event.EntityAttackEvent;
+import com.hellish.event.EventUtils;
 	
 public class AttackSystem extends IteratingSystem{
 	public static final Rectangle AABB_RECT = new Rectangle();
@@ -70,9 +71,7 @@ public class AttackSystem extends IteratingSystem{
 		if(attackCmp.delay <= 0 && attackCmp.isAttacking()) {
 			attackCmp.setState(AttackState.DEAL_DAMAGE);
 			attackDirection = aniCmp.realDirection;
-			EntityAttackEvent event = EntityAttackEvent.pool.obtain().set(entity);
-			gameStage.getRoot().fire(event);
-			EntityAttackEvent.pool.free(event);
+			EventUtils.fireEvent(gameStage, EntityAttackEvent.pool, event -> event.set(entity));
 			if(attackCmp.canFire) {
 				fire(imageCmp.image.isFlipX(), physicsCmp.body.getPosition(), physicsCmp.size);
 			}

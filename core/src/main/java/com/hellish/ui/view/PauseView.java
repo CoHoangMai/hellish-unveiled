@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.hellish.Main;
+import com.hellish.event.EventUtils;
 import com.hellish.event.GamePauseEvent;
 import com.hellish.event.GameRestartEvent;
 import com.hellish.event.GameResumeEvent;
@@ -57,12 +58,8 @@ public class PauseView extends Table{
         goBackButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				GameRestartEvent restartEvent = GameRestartEvent.pool.obtain();
-				gameStage.getRoot().fire(restartEvent);
-				GameRestartEvent.pool.free(restartEvent);
-				GameResumeEvent resumeEvent = GameResumeEvent.pool.obtain();
-				gameStage.getRoot().fire(resumeEvent);
-				GameResumeEvent.pool.free(resumeEvent);
+				EventUtils.fireEvent(gameStage, GameRestartEvent.pool, e -> {});
+				EventUtils.fireEvent(gameStage, GameResumeEvent.pool, e -> {});
 				context.setScreen(ScreenType.MAIN_MENU); // Khởi động lại màn hình Game
             }
         });
@@ -70,12 +67,8 @@ public class PauseView extends Table{
         restartButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				GameRestartEvent restartEvent = GameRestartEvent.pool.obtain();
-				gameStage.getRoot().fire(restartEvent);
-				GameRestartEvent.pool.free(restartEvent);
-				GameResumeEvent resumeEvent = GameResumeEvent.pool.obtain();
-				gameStage.getRoot().fire(resumeEvent);
-				GameResumeEvent.pool.free(resumeEvent);
+				EventUtils.fireEvent(gameStage, GameRestartEvent.pool, e -> {});
+				EventUtils.fireEvent(gameStage, GameResumeEvent.pool, e -> {});
 			}
 		});
         
@@ -91,9 +84,7 @@ public class PauseView extends Table{
 		settingButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-				GamePauseEvent pauseEvent = GamePauseEvent.pool.obtain();
-				gameStage.getRoot().fire(pauseEvent);
-				GamePauseEvent.pool.free(pauseEvent);
+        		EventUtils.fireEvent(gameStage, GamePauseEvent.pool, e -> {});
 				context.setScreen(ScreenType.SETTING);
 		   }
         });

@@ -13,6 +13,7 @@ import com.hellish.Main;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.NightZoneComponent;
 import com.hellish.ecs.component.PhysicsComponent;
+import com.hellish.event.EventUtils;
 import com.hellish.event.LightChangeEvent;
 import com.hellish.event.MapChangeEvent;
 
@@ -33,9 +34,7 @@ public class NightZoneSystem extends IteratingSystem implements EventListener{
 		if(!nightCmp.triggerEntities.isEmpty()) {
 			nightCmp.triggerEntities.clear();
 			
-			LightChangeEvent lightChangeEvent = LightChangeEvent.pool.obtain();
-			gameStage.getRoot().fire(lightChangeEvent);
-			LightChangeEvent.pool.free(lightChangeEvent);
+			EventUtils.fireEvent(gameStage, LightChangeEvent.pool, event -> {});
 		}
 	}
 

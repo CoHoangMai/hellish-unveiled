@@ -12,16 +12,17 @@ import com.hellish.ecs.component.AnimationComponent.AnimationType;
 import com.hellish.ecs.component.ComponentManager;
 import com.hellish.ecs.component.LootComponent;
 import com.hellish.event.EntityLootEvent;
+import com.hellish.event.EventUtils;
 
 public class LootSystem extends IteratingSystem{
 	private final ComponentManager componentManager;
-	private final Stage stage;
+	private final Stage gameStage;
 	
 	public LootSystem(final Main context) {
 		super(Family.all(LootComponent.class).get());
 		
 		componentManager = context.getComponentManager();
-		stage = context.getGameStage();
+		gameStage = context.getGameStage();
 	}
 
 	@Override
@@ -34,9 +35,7 @@ public class LootSystem extends IteratingSystem{
 		aniCmp.nextAnimation(AnimationType.OPEN);
 		aniCmp.mode = Animation.PlayMode.NORMAL;
 		
-		EntityLootEvent lootEvent = EntityLootEvent.pool.obtain();
-		stage.getRoot().fire(lootEvent);
-		EntityLootEvent.pool.free(lootEvent);
+		EventUtils.fireEvent(gameStage, EntityLootEvent.pool, event -> {});
 		
 		entity.getComponents().forEach(component -> {
 			componentManager.notifyComponentRemoved(entity, lootCmp);

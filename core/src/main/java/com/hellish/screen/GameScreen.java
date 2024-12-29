@@ -21,9 +21,11 @@ import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PlayerComponent;
+import com.hellish.ecs.system.AudioSystem;
 import com.hellish.ecs.system.CameraSystem;
 import com.hellish.ecs.system.DebugSystem;
 import com.hellish.ecs.system.RenderSystem;
+import com.hellish.event.EventUtils;
 import com.hellish.event.GamePauseEvent;
 import com.hellish.event.GameResumeEvent;
 import com.hellish.event.LoseEvent;
@@ -66,6 +68,7 @@ public class GameScreen extends AbstractScreen<Table> implements EventListener{
 		mandatorySystems = new HashSet<>(Arrays.asList(
 			CameraSystem.class,
 			RenderSystem.class,
+			AudioSystem.class,
 			DebugSystem.class
 		));
 		
@@ -222,13 +225,9 @@ public class GameScreen extends AbstractScreen<Table> implements EventListener{
 		 } else if (key == GameKeys.PAUSE) {
 			 paused = !paused;
 			 if(paused) {
-				 GamePauseEvent event = GamePauseEvent.pool.obtain();
-				 gameStage.getRoot().fire(event);
-				 GamePauseEvent.pool.free(event);
+				 EventUtils.fireEvent(gameStage, GamePauseEvent.pool, event -> {});
 			 } else {
-				 GameResumeEvent event = GameResumeEvent.pool.obtain();
-				 gameStage.getRoot().fire(event);
-				 GameResumeEvent.pool.free(event);
+				 EventUtils.fireEvent(gameStage, GameResumeEvent.pool, event -> {});
 			 }
 		 }
 	}

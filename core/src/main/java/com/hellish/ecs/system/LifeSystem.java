@@ -20,6 +20,7 @@ import com.hellish.ecs.component.FloatingTextComponent;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.event.EntityTakeDamageEvent;
+import com.hellish.event.EventUtils;
 
 public class LifeSystem extends IteratingSystem implements Disposable{
 	private final Stage stage;
@@ -56,10 +57,8 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 		
 		if (lifeCmp.takeDamage > 0) {
 			lifeCmp.life -= (int)lifeCmp.takeDamage;
-			
-			EntityTakeDamageEvent takeDamageEvent = EntityTakeDamageEvent.pool.obtain().set(entity);
-			stage.getRoot().fire(takeDamageEvent);
-			EntityTakeDamageEvent.pool.free(takeDamageEvent);
+
+			EventUtils.fireEvent(stage, EntityTakeDamageEvent.pool, event -> event.set(entity));
 			
 			floatingText(Integer.toString((int) lifeCmp.takeDamage), physicsCmp.body.getPosition(), physicsCmp.size);
 			lifeCmp.takeDamage = 0;
@@ -68,6 +67,8 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 		if (lifeCmp.isDead()) {
 			lifeCmp.isInjured = false;
 			physicsCmp.currentSteerer = null;
+			physicsCmp.body.setLinearVelocity(Vector2.Zero);
+			
 			if(aniCmp != null) {
 				aniCmp.nextAnimation(AnimationType.DIE);
 				aniCmp.mode = PlayMode.NORMAL;
