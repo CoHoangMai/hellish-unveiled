@@ -35,17 +35,19 @@ public class TerrainSpawnSystem extends IteratingSystem implements EventListener
 		
 		//Thành phần Image
 		final ImageComponent imageCmp = getEngine().createComponent(ImageComponent.class);
-		imageCmp.image = new FlipImage(spawnCmp.textureRegion);
-		imageCmp.image.setPosition(spawnCmp.location.x, spawnCmp.location.y);
+		imageCmp.image = new FlipImage(spawnCmp.terrainObj.getTextureRegion());
+		imageCmp.image.setPosition(spawnCmp.terrainObj.getX() * UNIT_SCALE, spawnCmp.terrainObj.getY() * UNIT_SCALE);
 		imageCmp.image.setSize(
-			spawnCmp.textureRegion.getRegionWidth() * UNIT_SCALE, 
-			spawnCmp.textureRegion.getRegionHeight() * UNIT_SCALE
+			spawnCmp.terrainObj.getTextureRegion().getRegionWidth() * UNIT_SCALE, 
+			spawnCmp.terrainObj.getTextureRegion().getRegionHeight() * UNIT_SCALE
 		);
 		imageCmp.image.setScaling(Scaling.fill);
 		spawnedEntity.add(imageCmp);
 		
 		//Thành phần Terrain
-		spawnedEntity.add(getEngine().createComponent(TerrainComponent.class));
+		TerrainComponent terrainCmp = getEngine().createComponent(TerrainComponent.class);
+		terrainCmp.terrainObj = spawnCmp.terrainObj;
+		spawnedEntity.add(terrainCmp);
 		
 		getEngine().addEntity(spawnedEntity);
 		
@@ -72,8 +74,7 @@ public class TerrainSpawnSystem extends IteratingSystem implements EventListener
 					TiledMapTileMapObject tiledMapObj = (TiledMapTileMapObject) mapObj;
 					Entity entity = getEngine().createEntity();
 					TerrainSpawnComponent spawnCmp = getEngine().createComponent(TerrainSpawnComponent.class);
-					spawnCmp.textureRegion = tiledMapObj.getTextureRegion();
-					spawnCmp.location.set(tiledMapObj.getX() * UNIT_SCALE, tiledMapObj.getY() * UNIT_SCALE);
+					spawnCmp.terrainObj = tiledMapObj;
 					entity.add(spawnCmp);
 					getEngine().addEntity(entity);
 				}

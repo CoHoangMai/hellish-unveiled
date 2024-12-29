@@ -4,6 +4,7 @@ import static com.hellish.ecs.system.EntitySpawnSystem.COLLISION_BOX;
 import static com.hellish.Main.UNIT_SCALE;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -38,11 +39,12 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 	public static final Rectangle SPAWN_RECT = new Rectangle();
 	public static final String TAG = CollisionSpawnSystem.class.getSimpleName();
 	public static final int EXTRA_SPAWN_SIZE = 5;
+	
 	final private World world;
 	final private Array<TiledMapTileLayer> tiledLayers;	
 	final private Array<TiledMapTileMapObject> terrainObjects;
 	final private HashSet<Cell> processedCells;
-	final private HashSet<MapObject> processedObjects;
+	final private HashSet<MapObjectKey> processedObjects;
 	public CollisionSpawnSystem(final Main context) {
 		super(Family.all(PhysicsComponent.class, CollisionComponent.class).get());
 		
@@ -50,7 +52,7 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 		tiledLayers = new Array<TiledMapTileLayer>();
 		terrainObjects = new Array<TiledMapTileMapObject>();
 		processedCells = new HashSet<Cell>();
-		processedObjects = new HashSet<MapObject>();
+		processedObjects = new HashSet<>();
 	}
 
 	@Override
@@ -63,7 +65,7 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 			forEachCell(layer, (int)entityX, (int)entityY, EXTRA_SPAWN_SIZE, (cell, x, y) -> {
 				if(cell.getTile().getObjects().getCount() == 0) {
 		    		return;
-		    	}
+			    }
 				if(processedCells.contains(cell)) {
 					return;
 				}
@@ -71,17 +73,17 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 				processedCells.add(cell);
 		    	for(MapObject mapObj : cell.getTile().getObjects()) {
 		    		Entity collisionEntity = getEngine().createEntity();
-		    		
+				    		
 		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(getEngine(), world, x, y, mapObj, true));
-		    		
-		    		TiledComponent tiledCmp = getEngine().createComponent(TiledComponent.class);
-		    		tiledCmp.cell = cell;
-		    		tiledCmp.nearbyEntities.add(entity);
-		    		
-		    		collisionEntity.add(tiledCmp);
-		    			
-		    		getEngine().addEntity(collisionEntity);
-		    	}
+			    		
+				    TiledComponent tiledCmp = getEngine().createComponent(TiledComponent.class);
+				    tiledCmp.cell = cell;
+				    tiledCmp.nearbyEntities.add(entity);
+				    		
+				    collisionEntity.add(tiledCmp);
+				    			
+				    getEngine().addEntity(collisionEntity);
+				 }
 			});
 		}
 		
@@ -92,7 +94,9 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 	    	}
 			
 			for(MapObject mapObj : terrainObject.getTile().getObjects()) {
-				if(processedObjects.contains(mapObj)) {
+				MapObjectKey key = new MapObjectKey(mapObj, terrainObject);
+				
+				if(processedObjects.contains(key)) {
 					continue;
 				}
 				
@@ -109,7 +113,7 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 		        
 		        SPAWN_RECT.set(bodyX, bodyY, bodyW, bodyH);
 		        
-		        if (SPAWN_RECT.contains(entityX, entityY)) {
+		        if (SPAWN_RECT.contains(entityX, entityY)) { 
 		        	Entity collisionEntity = getEngine().createEntity();
 	    			
 		    		collisionEntity.add(PhysicsComponent.physicsCmpFromShape2D(
@@ -119,12 +123,12 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 		    		
 		    		TiledComponent tiledCmp = getEngine().createComponent(TiledComponent.class);
 		    		tiledCmp.nearbyEntities.add(entity);
-		    		tiledCmp.object = mapObj;
+		    		tiledCmp.objectKey = key;
 		    		collisionEntity.add(tiledCmp);
 		    			
 		    		getEngine().addEntity(collisionEntity);
 		    		
-		    		processedObjects.add(mapObj);
+		    		processedObjects.add(key);
 		        }
 			}
 		}
@@ -191,8 +195,8 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 			if(((CollisionDespawnEvent)event).cell != null) {
 				processedCells.remove(((CollisionDespawnEvent)event).cell);
 			}
-			if(((CollisionDespawnEvent)event).mapObject != null) {
-				processedObjects.remove(((CollisionDespawnEvent)event).mapObject);
+			if(((CollisionDespawnEvent)event).mapObjectKey != null) {
+				processedObjects.remove(((CollisionDespawnEvent)event).mapObjectKey);
 			}
 			return true;
 		}
@@ -214,5 +218,30 @@ public class CollisionSpawnSystem extends IteratingSystem implements EventListen
 	@FunctionalInterface
 	private interface CellAction {
 		void accept(TiledMapTileLayer.Cell cell, int x, int y);
+	}
+	
+	//Để nhận diện mỗi MapObject của mỗi TerrainObject
+	public class MapObjectKey {
+	    private final MapObject mapObject;
+	    private final TiledMapTileMapObject terrainObject;
+
+	    public MapObjectKey(MapObject mapObject, TiledMapTileMapObject terrainObject) {
+	        this.mapObject = mapObject;
+	        this.terrainObject = terrainObject;
+	    }
+
+	    @Override
+	    public boolean equals(Object obj) {
+	        if (this == obj) return true;
+	        if (obj == null || getClass() != obj.getClass()) return false;
+	        MapObjectKey that = (MapObjectKey) obj;
+	        return Objects.equals(mapObject, that.mapObject) && 
+	                Objects.equals(terrainObject, that.terrainObject);
+	    }
+
+	    @Override
+	    public int hashCode() {
+	        return Objects.hash(mapObject, terrainObject);
+	    }
 	}
 }
