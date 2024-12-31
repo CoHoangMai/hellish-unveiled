@@ -41,6 +41,7 @@ import com.hellish.ui.view.GameView;
 import com.hellish.ui.view.InventoryView;
 import com.hellish.ui.view.LoseView;
 import com.hellish.ui.view.PauseView;
+import com.hellish.ui.view.SettingView;
 import com.hellish.ui.view.WinView;
 
 public class GameScreen extends AbstractScreen<Table> implements EventListener{
@@ -102,10 +103,6 @@ public class GameScreen extends AbstractScreen<Table> implements EventListener{
 
 	@Override
 	public void render(float delta) {
-		// if(!isMusicLoaded && assetManager.isLoaded(AudioType.GAME.getFilePath())) {
-		// 	isMusicLoaded = true;
-		// 	audioManager.playAudio(AudioType.GAME);
-		// }
 	}
 
 	@Override
@@ -151,6 +148,15 @@ public class GameScreen extends AbstractScreen<Table> implements EventListener{
 		}
 	}
 	
+	 public void showSettingView(boolean show) {
+	    	for(Actor actor : uiStage.getActors()) {
+				if(actor instanceof SettingView) {
+					actor.setVisible(show);
+					break;
+				}
+			}
+	    }
+	
 	@Override
 	protected Array<Table> getScreenViews(Main context) {
 		Array<Table> views = new Array<>();
@@ -173,6 +179,10 @@ public class GameScreen extends AbstractScreen<Table> implements EventListener{
         LoseView loseView = new LoseView(Scene2DSkin.defaultSkin, context);
         loseView.setVisible(false);
         views.add(loseView);
+        
+        SettingView settingView = new SettingView(Scene2DSkin.defaultSkin, context);
+        settingView.setVisible(false);
+        views.add(settingView);
         
 		return views;
 	}

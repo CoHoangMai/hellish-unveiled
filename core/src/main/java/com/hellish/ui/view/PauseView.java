@@ -17,6 +17,7 @@ import com.hellish.event.EventUtils;
 import com.hellish.event.GamePauseEvent;
 import com.hellish.event.GameRestartEvent;
 import com.hellish.event.GameResumeEvent;
+import com.hellish.screen.GameScreen;
 import com.hellish.screen.ScreenType;
 import com.hellish.ui.Scene2DSkin;
 import com.hellish.ui.Scene2DSkin.ImageDrawables;
@@ -85,7 +86,7 @@ public class PauseView extends Table{
             @Override
             public void clicked(InputEvent event, float x, float y) {
         		EventUtils.fireEvent(gameStage, GamePauseEvent.pool, e -> {});
-				context.setScreen(ScreenType.SETTING);
+        		((GameScreen) context.getScreen()).showSettingView(true);
 		   }
         });
 	}

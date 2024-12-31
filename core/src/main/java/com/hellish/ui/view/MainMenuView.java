@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hellish.Main;
 import com.hellish.event.EventUtils;
 import com.hellish.event.SelectEvent;
+import com.hellish.screen.MainMenuScreen;
 import com.hellish.screen.ScreenType;
 import com.hellish.ui.Scene2DSkin.Drawables;
 import com.hellish.ui.Scene2DSkin.ImageDrawables;
@@ -71,7 +72,7 @@ public class MainMenuView extends Table {
         settingButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                context.setScreen(ScreenType.SETTING);
+            	((MainMenuScreen) context.getScreen()).showSettingView(true);
             }
         });
     }

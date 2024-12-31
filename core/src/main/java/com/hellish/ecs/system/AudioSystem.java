@@ -153,7 +153,7 @@ public class AudioSystem extends EntitySystem implements EventListener {
 
         AudioType audioType = switch (screenType) {
         	case ScreenType.LOADING -> AudioType.LOADING;
-            case ScreenType.MAIN_MENU, ScreenType.SETTING, ScreenType.DIALOG, ScreenType.GUIDE -> AudioType.INTRO;
+            case ScreenType.MAIN_MENU, ScreenType.DIALOG, ScreenType.GUIDE -> AudioType.INTRO;
             case ScreenType.GAME -> AudioType.GAME;
             default -> null;
         };
