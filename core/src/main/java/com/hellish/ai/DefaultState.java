@@ -3,6 +3,7 @@ package com.hellish.ai;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
+import com.hellish.ecs.component.AttackComponent.AttackState;
 
 public enum DefaultState implements EntityState{
 	IDLE{
@@ -14,7 +15,7 @@ public enum DefaultState implements EntityState{
 		
 		@Override
 		public void update(StateEntity stateEntity) {
-			if(stateEntity.wantsToAttack()) {
+			if(stateEntity.wantsToAttack() && stateEntity.canAttack()) {
 				stateEntity.state(ATTACK);
 			} else if (stateEntity.wantsToMove()) {
 				stateEntity.state(WALK);
@@ -30,7 +31,7 @@ public enum DefaultState implements EntityState{
 		
 		@Override
 		public void update(StateEntity stateEntity) {
-			if(stateEntity.wantsToAttack()) {
+			if(stateEntity.wantsToAttack()  && stateEntity.canAttack()) {
 				stateEntity.state(ATTACK);
 			} else if (!stateEntity.wantsToMove()) {
 				stateEntity.state(IDLE);
@@ -48,7 +49,9 @@ public enum DefaultState implements EntityState{
 		
 		@Override
 		public void update(StateEntity stateEntity) {
-			if(stateEntity.attackCmp().isReady() && !stateEntity.attackCmp().doAttack) {
+			if(stateEntity.attackCmp().getState() == AttackState.COOLDOWN) {
+				stateEntity.changeToPreviousState();
+			} else if(stateEntity.attackCmp().isReady() && !stateEntity.attackCmp().doAttack) {
 				stateEntity.changeToPreviousState();
 			} else if (stateEntity.attackCmp().isReady()) {
 				stateEntity.animation(AnimationType.ATTACK, Animation.PlayMode.NORMAL, true);

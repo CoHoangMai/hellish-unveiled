@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 
 public class AttackComponent implements Component, Poolable{
 	public enum AttackState {
-		READY, PREPARE, ATTACKING, DEAL_DAMAGE
+		COOLDOWN, READY, PREPARE, ATTACKING, DEAL_DAMAGE
 	}
 
 	public boolean doAttack;

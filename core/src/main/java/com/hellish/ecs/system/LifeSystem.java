@@ -59,7 +59,6 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 			lifeCmp.life -= lifeCmp.takeDamage;
 			lifeCmp.life = (int)Math.max(lifeCmp.life - lifeCmp.takeDamage * deltaTime, 0);
 			
-
 			EventUtils.fireEvent(stage, EntityLifeChangeEvent.pool, event -> event.set(entity, null));
 			
 			floatingText(Integer.toString((int) lifeCmp.takeDamage), physicsCmp.body.getPosition(), physicsCmp.size);

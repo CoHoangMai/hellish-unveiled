@@ -69,6 +69,7 @@ import com.hellish.ecs.component.AnimationComponent.AnimationModel;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.CollisionComponent;
+import com.hellish.ecs.component.CooldownComponent;
 import com.hellish.ecs.component.EntitySpawnComponent.SpawnConfiguration;
 import com.hellish.ecs.component.StateComponent;
 import com.hellish.ecs.component.TextComponent;
@@ -175,10 +176,11 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			spawnedEntity.add(lifeCmp);
 		}
 		
-		//Thành phần Player, State, Inventory và Move (cho nhân vật người chơi)
+		//Thành phần Player, State, Inventory, Move, Cooldown (cho nhân vật người chơi)
 		if(spawnCmp.type.equals("Player")) {
 			spawnedEntity.add(getEngine().createComponent(PlayerComponent.class));
 			spawnedEntity.add(getEngine().createComponent(StateComponent.class));
+			spawnedEntity.add(getEngine().createComponent(CooldownComponent.class));
 			
 			MoveComponent moveCmp = getEngine().createComponent(MoveComponent.class);
 			moveCmp.speed = DEFAULT_MAX_SPEED * cfg.speedScaling;

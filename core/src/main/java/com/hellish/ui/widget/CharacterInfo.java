@@ -15,7 +15,7 @@ import com.hellish.ui.Scene2DSkin.Labels;
 public class CharacterInfo extends WidgetGroup{
 	private final Image background;
     private final Image lifeBar;
-    private final Image manaBar;
+    private final Image cooldownBar;
     private final Label lifePoint;
     
     public CharacterInfo(Skin skin) {
@@ -25,8 +25,8 @@ public class CharacterInfo extends WidgetGroup{
     	lifeBar = new Image(skin.getDrawable(Drawables.LIFE_BAR.getAtlasKey()));
     	lifeBar.setPosition(46, 22);
     	
-    	manaBar = new Image(skin.getDrawable(Drawables.MANA_BAR.getAtlasKey()));
-    	manaBar.setPosition(46, 11);
+    	cooldownBar = new Image(skin.getDrawable(Drawables.COOLDOWN_BAR.getAtlasKey()));
+    	cooldownBar.setPosition(46, 11);
     	
     	lifePoint = new Label("", skin.get(Labels.SMOL.getSkinKey(), LabelStyle.class));
     	lifePoint.setAlignment(Align.topLeft);
@@ -34,7 +34,7 @@ public class CharacterInfo extends WidgetGroup{
     	
     	addActor(background);
     	addActor(lifeBar);
-    	addActor(manaBar);
+    	addActor(cooldownBar);
     	addActor(lifePoint);
     }
     
@@ -64,12 +64,8 @@ public class CharacterInfo extends WidgetGroup{
     	life(current, max, 0.75f);
     }
     
-    public void mana(float percentage, float duration) {
-        manaBar.clearActions();
-        manaBar.addAction(Actions.scaleTo(MathUtils.clamp(percentage, 0f, 1f), 1f, duration));
-    }
-    public void mana(float percentage) {
-        manaBar.clearActions();
-        manaBar.addAction(Actions.scaleTo(MathUtils.clamp(percentage, 0f, 1f), 1f, 0.75f));
+    public void cooldown(float percentage) {
+    	cooldownBar.clearActions();
+        cooldownBar.addAction(Actions.scaleTo(MathUtils.clamp(percentage, 0f, 1f), 1f, 0.1f));
     }
 }

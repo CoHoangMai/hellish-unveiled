@@ -23,6 +23,7 @@ import com.hellish.ecs.component.AnimationComponent.AnimationModel;
 import com.hellish.ecs.component.AnimationComponent.AnimationType;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.AttackComponent.AttackState;
+import com.hellish.ecs.component.CooldownComponent;
 import com.hellish.ecs.component.FireComponent;
 import com.hellish.ecs.component.ImageComponent;
 import com.hellish.ecs.component.LifeComponent;
@@ -35,6 +36,7 @@ import com.hellish.event.EventUtils;
 	
 public class AttackSystem extends IteratingSystem{
 	public static final Rectangle AABB_RECT = new Rectangle();
+	public static final float MIN_COOLDOWN = 3;
 	private final Stage gameStage;
 	private final World world;
 	private final AssetManager assetManager;
@@ -53,6 +55,7 @@ public class AttackSystem extends IteratingSystem{
 		final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
 		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
 		final ImageComponent imageCmp = ECSEngine.imageCmpMapper.get(entity);
+		final CooldownComponent cdCmp = ECSEngine.cooldownCmpMapper.get(entity);
 	
 		Direction attackDirection = aniCmp.realDirection;
 		
@@ -69,6 +72,10 @@ public class AttackSystem extends IteratingSystem{
 		
 		attackCmp.delay -= deltaTime;
 		if(attackCmp.delay <= 0 && attackCmp.isAttacking()) {
+			if(cdCmp != null) {
+				cdCmp.current = Math.max(cdCmp.current - MIN_COOLDOWN, 0);
+			}
+			
 			attackCmp.setState(AttackState.DEAL_DAMAGE);
 			attackDirection = aniCmp.realDirection;
 			EventUtils.fireEvent(gameStage, EntityAttackEvent.pool, event -> event.set(entity));
@@ -155,6 +162,14 @@ public class AttackSystem extends IteratingSystem{
 		}
 		
 		if(aniCmp != null && aniCmp.isAnimationFinished() && attackCmp.getState() == AttackState.DEAL_DAMAGE) {
+			if(cdCmp != null && cdCmp.current < MIN_COOLDOWN) {
+				attackCmp.setState(AttackState.COOLDOWN);
+			} else {
+				attackCmp.setState(AttackState.READY);
+			}
+		}
+		
+		if(attackCmp.getState() == AttackState.COOLDOWN && cdCmp != null && cdCmp.current >= MIN_COOLDOWN) {
 			attackCmp.setState(AttackState.READY);
 		}
 	}

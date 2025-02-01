@@ -1,10 +1,13 @@
 package com.hellish.ai;
 
+import static com.hellish.ecs.system.AttackSystem.MIN_COOLDOWN;
+
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AnimationComponent;
 import com.hellish.ecs.component.AttackComponent;
+import com.hellish.ecs.component.CooldownComponent;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.StateComponent;
@@ -20,6 +23,7 @@ public class StateEntity {
 	private final MoveComponent moveCmp;
 	private final AttackComponent attackCmp;
 	private final LifeComponent lifeCmp;
+	private final CooldownComponent cdCmp;
 
 	private final StateComponent stateCmp;
 	
@@ -32,6 +36,7 @@ public class StateEntity {
 		attackCmp = ECSEngine.attackCmpMapper.get(entity);
 		aniCmp = ECSEngine.aniCmpMapper.get(entity);
 		lifeCmp = ECSEngine.lifeCmpMapper.get(entity);
+		cdCmp = ECSEngine.cooldownCmpMapper.get(entity);
 		
 		if(lifeCmp != null) {
 			stateCmp.stateMachine.setGlobalState(DefaultGlobalState.CHECK_ALIVE);
@@ -48,6 +53,10 @@ public class StateEntity {
 	
 	public boolean wantsToAttack() {
 		return attackCmp != null && attackCmp.doAttack;
+	}
+	
+	public boolean canAttack() {
+		return cdCmp != null && cdCmp.current >= MIN_COOLDOWN;
 	}
 	
 	public boolean isAnimationFinished() {

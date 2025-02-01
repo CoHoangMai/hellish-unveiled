@@ -140,7 +140,7 @@ public class Scene2DSkin{
 		CHAR_INFO_BGD("char_info"),
 		PROGRESS_BAR("progress_bar"),
 	    LIFE_BAR("life_bar"),
-	    MANA_BAR("mana_bar"),
+	    COOLDOWN_BAR("mana_bar"),
 	    FRAME_BGD("frame_bgd"),
 	    FRAME_FGD("frame_fgd"),
 	    BAR_BGD("bar_bgd"),
