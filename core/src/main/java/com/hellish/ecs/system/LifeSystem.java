@@ -19,7 +19,7 @@ import com.hellish.ecs.component.DeadComponent;
 import com.hellish.ecs.component.FloatingTextComponent;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.ecs.component.PhysicsComponent;
-import com.hellish.event.EntityTakeDamageEvent;
+import com.hellish.event.EntityLifeChangeEvent;
 import com.hellish.event.EventUtils;
 
 public class LifeSystem extends IteratingSystem implements Disposable{
@@ -43,7 +43,7 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 		final AnimationComponent aniCmp = ECSEngine.aniCmpMapper.get(entity);
 		final PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
 		
-		lifeCmp.life = Math.min(lifeCmp.life + lifeCmp.regeneration * deltaTime, lifeCmp.max);
+		lifeCmp.life = (int)Math.min(lifeCmp.life + lifeCmp.regeneration * deltaTime, lifeCmp.max);
 		
 		if(lifeCmp.life < lifeCmp.max * 0.5f) {
 			if(!lifeCmp.isInjured) {
@@ -56,9 +56,11 @@ public class LifeSystem extends IteratingSystem implements Disposable{
 		}
 		
 		if (lifeCmp.takeDamage > 0) {
-			lifeCmp.life -= (int)lifeCmp.takeDamage;
+			lifeCmp.life -= lifeCmp.takeDamage;
+			lifeCmp.life = (int)Math.max(lifeCmp.life - lifeCmp.takeDamage * deltaTime, 0);
+			
 
-			EventUtils.fireEvent(stage, EntityTakeDamageEvent.pool, event -> event.set(entity));
+			EventUtils.fireEvent(stage, EntityLifeChangeEvent.pool, event -> event.set(entity, null));
 			
 			floatingText(Integer.toString((int) lifeCmp.takeDamage), physicsCmp.body.getPosition(), physicsCmp.size);
 			lifeCmp.takeDamage = 0;

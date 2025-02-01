@@ -179,16 +179,6 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 				&& !contact.getFixtureA().isSensor()) {
 			ECSEngine.portalCmpMapper.get(entityB).triggerEntities.add(entityA);
 		}
-		
-		//xử lý thay đổi ánh sáng
-		if(ECSEngine.nightZoneCmpMapper.has(entityA) && ECSEngine.playerCmpMapper.has(entityB) 
-				&& !contact.getFixtureB().isSensor()) {
-			ECSEngine.nightZoneCmpMapper.get(entityA).triggerEntities.add(entityB);
-		}
-		if(ECSEngine.nightZoneCmpMapper.has(entityB) && ECSEngine.playerCmpMapper.has(entityA) 
-				&& !contact.getFixtureA().isSensor()) {
-			ECSEngine.nightZoneCmpMapper.get(entityB).triggerEntities.add(entityA);
-		}
 	}
 
 	@Override

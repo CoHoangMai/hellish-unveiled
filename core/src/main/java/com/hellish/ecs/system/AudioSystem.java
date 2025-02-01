@@ -33,6 +33,7 @@ public class AudioSystem extends EntitySystem implements EventListener {
 
     private static final int MAX_SOUNDS_PER_FRAME = 3;
     private float soundVolume = 1.0f;
+    private float musicVolume = 1.0f;
 
     @Override
     public boolean handle(Event event) {
@@ -94,7 +95,7 @@ public class AudioSystem extends EntitySystem implements EventListener {
 
     private void enqueueSound(String path) {
         if (!soundRequests.contains(path)) {
-            Gdx.app.debug(TAG, "Enqueuing sound: " + path);
+           // Gdx.app.debug(TAG, "Enqueuing sound: " + path);
             soundRequests.offer(path);
         }
     }
@@ -119,7 +120,7 @@ public class AudioSystem extends EntitySystem implements EventListener {
         }
 
         currentMusic = newMusic;
-        currentMusic.setVolume(0.1f);
+        currentMusic.setVolume(musicVolume);
         currentMusic.play();
         Gdx.app.debug(TAG, "Music changed to: " + path);
     }
@@ -142,7 +143,7 @@ public class AudioSystem extends EntitySystem implements EventListener {
         }
 
         currentMusic = newMusic;
-        currentMusic.setVolume(0.1f);
+        currentMusic.setVolume(musicVolume);
         currentMusic.play();
         Gdx.app.debug(TAG, "Music changed to: " + path);
     }
@@ -153,7 +154,7 @@ public class AudioSystem extends EntitySystem implements EventListener {
 
         AudioType audioType = switch (screenType) {
         	case ScreenType.LOADING -> AudioType.LOADING;
-            case ScreenType.MAIN_MENU, ScreenType.DIALOG, ScreenType.GUIDE -> AudioType.INTRO;
+            case ScreenType.MAIN_MENU, ScreenType.DIALOG -> AudioType.INTRO;
             case ScreenType.GAME -> AudioType.GAME;
             default -> null;
         };
@@ -174,10 +175,10 @@ public class AudioSystem extends EntitySystem implements EventListener {
     
 
     public void setMusicVolume(float volume) {
-        soundVolume = Math.max(0, Math.min(volume, 1)); // Clamp volume between 0 and 1
+        musicVolume = Math.max(0, Math.min(volume, 1)); // Clamp volume between 0 and 1
         if (currentMusic != null) {
-            currentMusic.setVolume(soundVolume);
-            Gdx.app.debug(TAG, "Music volume set to: " + soundVolume);
+            currentMusic.setVolume(musicVolume);
+            Gdx.app.debug(TAG, "Music volume set to: " + musicVolume);
         }
     }
 

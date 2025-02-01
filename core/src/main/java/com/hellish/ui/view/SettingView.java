@@ -5,9 +5,7 @@ import static com.hellish.ui.Scene2DSkin.OVERLAY_KEY;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -25,7 +23,6 @@ import com.hellish.Main;
 import com.hellish.ecs.system.AudioSystem;
 import com.hellish.screen.GameScreen;
 import com.hellish.screen.MainMenuScreen;
-import com.hellish.screen.ScreenType;
 import com.hellish.ui.Scene2DSkin;
 import com.hellish.ui.Scene2DSkin.CheckBoxes;
 import com.hellish.ui.Scene2DSkin.Drawables;
@@ -188,18 +185,5 @@ public class SettingView extends Table{
             }
         });
         return button;
-    }
-
-    private Image createDimOverlay() {
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(0, 0, 0, 0.5f); // Màu đen với độ trong suốt 50%
-        pixmap.fill();
-        Texture texture = new Texture(pixmap);
-        pixmap.dispose();
-
-        Image overlay = new Image(new TextureRegionDrawable(texture));
-        overlay.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        overlay.setPosition(0, 0);
-        return overlay;
     }
 }

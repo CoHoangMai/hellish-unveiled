@@ -1,9 +1,9 @@
 package com.hellish.ui.view;
 
+import static com.hellish.ui.Scene2DSkin.OVERLAY_KEY;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,14 +17,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hellish.Main;
 import com.hellish.event.EventUtils;
 import com.hellish.event.SelectEvent;
-import com.hellish.screen.ScreenType;
+import com.hellish.screen.MainMenuScreen;
+import com.hellish.ui.Scene2DSkin.Drawables;
 import com.hellish.ui.Scene2DSkin.ImageDrawables;
 
 public class GuideView extends Table{
     private final Stage gameStage;
-    public final Sprite backgroundSprite;
     private final ImageButton goBackButton;
-    private final Image dimOverlay;
     private final Image guideImage;
 
     public GuideView(Skin skin, final Main context) {
@@ -32,14 +31,13 @@ public class GuideView extends Table{
         setFillParent(true);
         gameStage = context.getGameStage();
         
-        // Tải hình nền
-        Texture backgroundTexture = new Texture("ui/background/background_guide.png");
-        backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundSprite.setPosition(-(Gdx.graphics.getWidth()/2), -(Gdx.graphics.getHeight()/2));
-        //Thêm lớp phủ
-        dimOverlay = createDimOverlay();
-        this.addActor(dimOverlay);
+        setBackground(Drawables.GUIDE_BACKGROUND.getAtlasKey());
+		
+		Image overlay = new Image(skin.get(OVERLAY_KEY, TextureRegionDrawable.class));
+        overlay.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        overlay.setPosition(0, 0);
+		this.addActor(overlay);
+		
         // Tạo nút
         goBackButton = createButton(ImageDrawables.SMALL_BUTTON_QUIT);
         // Thêm guide
@@ -62,7 +60,7 @@ public class GuideView extends Table{
         goBackButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                context.setScreen(ScreenType.MAIN_MENU); // Chuyển đến màn hình Game
+            	((MainMenuScreen) context.getScreen()).showGuideView(false);
             }
         });
     }
@@ -88,18 +86,5 @@ public class GuideView extends Table{
             }
         });
         return button;
-    }
-
-    private Image createDimOverlay() {
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(0, 0, 0, 0.5f); // Màu đen với độ trong suốt 50%
-        pixmap.fill();
-        Texture texture = new Texture(pixmap);
-        pixmap.dispose();
-
-        Image overlay = new Image(new TextureRegionDrawable(texture));
-        overlay.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        overlay.setPosition(0, 0);
-        return overlay;
     }
 }

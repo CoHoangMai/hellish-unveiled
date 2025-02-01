@@ -4,10 +4,10 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 public class LifeComponent implements Component, Poolable{
-	public float life;
-	public float max;
+	public int life;
+	public int max;
+	public int takeDamage;
 	public float regeneration;
-	public float takeDamage;
 	public boolean isInjured;
 	
 	public boolean isDead() {
@@ -15,8 +15,8 @@ public class LifeComponent implements Component, Poolable{
 	}
 	
 	public LifeComponent() {
-		life = 30;
-		max = 30;
+		life = 0;
+		max = 0;
 		regeneration = 0;
 		takeDamage = 0;
 		isInjured = false;
@@ -24,8 +24,8 @@ public class LifeComponent implements Component, Poolable{
 	
 	@Override
 	public void reset() {
-		life = 30;
-		max = 30;
+		life = 0;
+		max = 0;
 		regeneration = 0;
 		takeDamage = 0;
 		isInjured = false;

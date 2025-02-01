@@ -7,28 +7,19 @@ import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.LifeComponent;
 import com.hellish.event.EntityLootEvent;
 import com.hellish.event.EntityReviveEvent;
-import com.hellish.event.EntityTakeDamageEvent;
-import com.hellish.event.GameRestartEvent;
+import com.hellish.event.EntityLifeChangeEvent;
 
 public class GameModel extends PropertyChangeSource implements EventListener{
-	
-	private float playerLife;
 	private String popUpText;
 	
 	public GameModel(Stage stage) {
-		playerLife = 1;
 		popUpText = "";
 		
 		stage.addListener(this);
 	}
 	
-	public float getPlayerLife() {
-		return playerLife;
-	}
-	
-	private void setPlayerLife(float playerLife) {
-		this.playerLife = playerLife;
-		notify("playerLife", playerLife);
+	private void setPlayerLife(float currentLife, float maxLife, Float duration) {
+		notify("playerLife", currentLife, maxLife, duration);
 	}
 	
 	public String getPopUpText() {
@@ -42,13 +33,12 @@ public class GameModel extends PropertyChangeSource implements EventListener{
 
 	@Override
 	public boolean handle(Event event) {
-		if(event instanceof EntityTakeDamageEvent) {
-			EntityTakeDamageEvent damageEvent = (EntityTakeDamageEvent) event;
-			boolean isPlayer = ECSEngine.playerCmpMapper.has(damageEvent.getEntity());
+		if(event instanceof EntityLifeChangeEvent) {
+			EntityLifeChangeEvent damageEvent = (EntityLifeChangeEvent) event;
 			
-			if(isPlayer) {
+			if(ECSEngine.playerCmpMapper.has(damageEvent.getEntity())) {
 				LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(damageEvent.getEntity());
-				setPlayerLife(lifeCmp.life / lifeCmp.max);
+				setPlayerLife(lifeCmp.life, lifeCmp.max, damageEvent.getDuration());
 			}
 		} else if(event instanceof EntityReviveEvent) { 
 			EntityReviveEvent reviveEvent = (EntityReviveEvent) event;
@@ -56,14 +46,11 @@ public class GameModel extends PropertyChangeSource implements EventListener{
 			
 			if(isPlayer) {
 				LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(reviveEvent.getEntity());
-				setPlayerLife(lifeCmp.life / lifeCmp.max);
+				setPlayerLife(lifeCmp.life, lifeCmp.max, 0f);
 			}
 			
 		} else if(event instanceof EntityLootEvent){
 			setPopUpText("[BLACK]Ta vừa lụm được [RED]thứ gì đó");
-		} else if(event instanceof GameRestartEvent){
-			this.playerLife = 1;
-			notify("gameRestarted", true);
 		} else {
 			return false;
 		}

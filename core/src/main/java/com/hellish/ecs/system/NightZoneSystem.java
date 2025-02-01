@@ -1,5 +1,7 @@
 package com.hellish.ecs.system;
 
+import static com.hellish.ecs.system.EntitySpawnSystem.COLLISION_BOX;
+
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -30,11 +32,46 @@ public class NightZoneSystem extends IteratingSystem implements EventListener{
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		NightZoneComponent nightCmp = ECSEngine.nightZoneCmpMapper.get(entity);
+		PhysicsComponent physicsCmp = ECSEngine.physicsCmpMapper.get(entity);
 		
-		if(!nightCmp.triggerEntities.isEmpty()) {
-			nightCmp.triggerEntities.clear();
+		nightCmp.entitiesInZone.clear();
+		
+		float x = physicsCmp.getPosition().x;
+		float y = physicsCmp.getPosition().y;
+		float w = physicsCmp.size.x;
+		float h = physicsCmp.size.y;
+		
+		//kiểm tra xem có con HUST đứng trong night zone không (một cách tương đối)
+		world.QueryAABB(fixture -> {
+			if(fixture.getUserData() != COLLISION_BOX) {
+				return true;
+			}
 			
+			Entity fixtureEntity = (Entity) fixture.getBody().getUserData();
+			if(fixtureEntity == entity) {
+				return true;
+			}
+			
+			if(ECSEngine.playerCmpMapper.has(fixtureEntity)) {
+				if(!nightCmp.entitiesInZone.contains(fixtureEntity)) {
+					nightCmp.entitiesInZone.add(fixtureEntity);
+				}
+			}
+			
+			return true;
+		}, x, y, x + w, y + h);
+	
+		
+		if(!nightCmp.entitiesInZone.isEmpty() && !nightCmp.activated) {
+			nightCmp.activated = true;
 			EventUtils.fireEvent(gameStage, LightChangeEvent.pool, event -> {});
+			return;
+		}
+		
+		if(nightCmp.entitiesInZone.isEmpty() && nightCmp.activated) {
+			nightCmp.activated = false;
+			EventUtils.fireEvent(gameStage, LightChangeEvent.pool, event -> {});
+			return;
 		}
 	}
 

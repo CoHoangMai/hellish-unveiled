@@ -11,8 +11,8 @@ import com.hellish.ecs.system.RenderSystem;
 import com.hellish.input.GameKeys;
 import com.hellish.input.InputManager;
 import com.hellish.ui.Scene2DSkin;
+import com.hellish.ui.view.GuideView;
 import com.hellish.ui.view.MainMenuView;
-import com.hellish.ui.view.PauseView;
 import com.hellish.ui.view.SettingView;
 
 public class MainMenuScreen extends AbstractScreen<Table> {
@@ -40,12 +40,25 @@ public class MainMenuScreen extends AbstractScreen<Table> {
         settingView.setVisible(false);
         views.add(settingView);
         
+        GuideView guideView = new GuideView(Scene2DSkin.defaultSkin, context);
+        guideView.setVisible(false);
+        views.add(guideView);
+        
         return views;
     }
     
     public void showSettingView(boolean show) {
     	for(Actor actor : uiStage.getActors()) {
 			if(actor instanceof SettingView) {
+				actor.setVisible(show);
+				break;
+			}
+		}
+    }
+    
+    public void showGuideView(boolean show) {
+    	for(Actor actor : uiStage.getActors()) {
+			if(actor instanceof GuideView) {
 				actor.setVisible(show);
 				break;
 			}

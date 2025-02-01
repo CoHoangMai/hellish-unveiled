@@ -1,5 +1,7 @@
 package com.hellish.ui.view;
 
+import java.util.function.Consumer;
+
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.utils.Align;
 import com.hellish.ui.Scene2DSkin.Drawables;
 import com.hellish.ui.Scene2DSkin.Labels;
 import com.hellish.ui.model.GameModel;
+import com.hellish.ui.model.PropertyChangeSource.MultiConsumer;
 import com.hellish.ui.widget.CharacterInfo;
 
 public class GameView extends Table{
@@ -28,7 +31,7 @@ public class GameView extends Table{
         
         Table table = new Table();
         table.background(skin.getDrawable(Drawables.FRAME_BGD.getAtlasKey()));
-        popUpLabel = new Label("", skin.get(Labels.TEXT.getSkinKey(), LabelStyle.class));
+        popUpLabel = new Label("", skin.get(Labels.NORMAL.getSkinKey(), LabelStyle.class));
         popUpLabel.setAlignment(Align.topLeft);
         popUpLabel.setWrap(true);
         table.add(popUpLabel).expand().fill().pad(14).top().row();
@@ -36,17 +39,25 @@ public class GameView extends Table{
         add(table).expand().width(400).height(120).pad(20).bottom();
         
         //Data binding
-        model.onPropertyChange("playerLife", lifePercentage -> playerLife((float) lifePercentage));
-        model.onPropertyChange("popUpText", popUpInfo -> popUp((String) popUpInfo));
-        model.onPropertyChange("gameRestarted", restart -> {
-        	if((boolean) restart) {
-        		playerInfo.life(1, 0);
-        	} 
+        model.onPropertyChange("playerLife", (MultiConsumer<Object>) (values) -> {
+            // Lấy từng giá trị từ mảng values
+            float current = (float) values[0];
+            float max = (float) values[1];
+            Float duration = (Float) values[2];
+            
+            // Thực hiện hành động
+            playerLife(current, max, duration);
         });
+        model.onPropertyChange("popUpText", (Consumer<Object>) (popUpInfo -> popUp((String) popUpInfo)));
 	}
 	
-	 public void playerLife(float percentage) {
-		 playerInfo.life(percentage);       
+	 public void playerLife(float current, float max, Float duration) {
+		 if(duration == null) {
+			 playerInfo.life(current, max);       
+		 }
+		 else {
+			 playerInfo.life(current, max, duration);
+		 }
 	 }
 	 
 	 public void playerMana(float percentage) {

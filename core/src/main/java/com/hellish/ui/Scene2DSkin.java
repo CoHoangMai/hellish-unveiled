@@ -33,6 +33,7 @@ public class Scene2DSkin{
 	private static Stage gameStage;
 	
 	public enum Fonts {
+		SMALL("fnt_white", 0.25f),
 		DEFAULT("fnt_white", 0.5f),
 		BIG("fnt_white", 1),
 		BIGGER("fnt_white", 1.5f);
@@ -79,11 +80,11 @@ public class Scene2DSkin{
 	}
 	
 	public enum Labels{
-		TEXT,
+		SMOL,
+		NORMAL,
 		FRAME,
 		TITLE,
-		LARGE,
-		NORMAL;
+		LARGE;
 		
 		public String getSkinKey() {
 			return this.name().toLowerCase();
@@ -247,9 +248,13 @@ public class Scene2DSkin{
 	}
 	
 	private static void loadLabelSkin(Skin skin) {
+		Label.LabelStyle smolLabelStyle = new Label.LabelStyle();
+		smolLabelStyle.font = skin.get(Fonts.SMALL.getSkinKey(), BitmapFont.class);
+		skin.add(Labels.SMOL.getSkinKey(), smolLabelStyle);
+		
 		Label.LabelStyle textLabelStyle = new Label.LabelStyle();
 		textLabelStyle.font = skin.get(Fonts.DEFAULT.getSkinKey(), BitmapFont.class);
-		skin.add(Labels.TEXT.getSkinKey(), textLabelStyle);
+		skin.add(Labels.NORMAL.getSkinKey(), textLabelStyle);
 	
 		Label.LabelStyle frameLabelStyle = new Label.LabelStyle();
 		frameLabelStyle.font = skin.get(Fonts.DEFAULT.getSkinKey(), BitmapFont.class);
@@ -268,10 +273,6 @@ public class Scene2DSkin{
 		Label.LabelStyle largeLabelStyle = new Label.LabelStyle();
 		largeLabelStyle.font = skin.get(Fonts.BIGGER.getSkinKey(), BitmapFont.class);
 		skin.add(Labels.LARGE.getSkinKey(), largeLabelStyle);
-
-		Label.LabelStyle normalLabelStyle = new Label.LabelStyle();
-		normalLabelStyle.font = skin.get(Fonts.DEFAULT.getSkinKey(), BitmapFont.class);
-		skin.add(Labels.NORMAL.getSkinKey(), normalLabelStyle);
 	}
 
 	private static void loadTextButtonSkin(Skin skin) {

@@ -33,6 +33,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.Array;
@@ -54,6 +55,8 @@ import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.component.EntitySpawnComponent;
+import com.hellish.event.EntityLifeChangeEvent;
+import com.hellish.event.EventUtils;
 import com.hellish.event.GameRestartEvent;
 import com.hellish.event.MapChangeEvent;
 import com.hellish.map.MapManager;
@@ -77,6 +80,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 	public static final String AI_SENSOR = "AiSensor";
 	private final MapManager mapManager;
 	private final World world;
+	private final Stage stage;
 	private final RayHandler rayHandler;
 	private final AssetManager assetManager;
 	private final Map<String, SpawnConfiguration> cachedSpawnCfgs;
@@ -89,7 +93,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		builder.speedScaling = 1.75f;
 		builder.physicsScaling.set(0.2f, 0.44f);
 		builder.physicsOffset.set(0, -18 * UNIT_SCALE);
-		builder.lifeScaling = 3;
+		builder.lifeScaling = 5;
 		builder.attackScaling = 1.25f;
 		builder.attackExtraRange = 0.75f;
 		builder.hasLight = true;
@@ -101,6 +105,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		super(Family.all(EntitySpawnComponent.class).get());
 		rayHandler = context.getRayHandler();
 		world = context.getWorld();
+		stage = context.getGameStage();
 		mapManager = context.getMapManager();
 		assetManager = context.getAssetManager();
 		cachedSpawnCfgs = new HashMap<>();
@@ -165,7 +170,8 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		//Thành phần Life (cho thứ có HP)
 		if(cfg.lifeScaling > 0) {
 			final LifeComponent lifeCmp = getEngine().createComponent(LifeComponent.class);
-			lifeCmp.max = DEFAULT_LIFE * cfg.lifeScaling;
+			lifeCmp.max = (int) (DEFAULT_LIFE * cfg.lifeScaling);
+			lifeCmp.life = lifeCmp.max;
 			spawnedEntity.add(lifeCmp);
 		}
 		
@@ -228,6 +234,11 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		
 		getEngine().addEntity(spawnedEntity);
 		
+		//nếu là Player thì cập nhật thông số UI
+		if(spawnCmp.type.equals("Player")) {
+			EventUtils.fireEvent(stage, EntityLifeChangeEvent.pool, event -> event.set(spawnedEntity, 0f));
+		}
+		
 		getEngine().removeEntity(entity);
 	}
 	
@@ -239,7 +250,6 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.WOLF);
 				builder.physicsScaling.set(0.4f, 0.4f);
 				builder.physicsOffset.set(0, -5 * UNIT_SCALE);
-				builder.lifeScaling = 0.75f;
 				builder.attackExtraRange = 0.1f;
 				builder.aiTreePath = "ai/wolf.tree";
 				builder.hasLight = true;
@@ -250,7 +260,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.physicsScaling.set(0.44f, 0.72f);
 				builder.physicsOffset.set(0, -9 * UNIT_SCALE);
 				builder.attackScaling = 0.5f;
-				builder.lifeScaling = 0.75f;
+				builder.lifeScaling = 1.5f;
 				builder.aiTreePath = "ai/zombie.tree";
 				builder.hasLight = true;
 				builder.physicsCategory = ENEMY_BIT;
@@ -261,7 +271,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.physicsScaling.set(0.48f, 0.75f);
 				builder.physicsOffset.set(0, -8 * UNIT_SCALE);
 				builder.attackScaling = 0.5f;
-				builder.lifeScaling = 0.5f;
+				builder.lifeScaling = 1.75f;
 				builder.aiTreePath = "ai/zombie.tree";
 				builder.hasLight = true;
 				builder.physicsCategory = ENEMY_BIT;
@@ -272,7 +282,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.physicsScaling.set(0.4f, 0.78f);
 				builder.physicsOffset.set(0, -7 * UNIT_SCALE);
 				builder.attackScaling = 0.75f;
-				builder.lifeScaling = 1.25f;
+				builder.lifeScaling = 2;
 				builder.aiTreePath = "ai/zombie.tree";
 				builder.hasLight = true;
 				builder.physicsCategory = ENEMY_BIT;

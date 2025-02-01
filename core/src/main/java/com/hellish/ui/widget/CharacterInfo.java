@@ -3,14 +3,20 @@ package com.hellish.ui.widget;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.hellish.ui.Scene2DSkin.Drawables;
+import com.hellish.ui.Scene2DSkin.Labels;
 
 public class CharacterInfo extends WidgetGroup{
 	private final Image background;
     private final Image lifeBar;
     private final Image manaBar;
+    private final Label lifePoint;
     
     public CharacterInfo(Skin skin) {
     	
@@ -22,9 +28,14 @@ public class CharacterInfo extends WidgetGroup{
     	manaBar = new Image(skin.getDrawable(Drawables.MANA_BAR.getAtlasKey()));
     	manaBar.setPosition(46, 11);
     	
+    	lifePoint = new Label("", skin.get(Labels.SMOL.getSkinKey(), LabelStyle.class));
+    	lifePoint.setAlignment(Align.topLeft);
+    	lifePoint.setPosition(185, 30);
+    	
     	addActor(background);
     	addActor(lifeBar);
     	addActor(manaBar);
+    	addActor(lifePoint);
     }
     
     @Override
@@ -37,13 +48,20 @@ public class CharacterInfo extends WidgetGroup{
     	return background.getDrawable().getMinHeight();
     }
     
-    public void life(float percentage, float duration) {
+    public void life(float current, float max, float duration) {
+    	float percentage = current / max;
         lifeBar.clearActions();
         lifeBar.addAction(Actions.scaleTo(MathUtils.clamp(percentage, 0f, 1f), 1f, duration));
+		
+		final StringBuilder stringBuilder = lifePoint.getText();
+		stringBuilder.setLength(0);
+		stringBuilder.append(String.format("%.0f", current));
+		stringBuilder.append("/");
+		stringBuilder.append(String.format("%.0f", max));
+		lifePoint.invalidateHierarchy();
     }
-    public void life(float percentage) {
-        lifeBar.clearActions();
-        lifeBar.addAction(Actions.scaleTo(MathUtils.clamp(percentage, 0f, 1f), 1f, 0.75f));
+    public void life(float current, float max) {
+    	life(current, max, 0.75f);
     }
     
     public void mana(float percentage, float duration) {

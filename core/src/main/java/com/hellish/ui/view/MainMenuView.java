@@ -65,7 +65,7 @@ public class MainMenuView extends Table {
         guideButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                context.setScreen(ScreenType.GUIDE);
+            	((MainMenuScreen) context.getScreen()).showGuideView(true);
             }
         });
 

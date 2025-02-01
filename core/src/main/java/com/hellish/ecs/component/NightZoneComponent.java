@@ -7,15 +7,18 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 public class NightZoneComponent implements Component, Poolable{
-	public final HashSet<Entity> triggerEntities;
+	public final HashSet<Entity> entitiesInZone;
+	public boolean activated;
 	
 	public NightZoneComponent() {
-		triggerEntities = new HashSet<>();
+		entitiesInZone = new HashSet<>();
+		activated = false;
 	}
 
 	@Override
 	public void reset() {
-		triggerEntities.clear();
+		entitiesInZone.clear();
+		activated = false;
 	}
 
 }

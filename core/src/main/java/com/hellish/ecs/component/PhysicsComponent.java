@@ -195,6 +195,8 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		//Khá là lỗi tbh
 	    physicsCmp.boundingRadius = Math.max(bodyW, bodyH);
 	    
+	    physicsCmp.size.set(bodyW, bodyH);
+	    
 		physicsCmp.body = world.createBody(new BodyDef() {{
 			type = BodyDef.BodyType.StaticBody;
 			position.set(bodyX, bodyY);

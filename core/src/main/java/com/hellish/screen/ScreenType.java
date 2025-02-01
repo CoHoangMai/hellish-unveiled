@@ -6,7 +6,6 @@ public enum ScreenType {
 	GAME(GameScreen.class),
 	LOADING(LoadingScreen.class),
 	MAIN_MENU(MainMenuScreen.class),
-	GUIDE(GuideScreen.class), 
 	DIALOG(DialogScreen.class);
 	
 	@SuppressWarnings("rawtypes")

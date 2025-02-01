@@ -17,6 +17,8 @@ import com.hellish.ui.widget.InventorySlot;
 
 import static com.hellish.ui.widget.InventoryDragSource.DRAG_ACTOR_SIZE;
 
+import java.util.function.Consumer;
+
 public class InventoryView extends Table{
 	private final InventoryModel model;
 	private final Array<InventorySlot> invSlots;
@@ -89,7 +91,7 @@ public class InventoryView extends Table{
 		setUpDragAndDrop();
 		
 		//Data binding
-		model.onPropertyChange("playerItems", itemModels -> {
+		model.onPropertyChange("playerItems", (Consumer<Object>) itemModels -> {
             clearInventoryAndGear();
             for (ItemModel itemModel : (Array<ItemModel>) itemModels) {
                 if (itemModel.equipped) {
