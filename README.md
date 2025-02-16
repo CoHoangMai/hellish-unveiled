@@ -1,33 +1,38 @@
-# HellishUnveiled
+# Hellish Unveiled: Secret Terror
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+A short, simple top-down action RPG where the player fights enemies and defeats the final boss to win. Built with [libGDX](https://libgdx.com/).
 
-This project was generated with a template including simple application launchers and an empty `ApplicationAdapter` extension.
+## Gameplay
 
-## Platforms
+#### Objective
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+Defeat the final boss to win.
 
-## Gradle
+#### Controls
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+- Arrow Keys: Move the player character.
+- Spacebar: Attack enemies.
+- C Key: Open/close the inventory.
+- ECS Key: Pause the game.
+- Mouse/Touchpad: Select buttons and interact with the inventory.
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+## Framework & Extensions
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+This project uses [libGDX](https://libgdx.com/) as the core framework, along with the following extensions:
+
+- [Ashley](https://github.com/libgdx/ashley)
+- [Box2D](https://libgdx.com/wiki/extensions/physics/box2d)
+- [Box2DLights](https://github.com/libgdx/box2dlights)
+- [GdxAI](https://github.com/libgdx/gdx-ai)
+
+## Screenshots
+
+![Intro](<assets/screenshots/Hellish Unveiled_ Secret Terrors 2025-02-17 00-18-19_Moment(2).jpg>)
+
+![In-game](<assets/screenshots/Hellish Unveiled_ Secret Terrors 2025-02-16 23-41-23_Moment(4).jpg>)
+
+![Night](<assets/screenshots/Hellish Unveiled_ Secret Terrors 2025-02-16 23-41-23_Moment.jpg>)
+
+![Inventory](<assets/screenshots/Hellish Unveiled_ Secret Terrors 2025-02-16 23-41-23_Moment(3).jpg>)
+
+![Boss](<assets/screenshots/Hellish Unveiled_ Secret Terrors 2025-02-17 00-25-08_Moment.jpg>)
