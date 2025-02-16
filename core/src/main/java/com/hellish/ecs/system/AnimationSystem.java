@@ -74,7 +74,7 @@ public class AnimationSystem extends IteratingSystem {
 				&& aniCmp.currentDirectionKey == aniCmp.nextDirectionKey && aniCmp.currentInjuredStatus == aniCmp.nextInjuredStatus) {
 			aniCmp.aniTime += deltaTime;
 		} else {
-			aniCmp.animation = animation(imgCmp.image, aniCmp, aniCmp.nextModel.getModel(), aniCmp.nextInjuredStatus, aniCmp.nextAnimationType.getAtlasKey(), physicsCmp.direction);
+			aniCmp.animation = animation(imgCmp.image, aniCmp, physicsCmp, aniCmp.nextModel.getModel(), aniCmp.nextInjuredStatus, aniCmp.nextAnimationType.getAtlasKey(), physicsCmp.direction);
 			aniCmp.clearAnimation();
 			aniCmp.aniTime = 0;
 		}
@@ -107,7 +107,7 @@ public class AnimationSystem extends IteratingSystem {
 	}
 	
 	private Animation<TextureRegionDrawable> animation(FlipImage image, AnimationComponent aniCmp, 
-			String modelKey, boolean isInjured, String typeKey, Direction direction){
+			PhysicsComponent physicsCmp, String modelKey, boolean isInjured, String typeKey, Direction direction){
 		String directionAtlasKey;
 		String noDirectionAtlasKey;
 		
@@ -159,7 +159,6 @@ public class AnimationSystem extends IteratingSystem {
             Animation<TextureRegionDrawable> animation = new Animation<>(DEFAULT_FRAME_DURATION, drawableRegions);
             animationCache.put(noDirectionAtlasKey, animation);
         	aniCmp.realDirection = image.isFlipX() ? Direction.RIGHT : Direction.LEFT;
-    		//Gdx.app.debug(TAG, "Tạo animation mới loại " + noDirectionAtlasKey);
             return animation;
 		}
 		
@@ -171,7 +170,6 @@ public class AnimationSystem extends IteratingSystem {
 		Animation<TextureRegionDrawable> animation = new Animation<>(DEFAULT_FRAME_DURATION, drawableRegions);
         animationCache.put(directionAtlasKey, animation);
         aniCmp.realDirection = direction;
-		//Gdx.app.debug(TAG, "Tạo animation mới loại " + directionAtlasKey);
         return animation;
 	}
 	

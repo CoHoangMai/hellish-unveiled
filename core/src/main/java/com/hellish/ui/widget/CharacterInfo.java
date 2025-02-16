@@ -64,8 +64,11 @@ public class CharacterInfo extends WidgetGroup{
     	life(current, max, 0.75f);
     }
     
-    public void cooldown(float percentage) {
+    public void cooldown(float percentage, float duration) {
     	cooldownBar.clearActions();
-        cooldownBar.addAction(Actions.scaleTo(MathUtils.clamp(percentage, 0f, 1f), 1f, 0.1f));
+        cooldownBar.addAction(Actions.scaleTo(MathUtils.clamp(percentage, 0f, 1f), 1f, duration));
+    }
+    public void cooldown(float percentage) {
+    	cooldown(percentage, 0.1f);
     }
 }

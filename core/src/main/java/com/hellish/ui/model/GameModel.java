@@ -24,8 +24,8 @@ public class GameModel extends PropertyChangeSource implements EventListener{
 		notify("playerLife", currentLife, maxLife, duration);
 	}
 	
-	private void setPlayerCooldown(float percentage) {
-		notify("playerCooldown", percentage);
+	private void setPlayerCooldown(float percentage, Float duration) {
+		notify("playerCooldown", percentage, duration);
 	}
 	
 	public String getPopUpText() {
@@ -40,18 +40,18 @@ public class GameModel extends PropertyChangeSource implements EventListener{
 	@Override
 	public boolean handle(Event event) {
 		if(event instanceof EntityLifeChangeEvent) {
-			EntityLifeChangeEvent damageEvent = (EntityLifeChangeEvent) event;
+			EntityLifeChangeEvent lifeChangeEvent = (EntityLifeChangeEvent) event;
 			
-			if(ECSEngine.playerCmpMapper.has(damageEvent.getEntity())) {
-				LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(damageEvent.getEntity());
-				setPlayerLife(lifeCmp.life, lifeCmp.max, damageEvent.getDuration());
+			if(ECSEngine.playerCmpMapper.has(lifeChangeEvent.getEntity())) {
+				LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(lifeChangeEvent.getEntity());
+				setPlayerLife(lifeCmp.life, lifeCmp.max, lifeChangeEvent.getDuration());
 			}
 		} else if(event instanceof CooldownChangeEvent) {
 			CooldownChangeEvent cdEvent = (CooldownChangeEvent) event;
 			
 			if(ECSEngine.playerCmpMapper.has(cdEvent.getEntity())) {
 				CooldownComponent cdCmp = ECSEngine.cooldownCmpMapper.get(cdEvent.getEntity());
-				setPlayerCooldown(cdCmp.current / cdCmp.max);
+				setPlayerCooldown(cdCmp.current / cdCmp.max, cdEvent.getDuration());
 			}
 		} else if(event instanceof EntityReviveEvent) { 
 			EntityReviveEvent reviveEvent = (EntityReviveEvent) event;
@@ -59,11 +59,12 @@ public class GameModel extends PropertyChangeSource implements EventListener{
 			
 			if(isPlayer) {
 				LifeComponent lifeCmp = ECSEngine.lifeCmpMapper.get(reviveEvent.getEntity());
-				setPlayerLife(lifeCmp.life, lifeCmp.max, 0f);
+				setPlayerLife(lifeCmp.life, lifeCmp.max, 0.5f);
+				setPlayerCooldown(1f, 0.5f);
 			}
 			
 		} else if(event instanceof EntityLootEvent){
-			setPopUpText("[BLACK]Ta vừa lụm được [RED]thứ gì đó");
+			setPopUpText("[BLACK]Bạn đã mở ra [RED]một cái rương trống không...");
 		} else {
 			return false;
 		}

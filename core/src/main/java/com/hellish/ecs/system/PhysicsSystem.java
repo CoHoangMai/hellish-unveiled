@@ -139,7 +139,6 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
 		final Entity entityB = getEntity(contact.getFixtureB());
 		
 		if(entityA == null || entityB == null) {
-			System.out.println("[BeginContact] Có fixture hoang");
 			return;
 		}
 		
@@ -187,7 +186,6 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener{
         final Entity entityB = getEntity(contact.getFixtureB());
         
         if(entityA == null || entityB == null) {
-        	System.out.println("[EndContact] Có fixture hoang");
 			return;
 		}
         

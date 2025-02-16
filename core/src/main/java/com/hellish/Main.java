@@ -42,7 +42,6 @@ import box2dLight.RayHandler;
 import java.util.EnumMap;
 
 public class Main extends Game {
-	private static final String TAG = Main.class.getSimpleName();
 	public static final String VIETNAMESE_CHARS = "ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ";
 	public static final float UNIT_SCALE = 1 / 32f;
 	
@@ -61,7 +60,6 @@ public class Main extends Game {
 	private InputManager inputManager;
 	private MapManager mapManager;
 	private ComponentManager componentManager;
-	private PreferenceManager preferenceManager;
 	
 	private ECSEngine ecsEngine;
 	
@@ -107,16 +105,9 @@ public class Main extends Game {
 		inputManager = new InputManager(this);
 		Gdx.input.setInputProcessor(new InputMultiplexer(inputManager, gameStage, uiStage));
 		
-		//Preference manager
-		preferenceManager = new PreferenceManager();
-		
 		//Screen đầu
 		screenCache = new EnumMap<ScreenType, Screen>(ScreenType.class);
 		setScreen(ScreenType.LOADING);	
-	}
-	
-	public PreferenceManager getPreferenceManager() {
-		return preferenceManager;
 	}
 	
 	public RayHandler getRayHandler() {
@@ -165,7 +156,6 @@ public class Main extends Game {
 		final Screen screen = screenCache.get(screenType);
 		if (screen == null) {
 			try {
-				Gdx.app.debug(TAG, "Khởi tạo Screen mới: " + screenType);
 				final Screen newScreen = (Screen)ClassReflection.getConstructor(screenType.getScreenClass(), Main.class).newInstance(this);
 				screenCache.put(screenType, newScreen);
 				setScreen(newScreen);
@@ -173,7 +163,6 @@ public class Main extends Game {
 				throw new GdxRuntimeException("Screen "+ screenType + " không thể khởi tạo", e);
 			}
 		} else {
-			Gdx.app.debug(TAG, "Đổi sang screen: " + screenType);
 			if(screen instanceof GameScreen) {
 				for(EntitySystem system : ecsEngine.getSystems()) {
 					system.setProcessing(true);

@@ -10,9 +10,9 @@ public class CooldownComponent implements Component, Poolable{
 	public float regeneration;
 	
 	public CooldownComponent() {
-		current = 10;
-		max = 10;
-		regeneration = 1;
+		current = 5;
+		max = 5;
+		regeneration = 1.5f;
 		reduceAmount = 0;
 	}
 	

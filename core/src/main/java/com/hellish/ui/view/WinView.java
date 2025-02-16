@@ -43,8 +43,8 @@ public class WinView extends Table{
 		congratulation = new Image(new Texture("ui/screen/CONGRATULATION.png"));
 	    stack.add(congratulation);
 	    
-	    goBackButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_QUIT);
-        restartButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_RESTART);
+	    goBackButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_QUIT, 50, 40);
+        restartButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_RESTART, 50, 40);
         
         goBackButton.setVisible(false);
         restartButton.setVisible(false);

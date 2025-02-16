@@ -48,7 +48,6 @@ import com.hellish.ecs.system.CollisionDespawnSystem;
 import com.hellish.ecs.system.CollisionSpawnSystem;
 import com.hellish.ecs.system.CooldownSystem;
 import com.hellish.ecs.system.DeadSystem;
-import com.hellish.ecs.system.DebugSystem;
 import com.hellish.ecs.system.EntitySpawnSystem;
 import com.hellish.ecs.system.FireSystem;
 import com.hellish.ecs.system.FloatingTextSystem;
@@ -138,7 +137,7 @@ public class ECSEngine extends PooledEngine implements Disposable{
 		addSystem(new TextSystem(context));
 		addSystem(new FloatingTextSystem(context));
 		addSystem(new RenderSystem(context));
-		addSystem(new DebugSystem(context));	
+		//addSystem(new DebugSystem(context));	
 	}
 	
 	@Override

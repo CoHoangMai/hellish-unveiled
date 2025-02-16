@@ -42,8 +42,8 @@ public class EntitySpawnComponent implements Component, Poolable{
 		
 		public static final float DEFAULT_MAX_SPEED = 3;
 		public static final float DEFAULT_MAX_ACCELERATION = 24;
-		public static final float DEFAULT_ATTACK_DAMAGE = 5;
-		public static final int DEFAULT_LIFE = 10;
+		public static final float DEFAULT_ATTACK_DAMAGE = 80;
+		public static final int DEFAULT_LIFE = 200;
 		
 		public SpawnConfiguration(Builder builder) {
 			this.model = builder.model;

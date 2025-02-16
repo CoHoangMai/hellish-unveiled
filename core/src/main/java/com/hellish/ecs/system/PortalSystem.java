@@ -50,10 +50,10 @@ public class  PortalSystem extends IteratingSystem implements EventListener{
 		PortalComponent portalCmp = ECSEngine.portalCmpMapper.get(entity);
 		
 		if(!portalCmp.triggerEntities.isEmpty()) {
-			Entity triggerEntity = portalCmp.triggerEntities.iterator().next();
+			//Entity triggerEntity = portalCmp.triggerEntities.iterator().next();
 			portalCmp.triggerEntities.clear();
 			
-			Gdx.app.debug(TAG, triggerEntity + " đi vào portal " + portalCmp.id);	
+			//Gdx.app.debug(TAG, triggerEntity + " đi vào portal " + portalCmp.id);	
 			
 			for(Entity eachEntity : getEngine().getEntities()) {
 				if(!ECSEngine.playerCmpMapper.has(eachEntity)) {

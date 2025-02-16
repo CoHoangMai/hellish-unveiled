@@ -5,9 +5,7 @@ import static com.hellish.ui.Scene2DSkin.OVERLAY_KEY;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -17,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.hellish.Main;
 import com.hellish.ecs.system.AudioSystem;
@@ -50,7 +47,7 @@ public class SettingView extends Table{
         this.top(); // Đặt bảng chính để định vị từ trên xuống
        
         // Tạo nút
-        goBackButton = createButton(ImageDrawables.SMALL_BUTTON_QUIT);
+        goBackButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_QUIT, 25, 20);
         goBackButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -78,7 +75,6 @@ public class SettingView extends Table{
                 float volume = volumeMusicSlider.getValue();
                 audioSystem.setMusicVolume(volume);  // Thay đổi volume cho nhạc nền
                 volumeMusicValueLabel.setText(String.format("%d%%", (int) (volume * 100)));
-                System.out.println("Music volume after slider change: " + volume);
             }
         });
 
@@ -121,7 +117,6 @@ public class SettingView extends Table{
                     x720screenCheckBox.setChecked(false);
                     DisplayMode currentMode = Gdx.graphics.getDisplayMode();
                     Gdx.graphics.setFullscreenMode(currentMode);
-                    //audioSystem.queueSound("audio/sounds/button_click.mp3");
                 }
             }
         });
@@ -133,7 +128,6 @@ public class SettingView extends Table{
                     fullscreenCheckBox.setChecked(false);
                     x720screenCheckBox.setChecked(false);
                     Gdx.graphics.setWindowedMode(960, 540);
-                    //audioSystem.queueSound("audio/sounds/button_click.mp3");
                 }
             }
         });
@@ -145,7 +139,6 @@ public class SettingView extends Table{
                     fullscreenCheckBox.setChecked(false);
                     x540screenCheckBox.setChecked(false);
                     Gdx.graphics.setWindowedMode(1280, 720);
-                    //audioSystem.queueSound("audio/sounds/button_click.mp3");
                 }
             }
         });
@@ -161,29 +154,5 @@ public class SettingView extends Table{
         mainTable.add(fullscreenCheckBox).padLeft(5).padTop(5).left().row();
         
         this.add(mainTable).expandX().fillX().pad(50);
-    }
-
-
-   private ImageButton createButton(ImageDrawables image) {
-        Texture texture = new Texture(image.getFileName());
-        TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
-        ImageButton button = new ImageButton(drawable);
-        button.addListener(new ClickListener() {
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                button.setSize(25, 25);
-            }
-
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                button.setSize(20, 20);
-            }
-
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                //audioSystem.queueSound("audio/sounds/button_click.mp3");
-            }
-        });
-        return button;
     }
 }

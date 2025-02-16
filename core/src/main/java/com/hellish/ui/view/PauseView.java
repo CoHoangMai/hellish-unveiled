@@ -43,10 +43,10 @@ public class PauseView extends Table{
 		pauseLabel.setAlignment(Align.center);
 		add(pauseLabel).expandX().center().padTop(120).row();
 		// Tạo các nút
-		goBackButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_QUIT);
-        settingButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_SETTING);
-        restartButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_RESTART);
-        continueButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_CONTINUE);
+		goBackButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_QUIT, 50, 40);
+        settingButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_SETTING, 50, 40);
+        restartButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_RESTART, 50, 40);
+        continueButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_CONTINUE, 50, 40);
 		// Bố trí các nút
 		Table bottomTable = new Table();
         bottomTable.add(goBackButton).size(40, 40).pad(20); // Nút đầu tiên

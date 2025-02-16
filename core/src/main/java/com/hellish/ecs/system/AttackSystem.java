@@ -36,7 +36,7 @@ import com.hellish.event.EventUtils;
 	
 public class AttackSystem extends IteratingSystem{
 	public static final Rectangle AABB_RECT = new Rectangle();
-	public static final float MIN_COOLDOWN = 3;
+	public static final float MIN_COOLDOWN = 2;
 	private final Stage gameStage;
 	private final World world;
 	private final AssetManager assetManager;

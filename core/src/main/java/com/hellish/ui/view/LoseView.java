@@ -40,8 +40,8 @@ public class LoseView extends Table{
 		gameOver = new Image(new Texture("ui/screen/GAMEOVER.png"));
 	    add(gameOver).center().size(gameOver.getWidth() * 0.6f, gameOver.getHeight() * 0.6f).padTop(40).row();
 	    
-	    goBackButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_QUIT);
-        restartButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_RESTART);
+	    goBackButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_QUIT, 50, 40);
+        restartButton = Scene2DSkin.createButton(ImageDrawables.SMALL_BUTTON_RESTART, 50, 40);
         
         goBackButton.setVisible(false);
         restartButton.setVisible(false);

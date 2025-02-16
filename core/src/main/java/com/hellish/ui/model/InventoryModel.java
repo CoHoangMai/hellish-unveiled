@@ -2,7 +2,6 @@ package com.hellish.ui.model;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.utils.Array;
@@ -14,7 +13,6 @@ import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.event.EntityAddItemEvent;
 
 public class InventoryModel extends PropertyChangeSource implements EventListener{
-	private static final String TAG = InventoryModel.class.getSimpleName();
 	private Array<ItemModel> playerItems;
 	private final ECSEngine ecsEngine;
 
@@ -76,29 +74,16 @@ public class InventoryModel extends PropertyChangeSource implements EventListene
 	}
 	
 	public void equip(ItemModel itemModel, boolean equip) {
-		Gdx.app.debug(TAG, "Trang bị: " + equip + " " + itemModel);
 		ItemComponent itemCmp = getPlayerItemByModel(itemModel);
 		if(itemCmp != null) {
 			itemCmp.equipped = equip;
 			itemModel.equipped = equip;
 		}
-		debugInventory();
 	}
 
 	public void inventoryItem(int slotIdx, ItemModel sourceItem) {
-		Gdx.app.debug(TAG, "Đặt vật phẩm " + sourceItem + " ở slot " + slotIdx);
 		ItemComponent itemCmp = getPlayerItemByModel(sourceItem);
 		itemCmp.slotIdx = slotIdx;
 		sourceItem.slotIdx = slotIdx;
-	}
-	
-
-	
-	private void debugInventory() {
-		Gdx.app.debug(TAG, "Inventory:");
-		for (Entity item : getPlayerInventoryCmp().items) {
-			ItemComponent itemCmp = ECSEngine.itemCmpMapper.get(item);
-			Gdx.app.debug(TAG, itemCmp.itemType + ", " + itemCmp.slotIdx + ", " + itemCmp.equipped);
-		}
 	}
 }

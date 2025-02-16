@@ -167,7 +167,7 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		    collisionFixture.getFilterData().categoryBits = cfg.physicsCategory;
 		    
 		    //lỗi đấy lmao
-		    physicsCmp.boundingRadius = Math.max(w, collH);
+		    physicsCmp.boundingRadius = Math.max(w, collH) / 2;
 
 		    collisionBoxShape.dispose();
 		}
@@ -193,7 +193,7 @@ public class PhysicsComponent implements Component, Poolable, Steerable<Vector2>
 		PhysicsComponent physicsCmp = engine.createComponent(PhysicsComponent.class);
 		
 		//Khá là lỗi tbh
-	    physicsCmp.boundingRadius = Math.max(bodyW, bodyH);
+	    physicsCmp.boundingRadius = Math.max(bodyW, bodyH) / 2;
 	    
 	    physicsCmp.size.set(bodyW, bodyH);
 	    

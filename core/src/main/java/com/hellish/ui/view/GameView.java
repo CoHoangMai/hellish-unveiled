@@ -48,8 +48,16 @@ public class GameView extends Table{
             // Thực hiện hành động
             playerLife(current, max, duration);
         });
-        model.onPropertyChange("playerCooldown", 
-        		(Consumer<Object>) (percentage -> playerCooldown((float) percentage)));
+        
+        model.onPropertyChange("playerCooldown", (MultiConsumer<Object>) (values) -> {
+            // Lấy từng giá trị từ mảng values
+            float percentage = (float) values[0];
+            Float duration = (Float) values[1];
+            
+            // Thực hiện hành động
+            playerCooldown(percentage, duration);
+        });
+        
         model.onPropertyChange("popUpText", (Consumer<Object>) (popUpInfo -> popUp((String) popUpInfo)));
 	}
 	
@@ -62,8 +70,13 @@ public class GameView extends Table{
 		 }
 	 }
 	 
-	 public void playerCooldown(float percentage) {
-		 playerInfo.cooldown(percentage);
+	 public void playerCooldown(float percentage, Float duration) {
+		 if(duration == null) {
+			 playerInfo.cooldown(percentage);       
+		 }
+		 else {
+			 playerInfo.cooldown(percentage, duration);
+		 }
 	 }
 
 	private void resetFadeOutDelay(Actor actor) {

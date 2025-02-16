@@ -13,14 +13,20 @@ public class CooldownChangeEvent extends Event{
     };
     
 	private Entity entity;
+	private Float duration;
 	
-	public CooldownChangeEvent set(Entity entity) {
+	public CooldownChangeEvent set(Entity entity, Float duration) {
 		this.entity = entity;
+		this.duration = duration;
 		return this;
 	}
 	
 	public Entity getEntity() {
 		return entity;
+	}
+	
+	public Float getDuration() {
+		return duration;
 	}
 	
 	@Override

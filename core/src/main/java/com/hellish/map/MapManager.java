@@ -2,7 +2,6 @@ package com.hellish.map;
 
 import java.util.EnumMap;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,7 +11,6 @@ import com.hellish.event.EventUtils;
 import com.hellish.event.MapChangeEvent;
 
 public class MapManager implements Disposable{
-	public static final String TAG = MapManager.class.getSimpleName();
 	
 	private final AssetManager assetManager;
 	private final Stage gameStage;
@@ -33,7 +31,6 @@ public class MapManager implements Disposable{
 	public void setMap(final MapType type) {		
 		currentMap = mapCache.get(type);
 		if(currentMap == null) {
-			Gdx.app.debug(TAG, "Tạo map mới " + type);
 			final TiledMap tiledMap = (type == MapType.NO_MAP) ? null : assetManager.get(type.getFilePath(), TiledMap.class);
 			currentMap = tiledMap;
 			mapCache.put(type, currentMap);
@@ -42,8 +39,6 @@ public class MapManager implements Disposable{
 		EventUtils.fireEvent(gameStage, MapChangeEvent.pool, event -> event.set(currentMap));
 		
 		currentMapType = type;
-		
-		Gdx.app.debug(TAG, "Map hiện tại: " + type);
 	}
 	
 	public TiledMap getCurrentMap() {

@@ -30,7 +30,7 @@ public class CooldownSystem extends IteratingSystem{
 			return;
 		} else {
 			cdCmp.current = calculatedCd;
-			EventUtils.fireEvent(stage, CooldownChangeEvent.pool, event -> event.set(entity));
+			EventUtils.fireEvent(stage, CooldownChangeEvent.pool, event -> event.set(entity, null));
 		}
 	}
 

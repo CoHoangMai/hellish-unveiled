@@ -6,9 +6,6 @@ import java.util.HashSet;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -16,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
-import com.hellish.audio.AudioType;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.component.AttackComponent;
 import com.hellish.ecs.component.MoveComponent;
@@ -46,9 +42,8 @@ import com.hellish.ui.view.WinView;
 
 public class GameScreen extends AbstractScreen<Table> implements EventListener{
 	private final MapManager mapManager;
-	private final AssetManager assetManager;
 	private final ECSEngine ecsEngine;
-	public boolean paused;
+	private boolean paused;
 	
 	private float playerSin;
 	private float playerCos;
@@ -58,8 +53,6 @@ public class GameScreen extends AbstractScreen<Table> implements EventListener{
 	
 	public GameScreen(final Main context) {
 		super(context);
-		
-		assetManager = context.getAssetManager();
 		
 		ecsEngine = context.getECSEngine();
 		for(EntitySystem system : ecsEngine.getSystems()) {
@@ -83,14 +76,6 @@ public class GameScreen extends AbstractScreen<Table> implements EventListener{
 		directionVector = new Vector2();
 
 		paused = false;
-		
-		for (final AudioType audioType : AudioType.values()) {
-		    if (audioType.isMusic()) {
-		        assetManager.load(audioType.getFilePath(), Music.class);
-		    } else {
-		        assetManager.load(audioType.getFilePath(), Sound.class);
-		    }
-		}
 	}
 	
 	private void pauseWorld(boolean pause) {

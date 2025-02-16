@@ -332,19 +332,19 @@ public class Scene2DSkin{
         skin.add(SelectBoxes.SELECT_BOX.getSkinKey(), selectBoxStyle);
     }
     
-	public static ImageButton createButton(ImageDrawables image) {
+	public static ImageButton createButton(ImageDrawables image, int enterSize, int exitSize) {
         Texture texture = new Texture(image.getFileName());
         TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
         ImageButton button = new ImageButton(drawable);
         button.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                button.setSize(50, 50);
+                button.setSize(enterSize, enterSize);
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                button.setSize(40, 40);
+                button.setSize(exitSize, exitSize);
             }
 
             @Override

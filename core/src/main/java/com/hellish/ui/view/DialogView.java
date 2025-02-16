@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -18,6 +17,7 @@ import com.hellish.Main;
 import com.hellish.event.EventUtils;
 import com.hellish.event.SelectEvent;
 import com.hellish.screen.ScreenType;
+import com.hellish.ui.Scene2DSkin;
 import com.hellish.ui.Scene2DSkin.Drawables;
 import com.hellish.ui.Scene2DSkin.ImageDrawables;
 
@@ -51,7 +51,7 @@ public class DialogView extends Table {
         imagesBefore.add(new Texture("dialog/04_before.png"));
         imagesBefore.add(new Texture("dialog/05_noti.png"));
 
-        mailButton = createButton(ImageDrawables.MAIL_BUTTON);
+        mailButton = Scene2DSkin.createButton(ImageDrawables.MAIL_BUTTON, 70, 60);
 
         mail = new ArrayList<>();
         mail.add(new Texture("dialog/07_hust_mail.png"));
@@ -64,12 +64,7 @@ public class DialogView extends Table {
         imagesAfter.add(new Texture("dialog/12_after.png"));
         imagesAfter.add(new Texture("dialog/13_after.png"));
 
-        // Texture texture = new Texture(image.getFileName());
-        // TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
         startButton = new ImageButton(new TextureRegionDrawable(new Texture(ImageDrawables.BIG_BUTTON_PLAY.getFileName())));
-
-        // startButton = createButton(ImageDrawables.BIG_BUTTON_PLAY);
-        // startButton.setSize(60,60);
 
         currentImageIndex = 0;
 
@@ -99,48 +94,39 @@ public class DialogView extends Table {
         currentImageIndex++;
 
         if (currentImageIndex < imagesBefore.size()) {
+        	if(currentImage.getDrawable() instanceof TextureRegionDrawable) {
+        		Texture texture = ((TextureRegionDrawable) currentImage.getDrawable()).getRegion().getTexture();
+        		texture.dispose();
+        	}
             currentImage.remove();
             currentImage = new Image(imagesBefore.get(currentImageIndex));
             stack.add(currentImage);
         } else if (currentImageIndex == imagesBefore.size()) {
             stack.add(mailButton);
         } else if (currentImageIndex - imagesBefore.size() - 1< mail.size()) {
+        	if(currentImage.getDrawable() instanceof TextureRegionDrawable) {
+        		Texture texture = ((TextureRegionDrawable) currentImage.getDrawable()).getRegion().getTexture();
+        		texture.dispose();
+        	}
             currentImage.remove();
             mailButton.remove();
             currentImage = new Image(mail.get(currentImageIndex - imagesBefore.size() - 1));
             stack.add(currentImage);
         } else if (currentImageIndex - imagesBefore.size() - mail.size() - 1 < imagesAfter.size()) {
+        	if(currentImage.getDrawable() instanceof TextureRegionDrawable) {
+        		Texture texture = ((TextureRegionDrawable) currentImage.getDrawable()).getRegion().getTexture();
+        		texture.dispose();
+        	}
             currentImage.remove();
             currentImage = new Image(imagesAfter.get(currentImageIndex - imagesBefore.size() - mail.size() - 1));
             stack.add(currentImage);
         } else {
+        	if(currentImage.getDrawable() instanceof TextureRegionDrawable) {
+        		Texture texture = ((TextureRegionDrawable) currentImage.getDrawable()).getRegion().getTexture();
+        		texture.dispose();
+        	}
             currentImage.remove();
-            // Container<ImageButton> buttonContainer = new Container<>(startButton);
-            // buttonContainer.center().bottom().padTop(200);
             stack.add(startButton);
         }
-    }
-
-    private ImageButton createButton(ImageDrawables image) {
-        Texture texture = new Texture(image.getFileName());
-        TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
-        ImageButton button = new ImageButton(drawable);
-        button.addListener(new ClickListener() {
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                button.setSize(70,70);
-            }
-
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                button.setSize(60,60);
-            }
-
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                EventUtils.fireEvent(gameStage, SelectEvent.pool, e -> {});
-            }
-        });
-        return button;
     }
 }

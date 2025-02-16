@@ -11,6 +11,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.utils.Disposable;
 import com.hellish.audio.AudioType;
 import com.hellish.event.EntityAggroEvent;
 import com.hellish.event.EntityAttackEvent;
@@ -21,7 +22,7 @@ import com.hellish.event.SelectEvent;
 import com.hellish.event.WinEvent;
 import com.hellish.screen.ScreenType;
 
-public class AudioSystem extends EntitySystem implements EventListener {
+public class AudioSystem extends EntitySystem implements EventListener, Disposable {
 	public static final String TAG = AudioSystem.class.getSimpleName();
 
     private final Map<String, Sound> soundCache = new HashMap<>();
@@ -85,7 +86,6 @@ public class AudioSystem extends EntitySystem implements EventListener {
          while (!soundRequests.isEmpty() && soundsPlayed < MAX_SOUNDS_PER_FRAME) {
              String path = soundRequests.poll();
              Sound sound = soundCache.computeIfAbsent(path, key -> {
-                 Gdx.app.debug(TAG, "Loading sound: " + path);
                  return Gdx.audio.newSound(Gdx.files.internal(key));
              });
              sound.play(soundVolume);
@@ -95,7 +95,6 @@ public class AudioSystem extends EntitySystem implements EventListener {
 
     private void enqueueSound(String path) {
         if (!soundRequests.contains(path)) {
-           // Gdx.app.debug(TAG, "Enqueuing sound: " + path);
             soundRequests.offer(path);
         }
     }
@@ -104,7 +103,6 @@ public class AudioSystem extends EntitySystem implements EventListener {
     	String path = audioType.getFilePath();
     	
         if (currentMusicPath != null && currentMusicPath.equals(path)) {
-            Gdx.app.debug(TAG, "Music already playing: " + path);
             return;
         }
 
@@ -122,12 +120,10 @@ public class AudioSystem extends EntitySystem implements EventListener {
         currentMusic = newMusic;
         currentMusic.setVolume(musicVolume);
         currentMusic.play();
-        Gdx.app.debug(TAG, "Music changed to: " + path);
     }
     
     private void changeMusic(String path) {
         if (currentMusicPath != null && currentMusicPath.equals(path)) {
-            Gdx.app.debug(TAG, "Music already playing: " + path);
             return;
         }
 
@@ -145,12 +141,10 @@ public class AudioSystem extends EntitySystem implements EventListener {
         currentMusic = newMusic;
         currentMusic.setVolume(musicVolume);
         currentMusic.play();
-        Gdx.app.debug(TAG, "Music changed to: " + path);
     }
 
     private void handleScreenChange(ScreenChangeEvent screenEvent) {
         ScreenType screenType = screenEvent.getScreenType();
-        Gdx.app.debug(TAG, "Changing audio for screen: " + screenType);
 
         AudioType audioType = switch (screenType) {
         	case ScreenType.LOADING -> AudioType.LOADING;
@@ -166,19 +160,15 @@ public class AudioSystem extends EntitySystem implements EventListener {
 
     public float getMusicVolume() {
         if (currentMusic == null) {
-            // Handle case where currentMusic is null (possibly return a default value or log an error)
-            System.out.println("Current music is not loaded");
-            return 0f; // Or some default value indicating no music is playing
+            return 0f;
         }
         return currentMusic.getVolume();
     }
-    
 
     public void setMusicVolume(float volume) {
         musicVolume = Math.max(0, Math.min(volume, 1)); // Clamp volume between 0 and 1
         if (currentMusic != null) {
             currentMusic.setVolume(musicVolume);
-            Gdx.app.debug(TAG, "Music volume set to: " + musicVolume);
         }
     }
 
@@ -188,14 +178,20 @@ public class AudioSystem extends EntitySystem implements EventListener {
 
     public void setSoundVolume(float volume) {
         soundVolume = Math.max(0, Math.min(volume, 1)); // Clamp volume between 0 and 1
-        Gdx.app.debug(TAG, "Sound effects volume set to: " + soundVolume);
     }
 
     public Music getCurrentMusic() {
-        if (currentMusic == null) {
-            Gdx.app.debug(TAG, "No music is currently playing.");
-        }
-        Gdx.app.debug(TAG, "Current music path: " + currentMusic);
         return currentMusic;
     }
+
+	@Override
+	public void dispose() {
+		for(Sound sound : soundCache.values()) {
+			sound.dispose();
+		}
+		
+		for(Music music : musicCache.values()) {
+			music.dispose();
+		}
+	}
 }

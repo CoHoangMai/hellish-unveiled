@@ -55,6 +55,7 @@ import com.hellish.ecs.component.MoveComponent;
 import com.hellish.ecs.component.PhysicsComponent;
 import com.hellish.ecs.component.PlayerComponent;
 import com.hellish.ecs.component.EntitySpawnComponent;
+import com.hellish.event.CooldownChangeEvent;
 import com.hellish.event.EntityLifeChangeEvent;
 import com.hellish.event.EventUtils;
 import com.hellish.event.GameRestartEvent;
@@ -239,6 +240,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 		//nếu là Player thì cập nhật thông số UI
 		if(spawnCmp.type.equals("Player")) {
 			EventUtils.fireEvent(stage, EntityLifeChangeEvent.pool, event -> event.set(spawnedEntity, 0f));
+			EventUtils.fireEvent(stage, CooldownChangeEvent.pool, event -> event.set(spawnedEntity, 0f));
 		}
 		
 		getEngine().removeEntity(entity);
@@ -261,7 +263,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.FLAG_ZOMBIE);
 				builder.physicsScaling.set(0.44f, 0.72f);
 				builder.physicsOffset.set(0, -9 * UNIT_SCALE);
-				builder.attackScaling = 0.5f;
+				builder.attackScaling = 0.75f;
 				builder.lifeScaling = 1.5f;
 				builder.aiTreePath = "ai/zombie.tree";
 				builder.hasLight = true;
@@ -272,7 +274,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.speedScaling = 2;
 				builder.physicsScaling.set(0.48f, 0.75f);
 				builder.physicsOffset.set(0, -8 * UNIT_SCALE);
-				builder.attackScaling = 0.5f;
+				builder.attackScaling = 1.1f;
 				builder.lifeScaling = 1.75f;
 				builder.aiTreePath = "ai/zombie.tree";
 				builder.hasLight = true;
@@ -283,7 +285,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.speedScaling = 0.75f;
 				builder.physicsScaling.set(0.4f, 0.78f);
 				builder.physicsOffset.set(0, -7 * UNIT_SCALE);
-				builder.attackScaling = 0.75f;
+				builder.attackScaling = 1.5f;
 				builder.lifeScaling = 2;
 				builder.aiTreePath = "ai/zombie.tree";
 				builder.hasLight = true;
@@ -294,8 +296,8 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 				builder.speedScaling = 2;
 				builder.physicsScaling.set(0.4f, 0.5f); 
 				builder.physicsOffset.set(0, -30 * UNIT_SCALE);
-				builder.attackScaling = 0.75f;
-				builder.attackExtraRange = 5;
+				builder.attackScaling = 4;
+				builder.attackExtraRange = 2.8f;
 				builder.canFire = true;
 				builder.lifeScaling = 10;
 				builder.aiTreePath = "ai/boss.tree";
@@ -305,7 +307,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			} else if (t.equals("Chest")) {
 				SpawnConfiguration.Builder builder = new SpawnConfiguration.Builder(AnimationModel.CHEST);
 				builder.physicsScaling.set(0.25f, 0.1f);
-				builder.physicsOffset.set(0, -3 * UNIT_SCALE);
+				builder.physicsOffset.set(1.5f * UNIT_SCALE, -28 * UNIT_SCALE);
 				builder.canAttack = false;
 				builder.lifeScaling = 0;
 				builder.lootable = true;

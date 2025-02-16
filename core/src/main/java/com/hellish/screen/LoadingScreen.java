@@ -2,14 +2,11 @@ package com.hellish.screen;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.hellish.Main;
-import com.hellish.audio.AudioType;
 import com.hellish.ecs.ECSEngine;
 import com.hellish.ecs.system.AudioSystem;
 import com.hellish.ecs.system.RenderSystem;
@@ -44,14 +41,6 @@ public class LoadingScreen extends AbstractScreen<Table> {
 			if(mapType != MapType.NO_MAP) {
 				assetManager.load(mapType.getFilePath(), TiledMap.class);
 			}
-		}
-		
-		for (final AudioType audioType : AudioType.values()) {
-		    if (audioType.isMusic()) {
-		        assetManager.load(audioType.getFilePath(), Music.class);
-		    } else {
-		        assetManager.load(audioType.getFilePath(), Sound.class);
-		    }
 		}
 	}
 

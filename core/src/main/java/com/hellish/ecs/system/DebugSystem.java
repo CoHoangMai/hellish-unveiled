@@ -16,11 +16,12 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.hellish.Main;
 import com.hellish.ai.AiEntity;
 import com.hellish.ai.steer.steerer.RaycastObstacleAvoidanceSteererBase;
 
-public class DebugSystem extends EntitySystem{
+public class DebugSystem extends EntitySystem implements Disposable{
 	private final World world;
 	private final Stage gameStage;
 	private Box2DDebugRenderer physicsRenderer;
@@ -77,7 +78,8 @@ public class DebugSystem extends EntitySystem{
 	            shapeRenderer.line(start, end);
 	        }
 	    }
-	
+
+	@Override
 	public void dispose() {
 		if(profiler.isEnabled()) {
 			physicsRenderer.dispose();
