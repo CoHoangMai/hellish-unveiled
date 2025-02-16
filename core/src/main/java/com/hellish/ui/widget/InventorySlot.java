@@ -32,15 +32,15 @@ public class InventorySlot extends WidgetGroup{
 
 		if(slotItemInfo != null) {
 			slotItemInfo.setColor(1, 1, 1, 0.33f);
-			slotItemInfo.setPosition(2, 2);
-			slotItemInfo.setSize(12, 12);
+			slotItemInfo.setPosition(8, 8);
+			slotItemInfo.setSize(32, 32);
 			slotItemInfo.setScaling(Scaling.contain);
 			this.addActor(slotItemInfo);
 		}
 		
 		itemImage = new Image();
-		itemImage.setPosition(2, 2);
-		itemImage.setSize(12, 12);
+		itemImage.setPosition(8, 8);
+		itemImage.setSize(32, 32);
 		itemImage.setScaling(Scaling.contain);
 		this.addActor(itemImage);
 	}

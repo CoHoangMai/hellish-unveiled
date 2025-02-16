@@ -27,8 +27,7 @@ public class ItemComponent implements Component, Poolable{
 		ARMOR,
 		WEAPON,
 		BOOTS,
-		CONSUMABLE,
-		POWER_UP
+		CONSUMABLE
 	}
 	
 	public enum ItemType{
@@ -37,11 +36,7 @@ public class ItemComponent implements Component, Poolable{
 	    SWORD(ItemCategory.WEAPON, "sword1"),
 	    BIG_SWORD(ItemCategory.WEAPON, "sword2"),
 	    BOOTS(ItemCategory.BOOTS, "boots"),
-	    ARMOR(ItemCategory.ARMOR, "armor"),
-	    ALGEBRA(ItemCategory.POWER_UP, "linear_algebra"),
-	    CALCULUS_1(ItemCategory.POWER_UP, "calculus_1"),
-	    CALCULUS_2(ItemCategory.POWER_UP, "calculus_2"),
-	    CALCULUS_3(ItemCategory.POWER_UP, "calculus_3");
+	    ARMOR(ItemCategory.ARMOR, "armor");
 		
 		public final ItemCategory category;
 		public final String uiAtlasKey;

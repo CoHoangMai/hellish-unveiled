@@ -9,7 +9,7 @@ import com.hellish.ecs.component.ItemComponent.ItemCategory;
 import com.hellish.ui.model.ItemModel;
 
 public class InventoryDragSource extends Source{
-	public static final float DRAG_ACTOR_SIZE = 20;
+	public static final float DRAG_ACTOR_SIZE = 40;
 	public final InventorySlot inventorySlot;
 
 	public InventoryDragSource(InventorySlot inventorySlot) {
@@ -44,6 +44,8 @@ public class InventoryDragSource extends Source{
 	@Override
 	public void dragStop(InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
 		if(target == null) {
+			inventorySlot.setItem((ItemModel) payload.getObject());
+		} else if(target != null && target.getActor() == inventorySlot) {
 			inventorySlot.setItem((ItemModel) payload.getObject());
 		}
 	}

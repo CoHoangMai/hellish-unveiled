@@ -35,6 +35,7 @@ public class Scene2DSkin{
 	public enum Fonts {
 		SMALL("fnt_white", 0.25f),
 		DEFAULT("fnt_white", 0.5f),
+		KINDA_BIG("fnt_white", 0.75f),
 		BIG("fnt_white", 1),
 		BIGGER("fnt_white", 1.5f);
 		
@@ -265,8 +266,8 @@ public class Scene2DSkin{
 		skin.add(Labels.FRAME.getSkinKey(), frameLabelStyle);
 		
 		Label.LabelStyle titleLabelStyle = new Label.LabelStyle();
-		titleLabelStyle.font = skin.get(Fonts.BIG.getSkinKey(), BitmapFont.class);
-		titleLabelStyle.fontColor = Color.SLATE;
+		titleLabelStyle.font = skin.get(Fonts.KINDA_BIG.getSkinKey(), BitmapFont.class);
+		titleLabelStyle.fontColor = Color.BLACK;
 		titleLabelStyle.background = skin.getDrawable(Drawables.FRAME_FGD.getAtlasKey());
 		skin.add(Labels.TITLE.getSkinKey(), titleLabelStyle);
 		

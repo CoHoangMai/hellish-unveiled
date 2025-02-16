@@ -29,34 +29,34 @@ public class InventoryView extends Table{
 		super(skin);
 		this.model = model;
 		setFillParent(true);
-		float titlePadding = 15;
+		float titlePadding = 30;
 		
 		invSlots = new Array<>();
 		gearSlots = new Array<>();
 		
 		//Inventory
-		Table outerTable  = new Table();
-		outerTable.background(skin.getDrawable(Drawables.FRAME_BGD.getAtlasKey()));
+		Table invTable  = new Table();
+		invTable.background(skin.getDrawable(Drawables.FRAME_BGD.getAtlasKey()));
 		
 		Label invLabel = new Label("Ba lô", skin.get(Labels.TITLE.getSkinKey(), LabelStyle.class));
 		invLabel.setAlignment(Align.center);
 		invLabel.setWrap(true);
-		outerTable.add(invLabel).expandX().fill().pad(8, titlePadding, 0, titlePadding).top().row();
+		invTable.add(invLabel).expandX().fill().pad(16, titlePadding, 0, titlePadding).top().row();
 		
 		Table invSlotTable = new Table();
 		for(int i=1; i<=18; i++) {
 			InventorySlot slot = new InventorySlot(null, skin);
 			invSlots.add(slot);
-			invSlotTable.add(slot).padBottom(2);
+			invSlotTable.add(slot).padBottom(4);
 			if(i % 6 == 0) {
 				invSlotTable.row();
 			} else {
-				invSlotTable.getCell(slot).padRight(2);
+				invSlotTable.getCell(slot).padRight(4);
 			}
 		}
-		outerTable.add(invSlotTable).expand().fill();
+		invTable.add(invSlotTable).expand().fill();
 		
-		add(outerTable).expand().width(150).height(140).left().center();
+		add(invTable).expand().width(360).height(280).center();
 		
 		//Gear
 		Table gearTable = new Table();
@@ -65,28 +65,28 @@ public class InventoryView extends Table{
 		Label gearLabel = new Label("Trang bị", skin.get(Labels.TITLE.getSkinKey(), LabelStyle.class));
 		gearLabel.setAlignment(Align.center);
 		gearLabel.setWrap(true);
-		gearTable.add(gearLabel).expandX().fill().pad(8, titlePadding, 0, titlePadding).top().row();
+		gearTable.add(gearLabel).expandX().fill().pad(16, titlePadding, 0, titlePadding).top().row();
 		
 		Table gearTableInner = new Table();
 		
 		InventorySlot helmetSlot = new InventorySlot(Drawables.INVENTORY_SLOT_HELMET, skin);
 		gearSlots.add(helmetSlot);
-		gearTableInner.add(helmetSlot).padBottom(2).colspan(2).row();
+		gearTableInner.add(helmetSlot).padBottom(4).colspan(4).row();
 		
 		InventorySlot weaponSlot = new InventorySlot(Drawables.INVENTORY_SLOT_WEAPON, skin);
 		gearSlots.add(weaponSlot);
-		gearTableInner.add(weaponSlot).padBottom(2).padRight(2);
+		gearTableInner.add(weaponSlot).padBottom(4).padRight(4);
 		
 		InventorySlot armorSlot = new InventorySlot(Drawables.INVENTORY_SLOT_ARMOR, skin);
 		gearSlots.add(armorSlot);
-		gearTableInner.add(armorSlot).padBottom(2).row();
+		gearTableInner.add(armorSlot).padBottom(4).row();
 		
 		InventorySlot bootsSlot = new InventorySlot(Drawables.INVENTORY_SLOT_BOOTS, skin);
 		gearSlots.add(bootsSlot);
-		gearTableInner.add(bootsSlot).colspan(2).row();
+		gearTableInner.add(bootsSlot).colspan(4).row();
 		
 		gearTable.add(gearTableInner).expand().fill();
-		add(gearTable).expand().width(90).height(140).left().center();
+		add(gearTable).expand().width(200).height(280).left().center();
 		
 		setUpDragAndDrop();
 		

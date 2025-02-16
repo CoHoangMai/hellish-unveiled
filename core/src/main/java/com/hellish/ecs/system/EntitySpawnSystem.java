@@ -190,6 +190,7 @@ public class EntitySpawnSystem extends IteratingSystem implements EventListener{
 			InventoryComponent itemCmp = getEngine().createComponent(InventoryComponent.class);
 			itemCmp.itemsToAdd.add(ItemType.SWORD);
 			itemCmp.itemsToAdd.add(ItemType.BIG_SWORD);
+			itemCmp.itemsToAdd.add(ItemType.ARMOR);
 			itemCmp.itemsToAdd.add(ItemType.HELMET);
 			itemCmp.itemsToAdd.add(ItemType.BOOTS);
 			spawnedEntity.add(itemCmp);

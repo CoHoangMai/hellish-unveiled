@@ -100,6 +100,15 @@ public class GameScreen extends AbstractScreen<Table> implements EventListener{
 		pauseWorld(false);
 	}
 	
+	public void showInvView(boolean show) {
+		for(Actor actor : uiStage.getActors()) {
+			if(actor instanceof InventoryView) {
+				actor.setVisible(show);
+				break;
+			}
+		}
+	}
+	
 	public void showPauseView(boolean show) {
 		for(Actor actor : uiStage.getActors()) {
 			if(actor instanceof PauseView) {
@@ -256,20 +265,24 @@ public class GameScreen extends AbstractScreen<Table> implements EventListener{
 			paused = true;
 			this.pause();
 			this.showPauseView(true);
+			this.showInvView(false);
 		} else if(event instanceof GameResumeEvent) {
 			paused = false;
 			this.resume();
 			this.showPauseView(false);
 			this.showWinView(false);
 			this.showLoseView(false);
+			this.showInvView(false);
 		} else if(event instanceof WinEvent) {
 			paused = true;
 			this.pause();
 			this.showWinView(true);
+			this.showInvView(false);
 		} else if(event instanceof LoseEvent) {
 			paused = true;
 			this.pause();
 			this.showLoseView(true);
+			this.showInvView(false);
 		}else {
 			return false;
 		}
