@@ -1,6 +1,6 @@
-# Hellish Unveiled: Secret Terror
+# Hellish Unveiled: Secret Terrors
 
-A short, simple top-down action RPG where the player fights enemies and defeats the final boss to win. Built with [libGDX](https://libgdx.com/).
+A short, simple top-down action RPG where the player fights enemies and defeats the final boss to win.
 
 ## Gameplay
 
