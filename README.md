@@ -1,8 +1,8 @@
 # Hellish Unveiled: Secret Terrors
 
-![libGdx](https://img.shields.io/badge/libGDX-1.12.1-red?style=flat-square)
-![Java](https://img.shields.io/badge/JDK-23-orange?style=flat-square)
-![Gradle](https://img.shields.io/badge/Gradle-8.10.1-blue?style=flat-square)
+[![libGdx](https://img.shields.io/badge/libGDX-1.12.1-red?style=flat-square)](https://libgdx.com/)
+[![Java](https://img.shields.io/badge/JDK-23-orange?style=flat-square)](https://www.oracle.com/java/technologies/downloads/)
+[![Gradle](https://img.shields.io/badge/Gradle-8.10.1-blue?style=flat-square)](https://gradle.org/)
 
 A short, simple top-down action RPG where the player fights enemies and defeats the final boss to win.
 
