@@ -8,11 +8,11 @@ A short, simple top-down action RPG where the player fights enemies and defeats 
 
 ## Gameplay
 
-#### Objective
+### Objective
 
 Defeat the final boss to win.
 
-#### Controls
+### Controls
 
 - Arrow Keys: Move the player character.
 - Spacebar: Attack enemies.
@@ -29,6 +29,51 @@ This project uses [libGDX](https://libgdx.com/) as the core framework, along wit
 - [Box2DLights](https://github.com/libgdx/box2dlights)
 - [GdxAI](https://github.com/libgdx/gdx-ai)
 
+## Installation
+
+### Prerequisites
+
+- **Java Development Kit (JDK)**: [Version 23](https://www.oracle.com/java/technologies/downloads/#java23).
+- **Git** (optional, only if you want to use Git Bash): [Download Git](https://git-scm.com/downloads).
+
+### Steps
+
+1. **Get the project code**  
+   Choose one of the following options to get the project code:
+
+   - **Option 1: Using Git**  
+     Open your terminal (or Git Bash on Windows) and run the following commands:
+     
+     ```bash
+     git clone https://github.com/CoHoangMai/hellish-unveiled.git
+     cd hellish-unveiled
+     ```
+
+   - **Option 2: Without Git**  
+     - Go to the repository page: [hellish-unveiled](https://github.com/CoHoangMai/hellish-unveiled).
+     - Click the **Code** button, then select **Download ZIP**.
+     - Extract the ZIP file to a folder on your computer.
+     - Open your terminal (Command Prompt on Windows, Terminal on macOS/Linux) and navigate to the extracted folder using the `cd` command. For example:
+       
+       ```bash
+       cd path/to/hellish-unveiled
+       ```
+       
+2. **Build the project**  
+   Run the following command to build the project using Gradle:
+   
+   ```bash
+   ./gradlew build
+   ```
+   
+3. **Run the project**
+   
+   After building, you can run the project with this command:
+   
+    ```bash
+    ./gradlew lwjgl3:run
+    ```
+    
 ## Screenshots
 
 ![Intro](<assets/screenshots/Hellish Unveiled_ Secret Terrors 2025-02-17 00-18-19_Moment(2).jpg>)
